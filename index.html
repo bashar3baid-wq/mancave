@@ -1,10 +1,9 @@
-م<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صالون الملك - حجز مواعيد</title>
-    <!-- استيراد خط تجوال الأنيق -->
+    <title>صالون الملك - حجز مواعيد متكامل</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -43,7 +42,6 @@
             border: 1px solid #2a2a2a;
         }
 
-        /* الهيدر */
         .header {
             text-align: center;
             padding: 30px 20px;
@@ -70,21 +68,21 @@
             font-weight: 500;
         }
 
-        .section-title {
-            font-size: 18px;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            border-right: 3px solid var(--accent-color);
-            padding-right: 10px;
-        }
-
-        /* فورم الحجز */
         .booking-form {
             padding: 20px;
         }
 
+        .section-title {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            border-right: 3px solid var(--accent-color);
+            padding-right: 10px;
+            font-weight: 700;
+        }
+
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .input-group label {
@@ -96,8 +94,7 @@
         }
 
         .input-group input[type="text"], 
-        .input-group input[type="time"], 
-        .input-group select {
+        .input-group input[type="time"] {
             width: 100%;
             padding: 12px;
             background-color: #252525;
@@ -109,11 +106,76 @@
             text-align: right;
         }
 
-        .input-group input:focus, .input-group select:focus {
+        .input-group input:focus {
             border-color: var(--accent-color);
         }
 
-        /* ستايل قائمة الخدمات متعددة الاختيار */
+        /* شبكة كروت الحلاقين */
+        .barber-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .barber-card {
+            background: #252525;
+            border-radius: 15px;
+            padding: 12px;
+            text-align: center;
+            border: 2px solid #2e2e2e;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .barber-card img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 8px;
+            border: 2px solid #444;
+            transition: border-color 0.2s;
+        }
+
+        .barber-card .barber-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        /* عند تحديد كرت الحلاق يضيء بالذهبي */
+        .barber-card.selected {
+            border-color: var(--accent-color);
+            background-color: #2a2415;
+        }
+
+        .barber-card.selected img {
+            border-color: var(--accent-color);
+        }
+
+        /* زر التفاصيل داخل كرت الحلاق */
+        .btn-details {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            width: 80%;
+            margin: auto;
+        }
+
+        .btn-details:hover {
+            background: var(--accent-color);
+            color: #121212;
+        }
+
+        /* قائمة الخدمات (مربعات اختيار متعدد) */
         .services-list {
             display: flex;
             flex-direction: column;
@@ -176,19 +238,68 @@
         .btn-submit:active {
             transform: scale(0.98);
         }
+
+        /* النافذة المنبثقة المنبثقة (المودال) تفاصيل الشغل والمعلومات */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            border: 1px solid #333;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            cursor: pointer;
+            font-size: 26px;
+            color: #fff;
+        }
+
+        .work-gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .work-gallery img {
+            width: 100%;
+            height: 110px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid #444;
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- هيدر الصالون -->
     <div class="header">
         <div class="crown-icon">👑</div>
         <h1>صالون الملك</h1>
         <p>العناية الفاخرة التي تستحقها</p>
     </div>
 
-    <!-- فورم تثبيت الحجز واختيار الخدمات والوقت -->
     <div class="booking-form">
         
         <div class="input-group">
@@ -196,19 +307,12 @@
             <input type="text" id="username" placeholder="اكتب اسمك هنا" required>
         </div>
 
-        <!-- قسم اختيار الحلاق المفضل -->
         <div class="input-group">
-            <label for="barber">اختر الحلاق المفضل:</label>
-            <select id="barber">
-                <option value="بشار">بشار</option>
-                <option value="محمد ابو غياث">محمد ابو غياث</option>
-                <option value="معاذ">معاذ</option>
-                <option value="ابو علي محمد">ابو علي محمد</option>
-                <option value="يزن">يزن</option>
-            </select>
+            <h2 class="section-title">اختر الحلاق المفضل (اضغط على الكرت لتحديده):</h2>
+            <div class="barber-grid" id="barbersList">
+                </div>
         </div>
 
-        <!-- قسم الخدمات متعدد الاختيار كأصناف مستقلة تضغط عليها -->
         <div class="input-group">
             <h2 class="section-title">اختر الخدمات المطلوبة (صنف أو أكثر):</h2>
             <div class="services-list">
@@ -257,51 +361,143 @@
     </div>
 </div>
 
-<script>
-    function sendToWhatsApp() {
-        // ضع رقم الواتساب الخاص بالصالون هنا بمفتاح سوريا وبدون أصفار
-        const salonPhoneNumber = "963985207356";
+<div class="modal" id="barberModal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <img id="modalImg" src="" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--accent-color); object-fit: cover;">
+        <h2 id="modalName" style="color: var(--accent-color); margin: 10px 0; font-size: 20px;"></h2>
+        <p id="modalDesc" style="font-size: 14px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.6;"></p>
+        <h3 style="font-size: 14px; color: #fff; text-align: right; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 5px;">📷 من أعماله الحالية:</h3>
+        <div class="work-gallery" id="gallery"></div>
+    </div>
+</div>
 
+<script>
+    // قاعدة بيانات الحلاقين مع أسماء صورهم الحقيقية بدقة لغيت هاب
+    const barbersData = {
+        "بشار": { 
+            img: "Bashr.jpg", 
+            desc: "خبير القصات الملكية والتسريحات الحديثة، متميز بلمسته السريعة والمتقنة.", 
+            work: ["bashar_work1.jpg", "bashar_work2.jpg"] 
+        },
+        "محمد ابو غياث": { 
+            img: "mohammed_abu_ghiath.jpg", 
+            desc: "أخصائي حلاقة وتحديد الذقن بالموس الاحترافي، وخبير العناية بالمظهر المتكامل للرجال.", 
+            work: ["mohammed_work1.jpg", "mohammed_work2.jpg"] 
+        },
+        "معاذ": { 
+            img: "moaz.jpg", 
+            desc: "مبدع في تصفيف الشعر الحديث وقصات الكيرلي والستايلات العصرية التي تناسب الشباب.", 
+            work: ["moaz_work1.jpg", "moaz_work2.jpg"] 
+        },
+        "ابو علي محمد": { 
+            img: "abu_ali_mohammed.jpg", 
+            desc: "صاحب الخبرة الطويلة واللمسة العريقة في القصات الفخمة الكلاسيكية واستشارات العناية بالبشرة.", 
+            work: ["abuali_work1.jpg", "abuali_work2.jpg"] 
+        },
+        "يزن": { 
+            img: "yazan.jpg", 
+            desc: "أخصائي قصات الـ Fade الحديثة والتحديد المتقن، ومبدع في ماسكات تنظيف البشرة المتطورة.", 
+            work: ["yazan_work1.jpg", "yazan_work2.jpg"] 
+        }
+    };
+
+    let selectedBarber = ""; // لتخزين اسم الحلاق المختار للحجز
+
+    // توليد كروت الحلاقين تلقائياً بالواجهة
+    const gridContainer = document.getElementById('barbersList');
+    Object.keys(barbersData).forEach(name => {
+        const barber = barbersData[name];
+        gridContainer.innerHTML += `
+            <div class="barber-card" id="card-${name}" onclick="selectBarber('${name}')">
+                <img src="${barber.img}" alt="${name}">
+                <div class="barber-name">${name}</div>
+                <button class="btn-details" onclick="showDetails(event, '${name}')">تفاصيل</button>
+            </div>
+        `;
+    });
+
+    // وظيفة تحديد الحلاق عند النقر على الكرت
+    function selectBarber(name) {
+        selectedBarber = name;
+        Object.keys(barbersData).forEach(bName => {
+            document.getElementById(`card-${bName}`).classList.remove('selected');
+        });
+        document.getElementById(`card-${name}`).classList.add('selected');
+    }
+
+    // وظيفة فتح نافذة التفاصيل والأعمال
+    function showDetails(event, name) {
+        event.stopPropagation(); // منع تحديد الحلاق عشوائياً عند الضغط على زر تفاصيل فقط
+        const b = barbersData[name];
+        document.getElementById('modalName').innerText = name;
+        document.getElementById('modalImg').src = b.img;
+        document.getElementById('modalDesc').innerText = b.desc;
+        
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = b.work.map(img => `<img src="${img}" alt="شغل ${name}">`).join('');
+        
+        document.getElementById('barberModal').style.display = 'flex';
+    }
+
+    // إغلاق نافذة التفاصيل
+    function closeModal() { 
+        document.getElementById('barberModal').style.display = 'none'; 
+    }
+
+    // إغلاق عند النقر خارج محتوى النافذة
+    window.onclick = function(event) {
+        const modal = document.getElementById('barberModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // إرسال الحجز للواتساب
+    function sendToWhatsApp() {
+        // رقم الواتساب الحقيقي والمسجل الخاص بك والذي فحصناه سابقاً
+        const salonPhoneNumber = "963931781383"; 
 
         const name = document.getElementById('username').value;
-        const barber = document.getElementById('barber').value;
         const time = document.getElementById('time').value;
 
-        // تجميع الخدمات التي قام الزبون بتحديدها وضغط عليها
+        // تجميع الأصناف والخدمات المضغوطة
         const selectedServices = [];
         const checkboxes = document.querySelectorAll('input[name="salon_service"]:checked');
-        
         checkboxes.forEach((checkbox) => {
             selectedServices.push(checkbox.value);
         });
 
-        // التحقق من المدخلات
+        // التحقق من صحة المدخلات قبل التوجيه للواتساب
         if (!name) {
-            alert('الرجاء كتابة اسمك أولاً يا ملك!');
+            alert('الرجاء كتابة اسمك الكريم أولاً يا ملك!');
+            return;
+        }
+        if (!selectedBarber) {
+            alert('الرجاء اختيار الحلاق بالضغط على كرت الحلاق المفضل أولاً!');
             return;
         }
         if (selectedServices.length === 0) {
-            alert('الرجاء تحديد صنف واحد على الأقل من قائمة الخدمات!');
+            alert('الرجاء تحديد صنف أو خدمة واحدة على الأقل!');
             return;
         }
         if (!time) {
-            alert('الرجاء تحديد وقت حضورك المفضل!');
+            alert('الرجاء تحديد وقت الحضور المفضل!');
             return;
         }
 
-        // تحويل قائمة الخدمات المحددة لنص منسق تحت بعضه للواتساب
         const servicesText = selectedServices.map(s => `• ${s}`).join('%0A');
 
-        // صياغة الرسالة النهائية
+        // صياغة رسالة الواتساب المنسقة الفخمة
         const message = `مرحباً صالون الملك👑%0A` +
-                        `أود حجز موعد بالتفاصيل التالية:%0A%0A` +
+                        `أود حجز موعد حلاقة بالتفاصيل التالية:%0A%0A` +
                         `👤 *اسم الزبون:* ${name}%0A` +
-                        `✂️ *الحلاق المطلوب:* ${barber}%0A` +
-                        `⏰ *الوقت المتوقع:* ${time}%0A%0A` +
-                        `📌 *الخدمات المختارة:*%0A${servicesText}%0A%0A` +
+                        `✂️ *الحلاق المختار:* ${selectedBarber}%0A` +
+                        `⏰ *وقت الحضور المتوقع:* ${time}%0A%0A` +
+                        `📌 *الخدمات المطلوبة:*%0A${servicesText}%0A%0A` +
                         `الرجاء تأكيد توافر الموعد!`;
 
-        // فتح الواتساب تلقائياً بالرسالة
+        // التوجيه التلقائي للمحادثة
         window.location.href = `https://wa.me/${salonPhoneNumber}?text=${message}`;
     }
 </script>
