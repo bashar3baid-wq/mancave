@@ -3,287 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Man Cave Salon</title>
+    <title>صالون الملك - حجز مواعيد</title>
+    <!-- استيراد خط تجوال الأنيق -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* إعدادات الخطوط والألوان العامة - ثيم صالون Man Cave */
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent-color: #d4af37; /* لون ذهبي ملكي */
+            --text-color: #ffffff;
+            --text-muted: #aaaaaa;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            border-radius: 0 !important; /* إلغاء الحواف الدائرية تماماً من كل العناصر */
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: #0A0E14;
-            color: #FFFFFF;
-            padding: 16px;
-            max-width: 500px; /* ليظهر كأنه تطبيق موبايل حتى على الكمبيوتر */
-            margin: 0 auto;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px; /* مقاس مثالي لشاشات الموبايل */
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid #2a2a2a;
         }
 
         /* الهيدر */
         .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #1e1e1e 0%, #111111 100%);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .header .crown-icon {
+            font-size: 40px;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-color);
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            color: var(--accent-color);
+            font-size: 14px;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        /* قسم الخدمات */
+        .services-section {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            border-right: 3px solid var(--accent-color);
+            padding-right: 10px;
+        }
+
+        .service-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-        }
-        .header h2 {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .header p {
-            color: #8A99AD;
-            font-size: 14px;
-        }
-
-        /* العناوين الجانبية */
-        .section-title {
-            font-size: 16px;
-            font-weight: bold;
+            background-color: #252525;
+            padding: 15px;
+            border-radius: 12px;
             margin-bottom: 12px;
-            margin-top: 20px;
-        }
-        .vip-title {
-            color: #0088A8;
-            font-size: 17px;
+            border: 1px solid #2e2e2e;
+            transition: all 0.3s ease;
         }
 
-        /* نظام شبكة الأزرار (كل صف عنصرين) */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
+        .service-info h3 {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-color);
         }
 
-        /* تصميم الكروت والأزرار الحادة */
-        .card {
-            background-color: #141A22;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-            transition: background-color 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 85px;
+        .service-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
         }
-        .card .title {
-            font-weight: bold;
+
+        .service-price {
+            color: var(--accent-color);
+            font-weight: 700;
             font-size: 15px;
         }
-        .card .price {
-            color: #0088A8;
-            font-size: 13px;
-            margin-top: 4px;
+
+        /* فورم الحجز */
+        .booking-form {
+            padding: 0 20px 30px 20px;
         }
 
-        /* الكارت العريض للصبغة ومحمد أبو علي */
-        .card-full {
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .input-group input, .input-group select {
             width: 100%;
-            min-height: 75px;
-            margin-bottom: 10px;
-        }
-
-        /* الحالة عند التحديد باللون الأزرق البحري */
-        .card.active {
-            background-color: #0088A8 !important;
-        }
-        .card.active .price {
-            color: #FFFFFF !important;
-        }
-
-        /* حقل إدخال الاسم */
-        .input-field {
-            width: 100%;
-            height: 50px;
-            background-color: #141A22;
-            border: none;
-            color: #FFFFFF;
-            padding: 0 12px;
+            padding: 12px;
+            background-color: #252525;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: #fff;
             font-size: 15px;
-            margin-bottom: 20px;
             outline: none;
             text-align: right;
         }
-        .input-field::placeholder {
-            color: #556677;
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--accent-color);
         }
 
-        /* زر الحجز الرئيسي */
-        .btn-book {
+        /* زر الحجز */
+        .btn-submit {
             width: 100%;
-            height: 55px;
-            background-color: #0088A8;
-            color: #FFFFFF;
+            padding: 15px;
+            background-color: var(--accent-color);
+            color: #121212;
             border: none;
+            border-radius: 12px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+            transition: transform 0.2s ease;
         }
-        .btn-book:active {
-            background-color: #005F75;
+
+        .btn-submit:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
 <body>
 
-    <!-- هيدر التطبيق -->
+<div class="app-container">
+    <!-- الهيدر الخاص بالصالون -->
     <div class="header">
-        <div>
-            <p>مرحباً بك في،</p>
-            <h2>Man Cave Salon</h2>
+        <div class="crown-icon">👑</div>
+        <h1>صالون الملك</h1>
+        <p>العناية الفاخرة التي تستحقها</p>
+    </div>
+
+    <!-- قائمة الخدمات والأسعار -->
+    <div class="services-section">
+        <h2 class="section-title">قائمة الخدمات المتاحة</h2>
+        
+        <div class="service-item">
+            <div class="service-info">
+                <h3>قص شعر ملكي</h3>
+                <p>غسيل + سشوار + مادة مثبتة</p>
+            </div>
+            <div class="service-price">45,000 ل.س</div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-info">
+                <h3>حلاقة ذقن احترافية</h3>
+                <p>تحديد موس + تحديد ليزر + مرطب</p>
+            </div>
+            <div class="service-price">30,000 ل.س</div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-info">
+                <h3>تصفيف شعر وسشوار</h3>
+                <p>موديلات حديثة وحسب الطلب</p>
+            </div>
+            <div class="service-price">20,000 ل.س</div>
+        </div>
+
+        <div class="service-item">
+            <div class="service-info">
+                <h3>تنظيف بشرة كامل (ماسك)</h3>
+                <p>إزالة رؤوس سوداء + صنفرة + بخار</p>
+            </div>
+            <div class="service-price">35,000 ل.س</div>
         </div>
     </div>
 
-    <!-- قسم الخدمات الأساسية -->
-    <div class="section-title">الخدمات الأساسية (تحديد متعدد)</div>
-    
-    <div class="grid-2">
-        <div class="card" id="srv_hair" onclick="toggleService('srv_hair', 'قص شعر', 40000)">
-            <span class="title">قص شعر</span>
-            <span class="price">40,000 ل.س</span>
+    <!-- فورم تثبيت الحجز واختيار الوقت -->
+    <div class="booking-form">
+        <h2 class="section-title">احجز موعدك الآن</h2>
+        
+        <div class="input-group">
+            <label for="username">اسم الزبون الكريم:</label>
+            <input type="text" id="username" placeholder="اكتب اسمك هنا" required>
         </div>
-        <div class="card" id="srv_blow" onclick="toggleService('srv_blow', 'سشوار', 15000)">
-            <span class="title">سشوار</span>
-            <span class="price">15,000 ل.س</span>
+
+        <div class="input-group">
+            <label for="service">اختر الخدمة المطلوبة:</label>
+            <select id="service">
+                <option value="قص شعر ملكي (45,000 ل.س)">قص شعر ملكي (45,000 ل.س)</option>
+                <option value="حلاقة ذقن احترافية (30,000 ل.س)">حلاقة ذقن احترافية (30,000 ل.س)</option>
+                <option value="تصفيف شعر وسشوار (20,000 ل.س)">تصفيف شعر وسشوار (20,000 ل.س)</option>
+                <option value="تنظيف بشرة كامل (35,000 ل.س)">تنظيف بشرة كامل (35,000 ل.س)</option>
+            </select>
         </div>
+
+        <div class="input-group">
+            <label for="time">الوقت المفضل للحضور:</label>
+            <input type="time" id="time" required>
+        </div>
+
+        <button class="btn-submit" onclick="sendToWhatsApp()">تأكيد الحجز عبر الواتساب 💬</button>
     </div>
+</div>
 
-    <div class="grid-2">
-        <div class="card" id="srv_trim" onclick="toggleService('srv_trim', 'تحديد لحية', 20000)">
-            <span class="title">تحديد لحية</span>
-            <span class="price">20,000 ل.س</span>
-        </div>
-        <div class="card" id="srv_shave" onclick="toggleService('srv_shave', 'حلاقة لحية كاملة', 25000)">
-            <span class="title">حلاقة لحية كاملة</span>
-            <span class="price">25,000 ل.س</span>
-        </div>
-    </div>
+<script>
+    function sendToWhatsApp() {
+        // ضع رقم الواتساب الخاص بالصالون هنا (مع رمز الدوله وبدون أصفار أو علامة +)
+        // مثال: 9639xxxxxxxx
+        const salonPhoneNumber = "963900000000"; 
 
-    <div class="card card-full" id="srv_dye" onclick="toggleService('srv_dye', 'صبغة شعر/لحية', 50000)">
-        <span class="title">صبغة شعر / لحية</span>
-        <span class="price">50,000 ل.س</span>
-    </div>
+        const name = document.getElementById('username').value;
+        const service = document.getElementById('service').value;
+        const time = document.getElementById('time').value;
 
-    <!-- قسم خدمات VIP -->
-    <div class="section-title vip-title">👑 قسم خدمات VIP الفاخرة</div>
-    <div class="grid-2">
-        <div class="card" id="srv_facial" onclick="toggleService('srv_facial', 'تنظيف بشرة متكامل VIP', 60000)">
-            <span class="title">تنظيف بشرة متكامل</span>
-            <span class="price">60,000 ل.س</span>
-        </div>
-        <div class="card" id="srv_massage" onclick="toggleService('srv_massage', 'مساج واسترخاء VIP', 30000)">
-            <span class="title">مساج واسترخاء</span>
-            <span class="price">30,000 ل.س</span>
-        </div>
-    </div>
-
-    <!-- قسم اختيار الحلاقين الخمسة -->
-    <div class="section-title">اختر حلاقك المفضل</div>
-    <div class="grid-2">
-        <div class="card" id="barber_bashar" onclick="selectBarber('barber_bashar', 'بشار')">
-            <span class="title">بشار</span>
-        </div>
-        <div class="card" id="barber_ghiath" onclick="selectBarber('barber_ghiath', 'محمد ابو غياث')">
-            <span class="title">محمد ابو غياث</span>
-        </div>
-    </div>
-    <div class="grid-2">
-        <div class="card" id="barber_yazan" onclick="selectBarber('barber_yazan', 'يزن')">
-            <span class="title">يزن</span>
-        </div>
-        <div class="card" id="barber_moaz" onclick="selectBarber('barber_moaz', 'معاذ')">
-            <span class="title">معاذ</span>
-        </div>
-    </div>
-    <div class="card card-full" id="barber_ali" onclick="selectBarber('barber_ali', 'محمد ابوعلي')">
-        <span class="title">محمد ابوعلي</span>
-    </div>
-
-    <!-- بيانات الحجز -->
-    <div class="section-title">بيانات الزبون</div>
-    <input type="text" id="customer_name" class="input-field" placeholder="أدخل اسمك الكريم هنا">
-
-    <!-- زر الحجز النهائي -->
-    <button class="btn-book" onclick="submitBooking()">احجز موعدك الآن</button>
-
-    <script>
-        // كائنات لحفظ الحالات
-        let selectedServices = {};
-        let selectedBarberName = "";
-        let selectedBarberId = "";
-
-        // منطق التحديد المتعدد للخدمات
-        function toggleService(id, name, price) {
-            const element = document.getElementById(id);
-            if (selectedServices[id]) {
-                delete selectedServices[id];
-                element.classList.remove('active');
-            } else {
-                // منع اختيار تحديد لحية وحلاقة كاملة معاً لمنع التضارب
-                if (id === 'srv_trim' && selectedServices['srv_shave']) toggleService('srv_shave', '', 0);
-                if (id === 'srv_shave' && selectedServices['srv_trim']) toggleService('srv_trim', '', 0);
-
-                selectedServices[id] = { name: name, price: price };
-                element.classList.add('active');
-            }
+        if (!name || !time) {
+            alert('الرجاء كتابة الاسم واختيار وقت الحضور أولاً يا ملك!');
+            return;
         }
 
-        // منطق اختيار حلاق واحد فقط من الخمسة
-        function selectBarber(id, name) {
-            if (selectedBarberId) {
-                document.getElementById(selectedBarberId).classList.remove('active');
-            }
-            selectedBarberId = id;
-            selectedBarberName = name;
-            document.getElementById(id).classList.add('active');
-        }
+        // صياغة الرسالة التي ستصلك على الواتساب بشكل منسق ومحترف
+        const message = `مرحباً صالون الملك👑%0A` +
+                        `أود حجز موعد حلاقة بالتفاصيل التالية:%0A%0A` +
+                        `👤 *اسم الزبون:* ${name}%0A` +
+                        `💈 *الخدمة:* ${service}%0A` +
+                        `⏰ *وقت الحضور المتوقع:* ${time}%0A%0A` +
+                        `الرجاء تأكيد الحجز الموعد متوفر.`;
 
-        // معالجة وإرسال الحجز للواتساب
-        function submitBooking() {
-            const nameInput = document.getElementById('customer_name').value.trim();
-            
-            if (!nameInput) {
-                alert("من فضلك أدخل اسمك أولاً");
-                return;
-            }
-            if (Object.keys(selectedServices).length === 0) {
-                alert("من فضلك اختر خدمة واحدة على الأقل");
-                return;
-            }
-            if (!selectedBarberName) {
-                alert("من فضلك اختر الحلاق المفضل");
-                return;
-            }
+        // فتح الواتساب تلقائياً بالرسالة المجهزة
+        window.location.href = `https://wa.me/${salonPhoneNumber}?text=${message}`;
+    }
+</script>
 
-            // تجميع النص وحساب المجموع بالليرة السورية
-            let servicesText = "";
-            let totalPrice = 0;
-
-            for (let key in selectedServices) {
-                servicesText += `- ${selectedServices[key].name} (${selectedServices[key].price.toLocaleString()} ل.س)\n`;
-                totalPrice += selectedServices[key].price;
-            }
-
-            // صياغة الرسالة النهائية المنظمة
-            const whatsappMessage = `💈 حجز جديد في صالون Man Cave 💈\n\n` +
-                                    `👤 اسم الزبون: ${nameInput}\n\n` +
-                                    `💇 الخدمات المختارة:\n${servicesText}\n` +
-                                    `💈 الحلاق المطلوب: ${selectedBarberName}\n` +
-                                    `💰 إجمالي الحساب: ${totalPrice.toLocaleString()} ل.س`;
-
-            const phoneNumber = "963985207356";
-            const encodedMessage = encodeURIComponent(whatsappMessage);
-            
-            // فتح رابط الواتساب (يعمل فوراً على متصفح الآيفون والأندرويد)
-            window.location.href = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
-        }
-    </script>
 </body>
 </html>
+
