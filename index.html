@@ -2,167 +2,118 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صالون الملك - حجز مواعيد فخم</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>صالون الملك | أناقة الملوك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --accent-color: #d4af37;
-            --text-color: #ffffff;
-            --text-muted: #aaaaaa;
-        }
+        :root { --gold: #d4af37; --black: #0a0a0a; --dark-gray: #1a1a1a; --text: #e0e0e0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--black); color: var(--text); padding: 20px; min-height: 100vh; display: flex; justify-content: center; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        .app-container { width: 100%; max-width: 500px; background: var(--dark-gray); border: 2px solid var(--gold); border-radius: 25px; padding: 30px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
 
-        body { background-color: var(--bg-color); color: var(--text-color); padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
+        /* Barber Pole Animation */
+        .pole-container { width: 40px; height: 120px; border: 3px solid #333; border-radius: 10px; margin: 0 auto 20px; overflow: hidden; background: white; position: relative; }
+        .pole-anim { height: 100%; width: 100%; background: repeating-linear-gradient(45deg, #ff3333, #ff3333 15px, #ffffff 15px, #ffffff 30px, #3333ff 30px, #3333ff 45px); animation: spin 2s linear infinite; }
+        @keyframes spin { from { background-position: 0 0; } to { background-position: 0 60px; } }
 
-        .app-container { width: 100%; max-width: 480px; background-color: var(--card-bg); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid #2a2a2a; }
+        .header-text { text-align: center; margin-bottom: 25px; }
+        h1 { color: var(--gold); font-size: 28px; letter-spacing: 2px; }
+        p.tagline { color: #aaa; font-style: italic; }
 
-        .header { text-align: center; padding: 25px 20px; background: linear-gradient(135deg, #1e1e1e 0%, #111111 100%); border-bottom: 2px solid var(--accent-color); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: var(--gold); margin-bottom: 8px; font-weight: bold; }
+        input, select { width: 100%; padding: 12px; background: #252525; border: 1px solid #444; color: white; border-radius: 8px; }
 
-        /* تصميم عمود الحلاقة الحقيقي (Barber Pole) */
-        .pole-container {
-            width: 35px;
-            height: 100px;
-            background: #fff;
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
-            margin: 0 auto 15px;
-            border: 3px solid #333;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-        }
-
-        .pole-stripes {
-            width: 200%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                45deg,
-                #ff3333, #ff3333 15px,
-                #ffffff 15px, #ffffff 30px,
-                #3333ff 30px, #3333ff 45px
-            );
-            animation: rotate-pole 2s linear infinite;
-        }
-
-        @keyframes rotate-pole {
-            from { transform: translateX(-50px); }
-            to { transform: translateX(0); }
-        }
-
-        .header h1 { font-size: 26px; font-weight: 700; color: var(--text-color); }
-        .status-badge { display: inline-block; margin-top: 10px; padding: 6px 15px; background-color: #252525; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1px solid #333; }
-        .work-hours { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
-
-        .booking-form { padding: 20px; }
-        .section-title { font-size: 15px; color: var(--text-muted); margin-bottom: 12px; border-right: 3px solid var(--accent-color); padding-right: 10px; font-weight: 700; }
-        .input-group { margin-bottom: 22px; }
-        .input-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
-        .input-group input[type="text"], .input-group input[type="time"] { width: 100%; padding: 12px; background-color: #252525; border: 1px solid #333; border-radius: 10px; color: #fff; text-align: right; }
-
-        .barber-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .barber-card { background: #252525; border-radius: 12px; padding: 10px; text-align: center; border: 2px solid #2e2e2e; cursor: pointer; }
-        .barber-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 6px; }
-        .barber-card.selected { border-color: var(--accent-color); background-color: #2a2415; }
-        .btn-details { background: transparent; border: 1px solid var(--accent-color); color: var(--accent-color); padding: 3px 8px; border-radius: 5px; font-size: 11px; width: 85%; }
-
-        .services-list { display: flex; flex-direction: column; gap: 8px; }
-        .service-checkbox { display: flex; align-items: center; background-color: #252525; padding: 12px; border-radius: 10px; border: 1px solid #2e2e2e; cursor: pointer; }
-        .service-checkbox input { margin-left: 10px; accent-color: var(--accent-color); }
-        .service-details { display: flex; justify-content: space-between; width: 100%; }
-        .service-price { color: var(--accent-color); font-weight: 700; }
-        .btn-submit { width: 100%; padding: 14px; background-color: var(--accent-color); color: #121212; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .offer-card { border: 2px solid var(--gold); padding: 15px; border-radius: 10px; background: #2a220a; margin-bottom: 20px; text-align: center; }
         
-        /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: var(--card-bg); padding: 20px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; position: relative; border: 1px solid #333; }
-        .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 24px; }
+        .barber-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .barber-card { background: #333; padding: 10px; border-radius: 10px; text-align: center; cursor: pointer; border: 2px solid transparent; }
+        .barber-card.selected { border-color: var(--gold); background: #444; }
+        
+        .footer-info { margin-top: 30px; border-top: 1px solid #333; padding-top: 20px; text-align: center; font-size: 13px; }
+        .footer-link { color: var(--gold); text-decoration: none; display: block; margin-top: 10px; }
+        
+        button { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 10px; font-weight: bold; font-size: 18px; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #b8962d; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="header">
-        <!-- عمود الحلاقة المبرمج -->
-        <div class="pole-container">
-            <div class="pole-stripes"></div>
-        </div>
+    <div class="pole-container"><div class="pole-anim"></div></div>
+    <div class="header-text">
         <h1>صالون الملك</h1>
-        <div class="status-badge" id="salonStatus">جاري الفحص...</div>
-        <div class="work-hours">أوقات العمل: 9 ص - 9 م</div>
+        <p class="tagline">أناقة الملوك بلمسات احترافية</p>
     </div>
 
-    <div class="booking-form">
-        <div class="input-group">
-            <label>اسم الزبون:</label>
-            <input type="text" id="username" placeholder="اكتب اسمك">
-        </div>
+    <div class="form-group">
+        <label>اسم الزبون:</label>
+        <input type="text" id="name" placeholder="اكتب اسمك الكريم">
+    </div>
 
-        <div class="input-group">
-            <h2 class="section-title">اختر الحلاق:</h2>
-            <div class="barber-grid" id="barbersList"></div>
-        </div>
+    <div class="form-group">
+        <label>اختر الحلاق:</label>
+        <div class="barber-grid" id="barbers"></div>
+    </div>
 
-        <div class="input-group">
-            <h2 class="section-title">الخدمات:</h2>
-            <div class="services-list">
-                <label class="service-checkbox"><input type="checkbox" name="salon_service" value="قص شعر لحال"><div class="service-details"><span>قص شعر لحال</span><span class="service-price">300 ل.س</span></div></label>
-                <label class="service-checkbox"><input type="checkbox" name="salon_service" value="حلاقة شعر ودقن"><div class="service-details"><span>حلاقة شعر ودقن</span><span class="service-price">500 ل.س</span></div></label>
-                <label class="service-checkbox"><input type="checkbox" name="salon_service" value="حلاقة دقن لحال"><div class="service-details"><span>حلاقة دقن لحال</span><span class="service-price">300 ل.س</span></div></label>
-                <label class="service-checkbox"><input type="checkbox" name="salon_service" value="صبغة"><div class="service-details"><span>صبغة احترافية</span><span class="service-price">250 ل.س</span></div></label>
-                <label class="service-checkbox"><input type="checkbox" name="salon_service" value="شمع"><div class="service-details"><span>شمع للوجه</span><span class="service-price">150 ل.س</span></div></label>
-                <label class="service-checkbox"><input type="checkbox" name="salon_service" value="سشوار"><div class="service-details"><span>سشوار وتصفيف</span><span class="service-price">250 ل.س</span></div></label>
-                <label class="service-checkbox"><input type="checkbox" name="salon_service" value="تنظيف بشرة"><div class="service-details"><span>تنظيف بشرة</span><span class="service-price">150 ل.س</span></div></label>
-                <label class="service-checkbox"><input type="checkbox" name="salon_service" value="خدمة ملكية كاملة"><div class="service-details"><span>خدمة كاملة (شعر+دقن+سشوار+بشرة)</span><span class="service-price">1000 ل.س</span></div></label>
-            </div>
-        </div>
+    <div class="offer-card">
+        <label style="color:var(--gold)">🔥 العرض الملكي المحدود:</label>
+        <p>قص شعر + دقن + سشوار + شمع + تنظيف بشرة بـ 800 ليرة فقط!</p>
+        <input type="checkbox" id="offerCheck"> اختر هذا العرض
+    </div>
 
-        <div class="input-group">
-            <label>وقت الحضور:</label>
-            <input type="time" id="time">
-        </div>
+    <div class="form-group">
+        <label>علاج البروتين (حسب الطول):</label>
+        <select id="protein">
+            <option value="بدون">بدون</option>
+            <option value="قصير (400 ل.س)">قصير (400 ل.س)</option>
+            <option value="متوسط (600 ل.س)">متوسط (600 ل.س)</option>
+            <option value="طويل (800 ل.س)">طويل (800 ل.س)</option>
+        </select>
+    </div>
 
-        <button class="btn-submit" onclick="sendToWhatsApp()">تأكيد الحجز 💬</button>
+    <div class="form-group">
+        <label>وقت الحضور:</label>
+        <input type="time" id="time">
+    </div>
+
+    <button onclick="book()">تأكيد الحجز الملكي</button>
+
+    <div class="footer-info">
+        <p>📍 الموقع: دمشق، ساحة المرجة، بناء رمسيس، طابق أول.</p>
+        <p>مدخل الصالون: أول شارع رامي.</p>
+        <br>
+        <p>جميع الحقوق محفوظة - Best Of</p>
+        <a href="https://bashar3baid-wq.github.io/Best.of/" class="footer-link">زيارة الموقع الرسمي</a>
     </div>
 </div>
 
-<div class="modal" id="barberModal"><div class="modal-content"><span class="close-btn" onclick="closeModal()">&times;</span><img id="modalImg" style="width:80px; height:80px; border-radius:50%; border:2px solid var(--accent-color); object-fit: cover;"><h2 id="modalName" style="color:var(--accent-color);"></h2><p id="modalDesc"></p></div></div>
-
 <script>
-    const barbersData = {
-        "بشار": { img: "Bashr.jpg", desc: "خبير القصات الفخمة." },
-        "محمد ابو غياث": { img: "mohammed_abu_ghiath.jpg", desc: "أخصائي تحديد اللحية." },
-        "معاذ": { img: "moaz.jpg", desc: "مبدع الاستايلات الحديثة." },
-        "ابو علي محمد": { img: "abu_ali_mohammed.jpg", desc: "خبرة كلاسيكية ملكية." },
-        "يزن": { img: "yazan.jpg", desc: "متخصص Fade ومكياج بشرة." }
-    };
-
+    const barbers = ["بشار", "محمد", "معاذ", "أبو علي"];
     let selectedBarber = "";
-    const gridContainer = document.getElementById('barbersList');
-    Object.keys(barbersData).forEach(name => {
-        gridContainer.innerHTML += `<div class="barber-card" id="card-${name}" onclick="selectBarber('${name}')"><img src="${barbersData[name].img}"><div style="font-size:12px; margin-bottom:5px;">${name}</div><button class="btn-details" onclick="showDetails(event, '${name}')">تفاصيل</button></div>`;
+
+    const grid = document.getElementById('barbers');
+    barbers.forEach(name => {
+        grid.innerHTML += `<div class="barber-card" onclick="select('${name}')" id="card-${name}">${name}</div>`;
     });
 
-    function selectBarber(name) { selectedBarber = name; document.querySelectorAll('.barber-card').forEach(c => c.classList.remove('selected')); document.getElementById(`card-${name}`).classList.add('selected'); }
-    function showDetails(e, n) { e.stopPropagation(); document.getElementById('modalName').innerText = n; document.getElementById('modalImg').src = barbersData[n].img; document.getElementById('modalDesc').innerText = barbersData[n].desc; document.getElementById('barberModal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('barberModal').style.display = 'none'; }
-
-    function updateStatus() {
-        const h = new Date().getHours();
-        document.getElementById('salonStatus').innerHTML = (h >= 9 && h < 21) ? '<span style="color:#2ecc71">🟢 متوفر الآن</span>' : '<span style="color:#e74c3c">🔴 مغلق حالياً</span>';
+    function select(name) {
+        selectedBarber = name;
+        document.querySelectorAll('.barber-card').forEach(el => el.classList.remove('selected'));
+        document.getElementById(`card-${name}`).classList.add('selected');
     }
-    updateStatus();
 
-    function sendToWhatsApp() {
-        const n = document.getElementById('username').value;
-        const t = document.getElementById('time').value;
-        const s = Array.from(document.querySelectorAll('input[name="salon_service"]:checked')).map(i => i.value).join(', ');
-        if (!n || !selectedBarber || !s || !t) { alert('الرجاء تعبئة كافة الحقول!'); return; }
-        window.location.href = `https://wa.me/963931781383?text=مرحباً، أود حجز موعد باسم ${n} مع الحلاق ${selectedBarber} في الساعة ${t}. الخدمات المطلوبة: ${s}`;
+    function book() {
+        const name = document.getElementById('name').value;
+        const time = document.getElementById('time').value;
+        const offer = document.getElementById('offerCheck').checked ? "نعم (العرض الملكي 800 ل.س)" : "لا";
+        const protein = document.getElementById('protein').value;
+
+        if(!name || !selectedBarber || !time) { alert("يرجى تعبئة كافة البيانات"); return; }
+
+        let msg = `حجز جديد لصالح: ${name}%0Aالحلاق: ${selectedBarber}%0Aالوقت: ${time}%0Aالعرض الملكي: ${offer}%0Aالبروتين: ${protein}`;
+        window.location.href = `https://wa.me/963988225900?text=${msg}`;
     }
 </script>
 </body>
 </html>
-
