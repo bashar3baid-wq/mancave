@@ -49,10 +49,38 @@
             border-bottom: 2px solid var(--accent-color);
         }
 
-        .header .crown-icon {
-            font-size: 35px;
-            color: var(--accent-color);
+        /* 💈 ستايل لوجو الحلاقة المضيء والمتحرك 💈 */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 5px;
+        }
+
+        .barber-pole-logo {
+            font-size: 45px;
+            display: inline-block;
+            /* حركتان معاً: النبض المضيء + دوران خفيف مرن */
+            animation: neonGlow 1.5s ease-in-out infinite alternate, gentleTilt 3s ease-in-out infinite;
+        }
+
+        /* أنيميشن إضاءة النيون للوجو (أحمر وأزرق) */
+        @keyframes neonGlow {
+            0% {
+                filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 8px #ff3333) drop-shadow(0 0 15px #3333ff);
+                transform: scale(1);
+            }
+            100% {
+                filter: drop-shadow(0 0 4px #fff) drop-shadow(0 0 15px #ff3333) drop-shadow(0 0 25px #3333ff);
+                transform: scale(1.08);
+            }
+        }
+
+        /* أنيميشن حركة دائرية مائلة خفيفة لتبدو حركية */
+        @keyframes gentleTilt {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
         }
 
         .header h1 {
@@ -171,7 +199,7 @@
             width: 85%;
         }
 
-        /* قائمة الخدمات الجدیدة */
+        /* قائمة الخدمات والأسعار */
         .services-list {
             display: flex;
             flex-direction: column;
@@ -257,9 +285,13 @@
 
 <div class="app-container">
     <div class="header">
-        <div class="crown-icon">👑</div>
+        <!-- حاوية اللوجو الفخم المضيء والمتحرك -->
+        <div class="logo-container">
+            <div class="barber-pole-logo">💈</div>
+        </div>
         <h1>صالون الملك</h1>
-        <!-- عداد وجاذب الحالة التلقائي المباشر -->
+        
+        <!-- عداد الحالة التلقائي المباشر -->
         <div class="status-badge" id="salonStatus">جاري الفحص...</div>
         <div class="work-hours">أوقات العمل اليومية: من 9:00 ص حتى 9:00 م</div>
     </div>
@@ -282,7 +314,6 @@
             <h2 class="section-title">اختر الخدمات المطلوبة (أصناف منفصلة أو متعددة):</h2>
             <div class="services-list">
                 
-                <!-- الخدمات المطلوبة من قبلك بالترتيب -->
                 <label class="service-checkbox">
                     <input type="checkbox" name="salon_service" value="قص شعر لحال">
                     <div class="service-details"><span class="service-name">قص شعر لحال</span><span class="service-price">300 ل.س</span></div>
@@ -323,7 +354,6 @@
                     <div class="service-details"><span class="service-name">خدمة كاملة (شعر + دقن + سشوار + بشرة)</span><span class="service-price">1000 ل.س</span></div>
                 </label>
 
-                <!-- خدمات إضافية فخمة من عندي لصالونك -->
                 <label class="service-checkbox">
                     <input type="checkbox" name="salon_service" value="ماسك الفحم الأسود المتطور">
                     <div class="service-details"><span class="service-name">ماسك الفحم الأسود (رؤوس سوداء)</span><span class="service-price">200 ل.س</span></div>
@@ -410,10 +440,9 @@
     // دالة فحص حالة الصالون (متوفر الآن / غير متوفر) بناءً على الوقت (9 ص لـ 9 م)
     function updateSalonStatus() {
         const now = new Date();
-        const currentHour = now.getHours(); // يقرأ بصيغة 24 ساعة
+        const currentHour = now.getHours();
         const statusElement = document.getElementById('salonStatus');
 
-        // من 9 صباحاً (9) وحتى 9 مساءً (21)
         if (currentHour >= 9 && currentHour < 21) {
             statusElement.innerHTML = `<span style="color: #2ecc71;">🟢 متوفر الآن استقبال الحجوزات</span>`;
         } else {
@@ -421,12 +450,11 @@
         }
     }
 
-    // تشغيل الفحص فور فتح الصفحة
     updateSalonStatus();
 
     // إرسال الحجز للواتساب
     function sendToWhatsApp() {
-        const salonPhoneNumber = "963985207356"; 
+        const salonPhoneNumber = "963931781383"; 
         const name = document.getElementById('username').value;
         const time = document.getElementById('time').value;
 
