@@ -2,53 +2,50 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>صالون الملك | أناقة الملوك</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --black: #0a0a0a; --dark-gray: #1a1a1a; --text: #e0e0e0; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background-color: var(--black); color: var(--text); padding: 20px; min-height: 100vh; display: flex; justify-content: center; }
+        body { background-color: var(--black); color: var(--text); padding: 15px; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
 
-        .app-container { width: 100%; max-width: 500px; background: var(--dark-gray); border: 2px solid var(--gold); border-radius: 25px; padding: 30px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
+        .app-container { width: 100%; max-width: 450px; background: var(--dark-gray); border: 2px solid var(--gold); border-radius: 20px; padding: 25px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
 
-        /* Barber Pole Animation */
-        .pole-container { width: 40px; height: 120px; border: 3px solid #333; border-radius: 10px; margin: 0 auto 20px; overflow: hidden; background: white; position: relative; }
-        .pole-anim { height: 100%; width: 100%; background: repeating-linear-gradient(45deg, #ff3333, #ff3333 15px, #ffffff 15px, #ffffff 30px, #3333ff 30px, #3333ff 45px); animation: spin 2s linear infinite; }
-        @keyframes spin { from { background-position: 0 0; } to { background-position: 0 60px; } }
+        /* Barber Pole Fixed */
+        .pole-container { width: 40px; height: 120px; border: 4px solid #333; border-radius: 10px; margin: 0 auto 20px; overflow: hidden; background: white; position: relative; }
+        .pole-anim { height: 200%; width: 100%; background: repeating-linear-gradient(45deg, #ff0000, #ff0000 15px, #ffffff 15px, #ffffff 30px, #0000ff 30px, #0000ff 45px); animation: spin 2s linear infinite; }
+        @keyframes spin { from { transform: translateY(0); } to { transform: translateY(-60px); } }
 
-        .header-text { text-align: center; margin-bottom: 25px; }
-        h1 { color: var(--gold); font-size: 28px; letter-spacing: 2px; }
-        p.tagline { color: #aaa; font-style: italic; }
+        h1 { color: var(--gold); text-align: center; font-size: 26px; margin-bottom: 5px; }
+        .tagline { color: #aaa; text-align: center; font-size: 14px; margin-bottom: 20px; font-style: italic; }
 
-        .form-group { margin-bottom: 20px; }
-        label { display: block; color: var(--gold); margin-bottom: 8px; font-weight: bold; }
-        input, select { width: 100%; padding: 12px; background: #252525; border: 1px solid #444; color: white; border-radius: 8px; }
+        .form-group { margin-bottom: 15px; }
+        label { color: var(--gold); display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; background: #111; border: 1px solid #444; color: white; border-radius: 8px; }
 
-        .offer-card { border: 2px solid var(--gold); padding: 15px; border-radius: 10px; background: #2a220a; margin-bottom: 20px; text-align: center; }
+        .offer-box { border: 1px solid var(--gold); padding: 10px; border-radius: 10px; background: #2a220a; margin-bottom: 15px; text-align: center; font-size: 14px; }
         
-        .barber-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .barber-card { background: #333; padding: 10px; border-radius: 10px; text-align: center; cursor: pointer; border: 2px solid transparent; }
-        .barber-card.selected { border-color: var(--gold); background: #444; }
+        .barber-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .barber-card { background: #333; padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid transparent; transition: 0.3s; }
+        .barber-card.selected { border-color: var(--gold); background: #444; color: var(--gold); }
         
-        .footer-info { margin-top: 30px; border-top: 1px solid #333; padding-top: 20px; text-align: center; font-size: 13px; }
-        .footer-link { color: var(--gold); text-decoration: none; display: block; margin-top: 10px; }
+        button { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; font-size: 18px; cursor: pointer; color: black; }
         
-        button { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 10px; font-weight: bold; font-size: 18px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #b8962d; }
+        .footer { margin-top: 25px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #333; padding-top: 15px; }
+        .footer a { color: var(--gold); text-decoration: none; display: block; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div class="pole-container"><div class="pole-anim"></div></div>
-    <div class="header-text">
-        <h1>صالون الملك</h1>
-        <p class="tagline">أناقة الملوك بلمسات احترافية</p>
-    </div>
+    <h1>صالون الملك</h1>
+    <p class="tagline">نخبة الحلاقة لرجال النخبة</p>
 
     <div class="form-group">
         <label>اسم الزبون:</label>
-        <input type="text" id="name" placeholder="اكتب اسمك الكريم">
+        <input type="text" id="name" placeholder="أدخل اسمك الكريم">
     </div>
 
     <div class="form-group">
@@ -56,19 +53,18 @@
         <div class="barber-grid" id="barbers"></div>
     </div>
 
-    <div class="offer-card">
-        <label style="color:var(--gold)">🔥 العرض الملكي المحدود:</label>
-        <p>قص شعر + دقن + سشوار + شمع + تنظيف بشرة بـ 800 ليرة فقط!</p>
-        <input type="checkbox" id="offerCheck"> اختر هذا العرض
+    <div class="offer-box">
+        <input type="checkbox" id="offerCheck"> 
+        <label style="display:inline; color:white;"> عرض محدود: قص + دقن + سشوار + شمع + تنظيف = 800 ل.س</label>
     </div>
 
     <div class="form-group">
-        <label>علاج البروتين (حسب الطول):</label>
+        <label>خدمة البروتين (حسب طول الشعر):</label>
         <select id="protein">
             <option value="بدون">بدون</option>
-            <option value="قصير (400 ل.س)">قصير (400 ل.س)</option>
-            <option value="متوسط (600 ل.س)">متوسط (600 ل.س)</option>
-            <option value="طويل (800 ل.س)">طويل (800 ل.س)</option>
+            <option value="قصير (400 ل.س)">شعر قصير (400 ل.س)</option>
+            <option value="متوسط (600 ل.س)">شعر متوسط (600 ل.س)</option>
+            <option value="طويل (800 ل.س)">شعر طويل (800 ل.س)</option>
         </select>
     </div>
 
@@ -79,12 +75,11 @@
 
     <button onclick="book()">تأكيد الحجز الملكي</button>
 
-    <div class="footer-info">
-        <p>📍 الموقع: دمشق، ساحة المرجة، بناء رمسيس، طابق أول.</p>
+    <div class="footer">
+        <p>📍 دمشق، ساحة المرجة، بناء رمسيس، طابق أول.</p>
         <p>مدخل الصالون: أول شارع رامي.</p>
-        <br>
-        <p>جميع الحقوق محفوظة - Best Of</p>
-        <a href="https://bashar3baid-wq.github.io/Best.of/" class="footer-link">زيارة الموقع الرسمي</a>
+        <p>جميع الحقوق محفوظة Best Of</p>
+        <a href="https://bashar3baid-wq.github.io/Best.of/">زيارة موقعنا الإلكتروني</a>
     </div>
 </div>
 
@@ -106,14 +101,15 @@
     function book() {
         const name = document.getElementById('name').value;
         const time = document.getElementById('time').value;
-        const offer = document.getElementById('offerCheck').checked ? "نعم (العرض الملكي 800 ل.س)" : "لا";
+        const offer = document.getElementById('offerCheck').checked ? "العرض الملكي (800 ل.س)" : "خدمات عادية";
         const protein = document.getElementById('protein').value;
 
-        if(!name || !selectedBarber || !time) { alert("يرجى تعبئة كافة البيانات"); return; }
+        if(!name || !selectedBarber || !time) { alert("يرجى تعبئة الاسم والحلاق والوقت!"); return; }
 
-        let msg = `حجز جديد لصالح: ${name}%0Aالحلاق: ${selectedBarber}%0Aالوقت: ${time}%0Aالعرض الملكي: ${offer}%0Aالبروتين: ${protein}`;
+        let msg = `حجز جديد لصالح: ${name}%0Aالحلاق: ${selectedBarber}%0Aالوقت: ${time}%0Aالخدمات المختارة: ${offer}%0Aعلاج البروتين: ${protein}`;
         window.location.href = `https://wa.me/963988225900?text=${msg}`;
     }
 </script>
 </body>
 </html>
+
