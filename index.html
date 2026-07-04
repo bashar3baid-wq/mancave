@@ -18,117 +18,172 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--deep-black); color: var(--text-light); padding: 25px 15px; min-height: 100vh; display: flex; justify-content: center; align-items: center; background-image: radial-gradient(circle at top center, #161922 0%, var(--deep-black) 70%); }
-        .app-container { width: 100%; max-width: 460px; background: rgba(19, 21, 28, 0.9); backdrop-filter: blur(10px); border-radius: 24px; padding: 28px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); }
-        
-        /* Elements Styling */
+
+        body {
+            background-color: var(--deep-black);
+            color: var(--text-light);
+            padding: 25px 15px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(circle at top center, #161922 0%, var(--deep-black) 70%);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 460px;
+            background: rgba(19, 21, 28, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 💈 عمود الحلاقة الدوار 💈 */
+        .barber-pole-wrapper { position: relative; width: 40px; height: 100px; margin: 0 auto 20px; border: 2px solid var(--royal-gold); border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+        .pole-stripes { height: 100%; width: 100%; background: repeating-linear-gradient(45deg, #e62e2e, #e62e2e 12px, #ffffff 12px, #ffffff 24px, #2e5ce6 24px, #2e5ce6 36px); background-size: 34px 34px; animation: barberSpin 1s linear infinite; }
+        @keyframes barberSpin { from { background-position: 0 0; } to { background-position: 0 34px; } }
+
         .header-section { text-align: center; margin-bottom: 20px; }
         .header-section h1 { color: var(--royal-gold); font-size: 34px; font-weight: 900; margin-bottom: 4px; }
-        .header-section .tagline { color: var(--text-muted); font-size: 13.5px; }
-        
+        .header-section .tagline { color: var(--text-muted); font-size: 13.5px; font-weight: 500; }
+
+        .top-promo-banner { background: linear-gradient(135deg, #1e1b10, #14130e); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 16px; padding: 16px; margin-bottom: 25px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .promo-top-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .top-promo-banner h4 { color: var(--royal-gold); font-size: 15px; font-weight: 700; }
+        .promo-action-badge { background: var(--royal-gold); color: #000; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .top-promo-banner .price { color: var(--success-green); font-weight: 900; font-size: 17px; }
+        .top-promo-banner.active { border-color: var(--success-green); background: linear-gradient(135deg, #0b1a10, #0f1310); }
+
         .section-title { color: var(--royal-gold); font-size: 15px; font-weight: 700; margin-bottom: 14px; text-transform: uppercase; }
         .form-group { margin-bottom: 24px; }
-        
-        /* New Styles for Protein & Time */
-        .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .option-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 12px; border-radius: 12px; cursor: pointer; transition: 0.3s; display: flex; justify-content: space-between; align-items: center; }
-        .option-card:hover { border-color: var(--royal-gold); }
-        .option-card.active { border-color: var(--royal-gold); background: rgba(212, 175, 55, 0.1); }
-        .option-text { font-size: 14px; }
-        .option-price { color: var(--royal-gold); font-weight: 700; font-size: 13px; }
-        
-        /* Time Slots Grid */
-        .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .time-btn { background: var(--card-bg); border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-size: 13px; transition: 0.3s; }
-        .time-btn.active { background: var(--royal-gold); color: #000; font-weight: 700; }
+        label.main-label { display: block; color: var(--text-light); font-size: 14.5px; margin-bottom: 8px; font-weight: 600; }
+        input[type="text"] { width: 100%; padding: 14px; background-color: #0d0f13; border: 1px solid var(--card-border); border-radius: 12px; color: #fff; font-size: 15px; outline: none; text-align: right; }
 
-        input[type="text"] { width: 100%; padding: 14px; background-color: #0d0f13; border: 1px solid var(--card-border); border-radius: 12px; color: #fff; font-size: 15px; text-align: right; }
-        
+        .barbers-container { display: flex; flex-direction: column; gap: 12px; }
+        .barber-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; cursor: pointer; transition: all 0.3s; }
+        .barber-profile-info { display: flex; align-items: center; gap: 14px; }
+        .barber-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.1); }
+        .barber-card.selected { border-color: var(--royal-gold); background: linear-gradient(145deg, #181b24, #1f1c13); }
+
+        .services-grid { display: flex; flex-direction: column; gap: 10px; }
+        .service-item { display: flex; align-items: center; background-color: var(--card-bg); padding: 14px; border-radius: 12px; border: 1px solid var(--card-border); cursor: pointer; transition: 0.2s; }
+        .service-item.active { border-color: var(--royal-gold); background: rgba(212, 175, 55, 0.1); }
+        .service-info { display: flex; justify-content: space-between; width: 100%; align-items: center; }
+        .service-cost { color: var(--royal-gold); font-weight: 700; font-size: 14px; background: rgba(214, 175, 55, 0.08); padding: 2px 8px; border-radius: 6px; }
+
+        .time-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .time-btn { background: var(--card-bg); border: 1px solid var(--card-border); padding: 12px; border-radius: 12px; cursor: pointer; text-align: center; font-size: 14px; transition: 0.2s; }
+        .time-btn.active { background: var(--royal-gold); color: #000; font-weight: 700; border-color: var(--royal-gold); }
+
         .btn-submit-royal { width: 100%; padding: 16px; background: linear-gradient(90deg, #b8962d, var(--royal-gold), #b8962d); color: #000; border: none; border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-        
-        .royal-footer { margin-top: 35px; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px; text-align: center; font-size: 11px; color: #444; }
+        .royal-footer { margin-top: 35px; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="header-section">
-        <h1>صالون الملك</h1>
-        <div class="tagline">أصالة الضيافة وفخامة الأناقة الملكية</div>
+    <div class="barber-pole-wrapper"><div class="pole-stripes"></div></div>
+    <div class="header-section"><h1>صالون الملك</h1></div>
+
+    <div class="top-promo-banner" id="topPromoCard" onclick="togglePromoViaBanner()">
+        <div class="promo-top-flex"><h4>🔥 العرض الملكي الشامل</h4><span class="promo-action-badge" id="promoBadgeStatus">اضغط للتفعيل ⚡</span></div>
+        <p>قص شعر + حلاقة ذقن + سشوار + شمع + تنظيف بشرة</p>
+        <div class="price">كل هذا بـ 700 ل.س فقط! 😍</div>
     </div>
 
-    <!-- الاسم -->
     <div class="form-group">
-        <label class="section-title">اسم الزبون الكريم:</label>
-        <input type="text" id="customerName" placeholder="أدخل اسمك هنا">
+        <label class="main-label" for="customerName">اسم الزبون الفاضل:</label>
+        <input type="text" id="customerName" placeholder="أدخل اسمك الكريم هنا">
     </div>
 
-    <!-- اختيار البروتين المطور -->
     <div class="form-group">
-        <h3 class="section-title">جلسة معالجة البروتين:</h3>
-        <div class="options-grid" id="proteinOptions">
-            <div class="option-card" onclick="selectProtein(this, 'بدون بروتين')">
-                <span class="option-text">لا أرغب بإضافة بروتين</span>
-                <span class="option-price">0 ل.س</span>
-            </div>
-            <div class="option-card" onclick="selectProtein(this, 'بروتين شعر قصير (1000 ل.س)')">
-                <span class="option-text">شعر قصير</span>
-                <span class="option-price">1000 ل.س</span>
-            </div>
-            <div class="option-card" onclick="selectProtein(this, 'بروتين شعر متوسط (2000 ل.س)')">
-                <span class="option-text">شعر متوسط</span>
-                <span class="option-price">2000 ل.س</span>
-            </div>
-            <div class="option-card" onclick="selectProtein(this, 'بروتين شعر طويل (2500 ل.س)')">
-                <span class="option-text">شعر طويل</span>
-                <span class="option-price">2500 ل.س</span>
-            </div>
+        <h3 class="section-title">اختر الحلاق المفضّل:</h3>
+        <div class="barbers-container" id="barbersList">
+            <!-- (تم الحفاظ على نفس الحلاقين) -->
+            <div class="barber-card" onclick="selectBarber(this, 'بشار')"><div class="barber-profile-info"><img src="Bashr.jpg" class="barber-img"><span class="barber-name">بشار</span></div></div>
+            <div class="barber-card" onclick="selectBarber(this, 'محمد أبو غياث')"><div class="barber-profile-info"><img src="mohammed_abu_ghiath.jpg" class="barber-img"><span class="barber-name">محمد أبو غياث</span></div></div>
+            <div class="barber-card" onclick="selectBarber(this, 'معاذ')"><div class="barber-profile-info"><img src="moaz.jpg" class="barber-img"><span class="barber-name">معاذ</span></div></div>
         </div>
     </div>
 
-    <!-- الوقت المطور -->
+    <div class="form-group">
+        <h3 class="section-title">اختر الخدمات:</h3>
+        <div class="services-grid">
+             <label class="service-item" id="promoContainer"><input type="checkbox" id="promoCheckbox" onchange="syncBannerWithCheckbox()" style="display:none"><div class="service-info"><span>👑 العرض الشامل</span><span class="service-cost">700 ل.س</span></div></label>
+             <label class="service-item"><input type="checkbox" name="salon_service" value="قص شعر (300 ل.س)" style="display:none"><div class="service-info"><span>قص شعر</span><span class="service-cost">300 ل.س</span></div></label>
+        </div>
+    </div>
+
+    <!-- الجزء الجديد: اختيار البروتين (واضح) -->
+    <div class="form-group">
+        <h3 class="section-title">جلسة معالجة البروتين:</h3>
+        <div class="services-grid" id="proteinOptions">
+            <div class="service-item active" onclick="selectProtein(this, 'بدون بروتين')"><div class="service-info"><span>لا أرغب ببروتين</span><span class="service-cost">0</span></div></div>
+            <div class="service-item" onclick="selectProtein(this, 'شعر قصير (1000 ل.س)')"><div class="service-info"><span>شعر قصير</span><span class="service-cost">1000 ل.س</span></div></div>
+            <div class="service-item" onclick="selectProtein(this, 'شعر متوسط (2000 ل.س)')"><div class="service-info"><span>شعر متوسط</span><span class="service-cost">2000 ل.س</span></div></div>
+        </div>
+    </div>
+
+    <!-- الجزء الجديد: اختيار الوقت (سلس) -->
     <div class="form-group">
         <h3 class="section-title">تحديد وقت الحضور:</h3>
-        <div class="time-grid" id="timeSlots">
+        <div class="time-grid-container" id="timeOptions">
             <div class="time-btn" onclick="selectTime(this, '10:00 ص')">10:00 ص</div>
             <div class="time-btn" onclick="selectTime(this, '12:00 م')">12:00 م</div>
             <div class="time-btn" onclick="selectTime(this, '02:00 م')">02:00 م</div>
             <div class="time-btn" onclick="selectTime(this, '04:00 م')">04:00 م</div>
             <div class="time-btn" onclick="selectTime(this, '06:00 م')">06:00 م</div>
-            <div class="time-btn" onclick="selectTime(this, '08:00 م')">08:00 م</div>
         </div>
     </div>
 
     <button class="btn-submit-royal" onclick="submitBooking()">تأكيد الحجز الملكي 👑</button>
-
-    <div class="royal-footer">
-        &copy; 2026 صالون الملك. جميع الحقوق محفوظة.
-    </div>
 </div>
 
 <script>
+    let selectedBarber = "";
     let selectedProtein = "بدون بروتين";
     let selectedTime = "";
 
-    function selectProtein(element, val) {
-        document.querySelectorAll('#proteinOptions .option-card').forEach(el => el.classList.remove('active'));
-        element.classList.add('active');
+    function selectBarber(el, name) {
+        document.querySelectorAll('.barber-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedBarber = name;
+    }
+
+    function selectProtein(el, val) {
+        document.querySelectorAll('#proteinOptions .service-item').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
         selectedProtein = val;
     }
 
-    function selectTime(element, val) {
-        document.querySelectorAll('#timeSlots .time-btn').forEach(el => el.classList.remove('active'));
-        element.classList.add('active');
+    function selectTime(el, val) {
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
         selectedTime = val;
+    }
+
+    function syncBannerWithCheckbox() {
+        const check = document.getElementById('promoCheckbox');
+        document.getElementById('topPromoCard').classList.toggle('active', check.checked);
+        document.getElementById('promoBadgeStatus').textContent = check.checked ? 'تم التفعيل ✨' : 'اضغط للتفعيل ⚡';
+    }
+
+    function togglePromoViaBanner() {
+        const check = document.getElementById('promoCheckbox');
+        check.checked = !check.checked;
+        syncBannerWithCheckbox();
     }
 
     function submitBooking() {
         const name = document.getElementById('customerName').value;
-        if(!name) { alert("يرجى كتابة الاسم"); return; }
-        if(!selectedTime) { alert("يرجى اختيار الوقت"); return; }
-
-        const textMessage = `👑 *طلب حجز موعد جديد*%0A👤 *الاسم:* ${name}%0A🧪 *البروتين:* ${selectedProtein}%0A⏰ *الوقت:* ${selectedTime}`;
-        window.location.href = `https://wa.me/963988225900?text=${textMessage}`;
+        if(!name) { alert("يرجى كتابة اسمك"); return; }
+        if(!selectedBarber) { alert("يرجى اختيار حلاق"); return; }
+        if(!selectedTime) { alert("يرجى اختيار وقت"); return; }
+        
+        const msg = `👑 طلب حجز%0A👤 ${name}%0A✂️ الحلاق: ${selectedBarber}%0A🧪 البروتين: ${selectedProtein}%0A⏰ الوقت: ${selectedTime}`;
+        window.location.href = `https://wa.me/963988225900?text=${msg}`;
     }
 </script>
 </body>
