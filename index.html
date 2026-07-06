@@ -17,6 +17,7 @@
             --accent-red: #e74c3c;
             --text-main: #ffffff;
             --text-muted: #8a99ad;
+            --border-color: #233554;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; }
@@ -32,25 +33,29 @@
         .welcome-box { background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(21,31,50,0.5)); border: 1px solid var(--accent-gold); padding: 12px; border-radius: 12px; text-align: center; margin-bottom: 20px; color: #fff; font-size: 13px; line-height: 20px; }
         
         label { display: block; margin: 20px 0 8px; font-weight: 600; color: var(--accent-gold); font-size: 16px; border-right: 3px solid var(--accent-gold); padding-right: 8px; }
-        input, select { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid #233554; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
+        input, select { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid var(--border-color); border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
         input:focus { border-color: var(--accent-gold); }
         
-        .barbers-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
-        .barber-card { background: #0b0f19; padding: 15px; border-radius: 12px; border: 1px solid #233554; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; position: relative; }
-        .barber-card:hover { border-color: rgba(212,175,55,0.5); }
-        .barber-card.selected { border-color: var(--accent-gold); background: rgba(212,175,55,0.08); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
-        .barber-header { display: flex; justify-content: space-between; align-items: center; }
-        .barber-name { font-weight: bold; font-size: 16px; color: #fff; }
-        .barber-meta { display: flex; gap: 5px; align-items: center; }
-        .barber-badge { font-size: 11px; background: var(--accent-gold); color: #0b0f19; padding: 2px 8px; border-radius: 20px; font-weight: bold; }
-        .barber-status { font-size: 11px; font-weight: bold; padding: 2px 8px; border-radius: 20px; }
-        .barber-status.available { background: rgba(46, 204, 113, 0.2); color: var(--accent-green); }
-        .barber-status.busy { background: rgba(231, 76, 60, 0.2); color: var(--accent-red); }
-        .barber-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 18px; text-align: right; }
+        /* تصميم كروت الحلاقين المطور والأنيق */
+        .barbers-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 15px; }
+        .barber-card { background: #0d1626; padding: 18px; border-radius: 14px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; position: relative; }
+        .barber-card:hover { border-color: rgba(212,175,55,0.4); transform: translateY(-2px); }
+        .barber-card.selected { border-color: var(--accent-gold); background: linear-gradient(145deg, #0d1626 0%, rgba(212,175,55,0.05) 100%); box-shadow: 0 6px 20px rgba(212,175,55,0.15); }
+        
+        .barber-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+        .barber-info-block { display: flex; flex-direction: column; gap: 4px; }
+        .barber-name { font-weight: 700; font-size: 17px; color: #fff; display: flex; align-items: center; gap: 5px; }
+        
+        .barber-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .barber-badge { font-size: 11px; background: rgba(212,175,55,0.15); color: var(--accent-gold); padding: 3px 10px; border-radius: 6px; font-weight: 700; border: 1px solid rgba(212,175,55,0.3); }
+        .barber-status { font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 6px; }
+        .barber-status.available { background: rgba(46, 204, 113, 0.15); color: var(--accent-green); border: 1px solid rgba(46, 204, 113, 0.3); }
+        .barber-status.busy { background: rgba(231, 76, 60, 0.15); color: var(--accent-red); border: 1px solid rgba(231, 76, 60, 0.3); }
+        .barber-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; text-align: right; }
 
-        /* زر التفاصيل الصغير الأنيق */
-        .details-btn { font-size: 11px; background: #233554; color: #fff; border: 1px solid #34495e; padding: 2px 8px; border-radius: 5px; cursor: pointer; margin-right: 5px; display: none; font-weight: bold; }
-        .details-btn:hover { background: var(--accent-gold); color: #0b0f19; }
+        /* زر تفاصيل أنيق ومحسن يظهر دائمًا بجانب الشارات */
+        .details-btn { font-size: 11px; background: #1b2a47; color: #fff; border: 1px solid #34495e; padding: 3px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; display: inline-block; }
+        .details-btn:hover { background: var(--accent-gold); color: #0b0f19; border-color: var(--accent-gold); }
 
         /* حاوية تفاصيل العداد المنسدلة عند الضغط */
         .inner-countdown-box { background: rgba(231, 76, 60, 0.08); border: 1px dashed var(--accent-red); padding: 12px; border-radius: 8px; margin-top: 10px; font-size: 12px; display: none; text-align: right; line-height: 22px; }
@@ -59,24 +64,25 @@
         .inner-countdown-box .countdown-timer { font-size: 16px; font-weight: 900; color: var(--accent-red); margin: 5px 0; text-align: center; letter-spacing: 0.5px; }
 
         .modern-time-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 8px; margin-top: 10px; }
-        .time-slot-item { background: #0b0f19; border: 1px solid #233554; padding: 10px 5px; border-radius: 8px; text-align: center; font-size: 13px; color: #fff; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .time-slot-item { background: #0b0f19; border: 1px solid var(--border-color); padding: 10px 5px; border-radius: 8px; text-align: center; font-size: 13px; color: #fff; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .time-slot-item:hover:not(.unavailable):not(.selected) { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); }
         .time-slot-item.selected { background: var(--accent-gold); color: #0b0f19; border-color: var(--accent-gold); }
         .time-slot-item.unavailable { background: rgba(231, 76, 60, 0.08); border-color: rgba(231, 76, 60, 0.2); color: #5c6b82; cursor: not-allowed; text-decoration: line-through; }
 
         .services-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .service-item { display: flex; align-items: center; justify-content: space-between; background: #0b0f19; padding: 12px 15px; border-radius: 10px; border: 1px solid #233554; cursor: pointer; transition: 0.2s; }
+        .service-item { display: flex; align-items: center; justify-content: space-between; background: #0b0f19; padding: 12px 15px; border-radius: 10px; border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
         .service-item input[type="checkbox"] { display: none; }
         .service-item.selected { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); }
         .service-price { color: var(--accent-gold); font-weight: bold; font-size: 14px; }
+        .service-details-text { font-size: 11px; color: var(--text-muted); display: block; margin-top: 2px; font-weight: normal; }
 
         .total-box { margin-top: 20px; padding: 15px; background: #0b0f19; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent-gold); }
         .total-amount { font-size: 20px; font-weight: 900; color: var(--accent-gold); }
 
-        .payment-method { margin-top: 15px; background: rgba(212,175,55,0.02); border: 1px solid #233554; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
-        .sham-badge { background: #2980b9; color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 5px; font-weight: bold; }
+        /* تخصيص قسم الدفع ليصبح فخمًا وبكلمة متوفر الدفع عبر شام كاش فقط */
+        .payment-method { margin-top: 15px; background: linear-gradient(90deg, rgba(41, 128, 185, 0.1) 0%, rgba(21, 31, 50, 0.5) 100%); border: 1px solid #2980b9; padding: 14px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: bold; color: #fff; letter-spacing: 0.3px; }
 
-        .salon-location-box { margin-top: 15px; background: #111b2b; border: 1px solid #233554; border-right: 4px solid #3498db; padding: 12px 15px; border-radius: 10px; font-size: 13px; line-height: 20px; }
+        .salon-location-box { margin-top: 15px; background: #111b2b; border: 1px solid var(--border-color); border-right: 4px solid #3498db; padding: 12px 15px; border-radius: 10px; font-size: 13px; line-height: 20px; }
         .location-header { font-weight: bold; color: #3498db; margin-bottom: 2px; display: flex; align-items: center; gap: 5px; }
 
         button { width: 100%; padding: 15px; background: linear-gradient(45deg, #d4af37, #aa841b); border: none; border-radius: 12px; color: #0b0f19; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
@@ -109,10 +115,12 @@
             <!-- الحلاق بشار -->
             <div class="barber-card selected" id="barber-بشار" onclick="selectBarber(this, 'بشار')">
                 <div class="barber-header">
-                    <span class="barber-name">✂️ الحلاق بشار</span>
+                    <div class="barber-info-block">
+                        <span class="barber-name">✂️ الحلاق بشار</span>
+                    </div>
                     <div class="barber-meta">
                         <button type="button" id="btn-details-بشار" class="details-btn" onclick="toggleDetailsContainer(event, 'بشار')">تفاصيل</button>
-                        <span class="barber-badge">موصى به</span>
+                        <span class="barber-badge">موصى به ★</span>
                         <span id="badge-بشار" class="barber-status available">متوفر الحجز 🟢</span>
                     </div>
                 </div>
@@ -132,10 +140,12 @@
             <!-- محمد ابو غياث -->
             <div class="barber-card" id="barber-محمد ابو غياث" onclick="selectBarber(this, 'محمد ابو غياث')">
                 <div class="barber-header">
-                    <span class="barber-name">✂️ محمد ابو غياث</span>
+                    <div class="barber-info-block">
+                        <span class="barber-name">✂️ محمد ابو غياث</span>
+                    </div>
                     <div class="barber-meta">
                         <button type="button" id="btn-details-محمد ابو غياث" class="details-btn" onclick="toggleDetailsContainer(event, 'محمد ابو غياث')">تفاصيل</button>
-                        <span class="barber-badge">خبير</span>
+                        <span class="barber-badge">خبير التصفيف</span>
                         <span id="badge-محمد ابو غياث" class="barber-status available">متوفر الحجز 🟢</span>
                     </div>
                 </div>
@@ -155,10 +165,12 @@
             <!-- محمد ابو علي -->
             <div class="barber-card" id="barber-محمد ابو علي" onclick="selectBarber(this, 'محمد ابو علي')">
                 <div class="barber-header">
-                    <span class="barber-name">✂️ محمد ابو علي</span>
+                    <div class="barber-info-block">
+                        <span class="barber-name">✂️ محمد ابو علي</span>
+                    </div>
                     <div class="barber-meta">
                         <button type="button" id="btn-details-محمد ابو علي" class="details-btn" onclick="toggleDetailsContainer(event, 'محمد ابو علي')">تفاصيل</button>
-                        <span class="barber-badge">كلاسيك</span>
+                        <span class="barber-badge">كلاسيك فخم</span>
                         <span id="badge-محمد ابو علي" class="barber-status available">متوفر الحجز 🟢</span>
                     </div>
                 </div>
@@ -178,10 +190,12 @@
             <!-- يزن -->
             <div class="barber-card" id="barber-يزن" onclick="selectBarber(this, 'يزن')">
                 <div class="barber-header">
-                    <span class="barber-name">✂️ الحلاق يزن</span>
+                    <div class="barber-info-block">
+                        <span class="barber-name">✂️ الحلاق يزن</span>
+                    </div>
                     <div class="barber-meta">
                         <button type="button" id="btn-details-يزن" class="details-btn" onclick="toggleDetailsContainer(event, 'يزن')">تفاصيل</button>
-                        <span class="barber-badge">مبدع</span>
+                        <span class="barber-badge">مبدع الـ Fade</span>
                         <span id="badge-يزن" class="barber-status available">متوفر الحجز 🟢</span>
                     </div>
                 </div>
@@ -201,14 +215,16 @@
             <!-- معاذ -->
             <div class="barber-card" id="barber-معاذ" onclick="selectBarber(this, 'معاذ')">
                 <div class="barber-header">
-                    <span class="barber-name">✂️ الحلاق معاذ</span>
+                    <div class="barber-info-block">
+                        <span class="barber-name">✂️ الحلاق معاذ</span>
+                    </div>
                     <div class="barber-meta">
                         <button type="button" id="btn-details-معاذ" class="details-btn" onclick="toggleDetailsContainer(event, 'معاذ')">تفاصيل</button>
-                        <span class="barber-badge">أخصائي</span>
+                        <span class="barber-badge">أخصائي العناية</span>
                         <span id="badge-معاذ" class="barber-status available">متوفر الحجز 🟢</span>
                     </div>
                 </div>
-                <div class="barber-desc">مخصص لعلاجات البروتين المتكاملة وفرد الشعر بأمان تام لحماية وتغذية حيوية شعرك.</div>
+                <div class="barber-desc">متميز ومتخصص في تنظيف البشرة الاحترافي، وحلاقة الشعر وتلوينه وصبغه بأرقى المواد الآمنة.</div>
                 
                 <div id="inner-countdown-معاذ" class="inner-countdown-box" onclick="event.stopPropagation();">
                     <span class="salon-title-bold">👑 صالون الملك 👑</span>
@@ -260,7 +276,10 @@
                 <input type="checkbox" value="ماسك" data-price="150">
             </div>
             <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>بروتين (يبدأ من 1500 ل.س حسب الطول)</span></div>
+                <div class="service-info">
+                    <span>جلسة بروتين متكاملة</span>
+                    <span class="service-details-text">(قصير: 1500 | وسط: 2000 | طويل: 2500 ل.س - المعاينة بالصالون)</span>
+                </div>
                 <span class="service-price">1500 ل.س</span>
                 <input type="checkbox" value="بروتين" data-price="1500">
             </div>
@@ -271,12 +290,9 @@
             <span id="totalDisplay" class="total-amount">0 ل.س</span>
         </div>
 
+        <!-- تعديل قسم الدفع ليصبح بالشكل الجديد المطلق تماماً وبأناقة تامة -->
         <div class="payment-method">
-            <span>💳 طرق الدفع المتوفرة داخل الصالون:</span>
-            <div>
-                <span style="font-size: 12px; margin-left: 5px; color: var(--text-muted);">كاش</span>
-                <span class="sham-badge">نقبل الدفع شام كاش - Sham Cash 📱</span>
-            </div>
+            📱 متوفر الدفع عبر شام كاش - Sham Cash
         </div>
 
         <div class="salon-location-box">
@@ -435,8 +451,10 @@
             badge.innerText = "متوفر الحجز 🟢";
             badge.className = "barber-status available";
         });
+        
+        // تعديل: ترك أزرار التفاصيل ظاهرة دائما لضمان وصول المستخدم إليها بسلاسة
         document.querySelectorAll('.details-btn').forEach(btn => {
-            btn.style.display = "none";
+            btn.style.display = "inline-block";
         });
         document.querySelectorAll('.inner-countdown-box').forEach(box => {
             box.style.display = "none";
@@ -459,7 +477,7 @@
                 }
             });
 
-            // عندما يكون الحلاق مشغولاً: تفعيل شارة "مشغول" وزر "تفاصيل"
+            // عندما يكون الحلاق مشغولاً: تفعيل شارة "مشغول"
             if (lastTimestamp && (currentServerTime - lastTimestamp < 1200000)) {
                 nextAvailableTime = lastTimestamp + 1200000;
                 
@@ -467,11 +485,6 @@
                 if(targetBadge) {
                     targetBadge.innerText = "مشغول 🔴";
                     targetBadge.className = "barber-status busy";
-                }
-
-                let targetDetailsBtn = document.getElementById('btn-details-' + busyBarberGlobal);
-                if(targetDetailsBtn) {
-                    targetDetailsBtn.style.display = "inline-block";
                 }
 
                 startBarberCardCountdown(nextAvailableTime, busyBarberGlobal);
@@ -492,9 +505,6 @@
                 clearInterval(countdownInterval);
                 let targetCountdownBox = document.getElementById('inner-countdown-' + barberName);
                 if(targetCountdownBox) targetCountdownBox.style.display = "none";
-                
-                let targetDetailsBtn = document.getElementById('btn-details-' + barberName);
-                if(targetDetailsBtn) targetDetailsBtn.style.display = "none";
 
                 let targetBadge = document.getElementById('badge-' + barberName);
                 if(targetBadge) {
@@ -550,7 +560,7 @@
             booking_time: selectedTimeForUser,
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
-            alert(`👑 نعيماً مقدماً يا ملك! تم تأكيد حجزك بنجاح عند الحلاق ${selectedBarberName}.\n⏰ الموعد: ${selectedTimeForUser}\n📱 نقبل الدفع شام كاش أو كاش.`);
+            alert(`👑 نعيماً مقدماً يا ملك! تم تأكيد حجزك بنجاح عند الحلاق ${selectedBarberName}.\n⏰ الموعد: ${selectedTimeForUser}\n📱 متوفر الدفع عبر شام كاش.`);
             document.getElementById('bookingForm').reset();
             document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
             selectedTimeForUser = "فوري";
@@ -567,3 +577,4 @@
 </script>
 </body>
 </html>
+
