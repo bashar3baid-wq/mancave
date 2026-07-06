@@ -23,35 +23,41 @@
         h1 { text-align: center; color: var(--accent-gold); font-size: 28px; font-weight: 900; margin-bottom: 5px; }
         .subtitle { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
         
-        /* لوحة حالة الصالون والعد التنازلي */
         .status-panel { background: rgba(212,175,55,0.05); border: 1px dashed var(--accent-gold); padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 25px; }
         .status-title { font-size: 14px; color: var(--text-muted); }
         .status-time { font-size: 20px; font-weight: bold; color: var(--accent-green); margin-top: 5px; }
         .countdown { font-size: 24px; font-weight: 900; color: #e74c3c; margin-top: 5px; letter-spacing: 1px; }
 
-        label { display: block; margin: 15px 0 5px; font-weight: 600; color: var(--accent-gold); font-size: 15px; }
-        input, select { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid #233554; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
-        input:focus, select:focus { border-color: var(--accent-gold); }
+        label { display: block; margin: 20px 0 8px; font-weight: 600; color: var(--accent-gold); font-size: 16px; border-right: 3px solid var(--accent-gold); padding-right: 8px; }
+        input { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid #233554; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--accent-gold); }
         
-        /* تصميم الخدمات (اختيار متعدد) */
-        .services-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 5px; }
+        /* تصميم بطاقات الحلاقين الظاهرة في الواجهة */
+        .barbers-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
+        .barber-card { background: #0b0f19; padding: 15px; border-radius: 12px; border: 1px solid #233554; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; position: relative; }
+        .barber-card:hover { border-color: rgba(212,175,55,0.5); }
+        .barber-card.selected { border-color: var(--accent-gold); background: rgba(212,175,55,0.08); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+        .barber-header { display: flex; justify-content: space-between; align-items: center; }
+        .barber-name { font-weight: bold; font-size: 16px; color: #fff; }
+        .barber-badge { font-size: 11px; background: var(--accent-gold); color: #0b0f19; padding: 2px 8px; border-radius: 20px; font-weight: bold; }
+        .barber-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 18px; }
+
+        /* تصميم الخدمات */
+        .services-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
         .service-item { display: flex; align-items: center; justify-content: space-between; background: #0b0f19; padding: 12px 15px; border-radius: 10px; border: 1px solid #233554; cursor: pointer; transition: 0.2s; }
-        .service-item input[type="checkbox"] { width: auto; margin-left: 10px; transform: scale(1.2); cursor: pointer; }
+        .service-item input[type="checkbox"] { display: none; }
         .service-item.selected { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); }
-        .service-info { display: flex; flex-direction: column; }
         .service-price { color: var(--accent-gold); font-weight: bold; font-size: 14px; }
 
         .total-box { margin-top: 20px; padding: 15px; background: #0b0f19; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent-gold); }
-        .total-title { font-weight: bold; font-size: 16px; }
         .total-amount { font-size: 20px; font-weight: 900; color: var(--accent-gold); }
 
         button { width: 100%; padding: 15px; background: linear-gradient(45deg, #d4af37, #aa841b); border: none; border-radius: 12px; color: #0b0f19; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
         button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212,175,55,0.3); }
-        button:disabled { background: #555; color: #888; cursor: not-allowed; transform: none; box-shadow: none; }
+        button:disabled { background: #555; color: #888; cursor: not-allowed; }
 
         footer { text-align: center; margin-top: 30px; font-size: 12px; color: var(--text-muted); line-height: 20px; }
         footer a { color: var(--accent-gold); text-decoration: none; font-weight: bold; }
-        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -62,76 +68,91 @@
 
     <div class="status-panel">
         <div id="statusLabel" class="status-title">حالة الحجوزات الحالية:</div>
-        <div id="statusValue" class="status-time">الصالون متاح فوراً لم يسبقك أحد مسبقاً!</div>
+        <div id="statusValue" class="status-time">جاري التحقق من المواعيد...</div>
         <div id="countdownDisplay" class="countdown" style="display: none;">00:00</div>
     </div>
 
     <form id="bookingForm" onsubmit="confirmAndSend(event)">
-        <label>اختر الحلاق المفضّل:</label>
-        <select id="barberSelect" required>
-            <option value="بشار">بشار</option>
-            <option value="محمد ابو غياث">محمد ابو غياث</option>
-            <option value="محمد ابو علي">محمد ابو علي</option>
-            <option value="يزن">يزن</option>
-            <option value="معاذ">معاذ</option>
-        </select>
+        
+        <label>اختر الحلاق المفضل لديك:</label>
+        <div class="barbers-grid" id="barbersGroup">
+            <div class="barber-card selected" onclick="selectBarber(this, 'بشار')">
+                <div class="barber-header">
+                    <span class="barber-name">✂️ الحلاق بشار</span>
+                    <span class="barber-badge">موصى به</span>
+                </div>
+                <div class="barber-desc">صاحب اللمسات السحرية، خبير في أحدث القصات العالمية وتحديد اللحية بدقة متناهية تناسب ملامح وجهك.</div>
+            </div>
+            <div class="barber-card" onclick="selectBarber(this, 'محمد ابو غياث')">
+                <div class="barber-header">
+                    <span class="barber-name">✂️ محمد ابو غياث</span>
+                    <span class="barber-badge">خبير</span>
+                </div>
+                <div class="barber-desc">فنان السشوار والتصفيف المودرن، يمتلك خبرة طويلة في العناية بالشعر وجعل مظهرك يبدو ملكياً وجذاباً.</div>
+            </div>
+            <div class="barber-card" onclick="selectBarber(this, 'محمد ابو علي')">
+                <div class="barber-header">
+                    <span class="barber-name">✂️ محمد ابو علي</span>
+                    <span class="barber-badge">كلاسيك</span>
+                </div>
+                <div class="barber-desc">أستاذ القصات الكلاسيكية وتجهيز العرسان الفخم، دقة وسرعة واحترافية عالية تجعلك في أيدٍ أمينة.</div>
+            </div>
+            <div class="barber-card" onclick="selectBarber(this, 'يزن')">
+                <div class="barber-header">
+                    <span class="barber-name">✂️ الحلاق يزن</span>
+                    <span class="barber-badge">مبدع</span>
+                </div>
+                <div class="barber-desc">مبدع في قصات الشباب الـ Fade والـ المودرن، وخبير العناية بالبشرة والماسكات المغذية لإطلالة مشرقة.</div>
+            </div>
+            <div class="barber-card" onclick="selectBarber(this, 'معاذ')">
+                <div class="barber-header">
+                    <span class="barber-name">✂️ الحلاق معاذ</span>
+                    <span class="barber-badge">أخصائي</span>
+                </div>
+                <div class="barber-desc">المتخصص في علاجات البروتين الفعالة وفرد الشعر بأمان، يمنح شعرك الحيوية والنعومة التي تبحث عنها.</div>
+            </div>
+        </div>
 
-        <label>الخدمات المطلوبة (يمكنك اختيار أكثر من خدمة):</label>
+        <label>الخدمات المطلوبة (يمكنك اختيار خدمات متعددة):</label>
         <div class="services-grid">
             <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>حلاقة شعر</span>
-                    <span class="service-price">300 ل.س</span>
-                </div>
+                <div class="service-info"><span>حلاقة شعر</span></div>
+                <span class="service-price">300 ل.س</span>
                 <input type="checkbox" value="حلاقة شعر" data-price="300">
             </div>
             <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>حلاقة ذقن</span>
-                    <span class="service-price">300 ل.س</span>
-                </div>
+                <div class="service-info"><span>حلاقة ذقن</span></div>
+                <span class="service-price">300 ل.س</span>
                 <input type="checkbox" value="حلاقة ذقن" data-price="300">
             </div>
             <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>حلاقة شعر وذقن</span>
-                    <span class="service-price">500 ل.س</span>
-                </div>
+                <div class="service-info"><span>حلاقة شعر وذقن</span></div>
+                <span class="service-price">500 ل.س</span>
                 <input type="checkbox" value="حلاقة شعر وذقن" data-price="500">
             </div>
             <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>سشوار وتصفيف شعر</span>
-                    <span class="service-price">300 ل.س</span>
-                </div>
+                <div class="service-info"><span>سشوار وتصفيف شعر</span></div>
+                <span class="service-price">300 ل.س</span>
                 <input type="checkbox" value="سشوار وتصفيف شعر" data-price="300">
             </div>
             <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>شمع للوجه</span>
-                    <span class="service-price">150 ل.س</span>
-                </div>
+                <div class="service-info"><span>شمع</span></div>
+                <span class="service-price">150 ل.س</span>
                 <input type="checkbox" value="شمع" data-price="150">
             </div>
             <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>تنظيف بشرة احترافي</span>
-                    <span class="service-price">300 ل.س</span>
-                </div>
+                <div class="service-info"><span>تنظيف بشرة</span></div>
+                <span class="service-price">300 ل.س</span>
                 <input type="checkbox" value="تنظيف بشرة" data-price="300">
             </div>
             <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>ماسك مغذي</span>
-                    <span class="service-price">150 ل.س</span>
-                </div>
+                <div class="service-info"><span>ماسك</span></div>
+                <span class="service-price">150 ل.س</span>
                 <input type="checkbox" value="ماسك" data-price="150">
             </div>
             <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>بروتين معالج للشعر (حسب الطول)</span>
-                    <span class="service-price">يبدأ من 1500 ل.س</span>
-                </div>
+                <div class="service-info"><span>بروتين (يبدأ من 1500 ل.س حسب الطول)</span></div>
+                <span class="service-price">1500 ل.س</span>
                 <input type="checkbox" value="بروتين" data-price="1500">
             </div>
         </div>
@@ -142,9 +163,9 @@
         </div>
 
         <label>اسم الزبون:</label>
-        <input type="text" id="customerName" placeholder="اكتب اسمك الكامل هنا" required>
+        <input type="text" id="customerName" placeholder="اكتب اسمك الكامل" required>
 
-        <label>رقم الهاتف للـتأكيد:</label>
+        <label>رقم الهاتف:</label>
         <input type="tel" id="customerPhone" placeholder="09xxxxxxxx" required>
 
         <button type="submit" id="btnSubmit">تأكيد حجز الموعد الفوري</button>
@@ -157,17 +178,23 @@
 </div>
 
 <script>
-    // ⚠️ ضع إعدادات الفايربيس الخاصة بـ صالونك هنا ليعمل بنجاح
+    // ⚠️ استبدل هذا الرابط برابط قاعدة بيانات الفايربيس الحقيقية والمفعّلة لديك
     const firebaseConfig = {
-        databaseURL: "https://YOUR_DATABASE_NAME.firebaseio.com"
+        databaseURL: "https://YOUR_DATABASE_NAME.firebaseio.com" 
     };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
+    let selectedBarberName = "بشار"; 
     let nextAvailableTime = 0; 
     let selectedTimeForUser = "";
 
-    // منطق اختيار الخدمات التفاعلي وتجميع السعر الإجمالي
+    function selectBarber(element, name) {
+        document.querySelectorAll('.barber-card').forEach(card => card.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedBarberName = name;
+    }
+
     function toggleService(element) {
         const checkbox = element.querySelector('input[type="checkbox"]');
         checkbox.checked = !checkbox.checked;
@@ -183,14 +210,13 @@
         document.getElementById('totalDisplay').innerText = total + " ل.س";
     }
 
-    // جلب آخر حجز من الفايربيس لحساب الـ 20 دقيقة والعد التنازلي المباشر للكل
     database.ref('barber_bookings').orderByChild('timestamp').limitToLast(1).on('value', snapshot => {
         if (snapshot.exists()) {
-            let lastBooking = Object.values(snapshot.val())[0];
+            let keys = Object.keys(snapshot.val());
+            let lastBooking = snapshot.val()[keys[0]];
             let lastTimestamp = lastBooking.timestamp;
             let currentServerTime = Date.now();
             
-            // حساب الفارق، إذا كان آخر حجز مر عليه أقل من 20 دقيقة (1200000 مللي ثانية)
             if (currentServerTime - lastTimestamp < 1200000) {
                 nextAvailableTime = lastTimestamp + 1200000;
                 startCountdown(nextAvailableTime);
@@ -205,7 +231,7 @@
     function resetStatusToAvailable() {
         nextAvailableTime = Date.now();
         document.getElementById('statusLabel').innerText = "حالة الحجوزات الحالية:";
-        document.getElementById('statusValue').innerText = "الصالون متاح فوراً! احجز الآن لتأتي مباشرة.";
+        document.getElementById('statusValue').innerText = "الصالون متاح فوراً لم يسبقك أحد مسبقاً!";
         document.getElementById('statusValue').style.color = "#2ecc71";
         document.getElementById('countdownDisplay').style.display = "none";
         let now = new Date();
@@ -213,7 +239,7 @@
     }
 
     function startCountdown(targetTime) {
-        document.getElementById('statusLabel').innerText = "الصالون مشغول حالياً! يمكنك الحجز وموعد حضورك سيكون بعد:";
+        document.getElementById('statusLabel').innerText = "الصالون مشغول! موعد حضورك المتاح سيكون بعد:";
         document.getElementById('countdownDisplay').style.display = "block";
         document.getElementById('statusValue').style.color = "#e74c3c";
 
@@ -238,13 +264,11 @@
         }, 1000);
     }
 
-    // إرسال البيانات المحدثة لقاعدة البيانات والسكيتشور
     function confirmAndSend(event) {
         event.preventDefault();
         
-        let name = document.getElementById('customerName').value;
-        let phone = document.getElementById('customerPhone').value;
-        let barber = document.getElementById('barberSelect').value;
+        let name = document.getElementById('customerName').value.trim();
+        let phone = document.getElementById('customerPhone').value.trim();
         
         let selectedServices = [];
         document.querySelectorAll('.services-grid input:checked').forEach(cb => {
@@ -257,24 +281,26 @@
         }
 
         document.getElementById('btnSubmit').disabled = true;
+        document.getElementById('btnSubmit').innerText = "جاري إرسال حجزك...";
 
-        // إرسال الداتا للفايربيس
         database.ref('barber_bookings').push({
             customer_name: name,
             customer_phone: phone,
-            barber_name: barber,
+            barber_name: selectedBarberName,
             service_type: selectedServices.join(" + "),
             booking_time: selectedTimeForUser,
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
-            alert("👑 تم تأكيد حجزك في صالون الملك بنجاح! موعد حضورك: " + selectedTimeForUser);
+            alert("👑 تم تأكيد حجزك بنجاح في صالون الملك! موعد حضورك: " + selectedTimeForUser);
             document.getElementById('bookingForm').reset();
             document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
             calculateTotal();
             document.getElementById('btnSubmit').disabled = false;
+            document.getElementById('btnSubmit').innerText = "تأكيد حجز الموعد الفوري";
         }).catch(err => {
             alert("خطأ أثناء الإرسال: " + err.message);
             document.getElementById('btnSubmit').disabled = false;
+            document.getElementById('btnSubmit').innerText = "تأكيد حجز الموعد الفوري";
         });
     }
 </script>
