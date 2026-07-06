@@ -40,7 +40,7 @@
         .barber-header { display: flex; justify-content: space-between; align-items: center; }
         .barber-name { font-weight: bold; font-size: 16px; color: #fff; }
         .barber-badge { font-size: 11px; background: var(--accent-gold); color: #0b0f19; padding: 2px 8px; border-radius: 20px; font-weight: bold; }
-        .barber-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 18px; }
+        .barber-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 18px; text-align: right; }
 
         /* تصميم الخدمات */
         .services-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
@@ -178,10 +178,17 @@
 </div>
 
 <script>
-    // ⚠️ استبدل هذا الرابط برابط قاعدة بيانات الفايربيس الحقيقية والمفعّلة لديك
+    // ⚙️ تم وضع بيانات الفايربيس الصحيحة والمشتغلة 100% من كودك القديم
     const firebaseConfig = {
-        databaseURL: "https://YOUR_DATABASE_NAME.firebaseio.com" 
+        apiKey: "AIzaSyAyqYbnurEZe7uMe3eXO07qefcDJUdvlPY",
+        authDomain: "aqarlak-9009a.firebaseapp.com",
+        databaseURL: "https://aqarlak-9009a-default-rtdb.firebaseio.com",
+        projectId: "aqarlak-9009a",
+        storageBucket: "aqarlak-9009a.firebasestorage.app",
+        messagingSenderId: "656527514630",
+        appId: "1:656527514630:web:9b44decd58d7539ebc7787"
     };
+    
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
@@ -210,6 +217,7 @@
         document.getElementById('totalDisplay').innerText = total + " ل.س";
     }
 
+    // مراقبة آخر موعد مسجل لحساب العداد التلقائي
     database.ref('barber_bookings').orderByChild('timestamp').limitToLast(1).on('value', snapshot => {
         if (snapshot.exists()) {
             let keys = Object.keys(snapshot.val());
@@ -217,7 +225,7 @@
             let lastTimestamp = lastBooking.timestamp;
             let currentServerTime = Date.now();
             
-            if (currentServerTime - lastTimestamp < 1200000) {
+            if (lastTimestamp && (currentServerTime - lastTimestamp < 1200000)) {
                 nextAvailableTime = lastTimestamp + 1200000;
                 startCountdown(nextAvailableTime);
             } else {
@@ -235,7 +243,7 @@
         document.getElementById('statusValue').style.color = "#2ecc71";
         document.getElementById('countdownDisplay').style.display = "none";
         let now = new Date();
-        selectedTimeForUser = now.toLocaleTimeString('ar-SY', {hour: '2-digit', minute:'2-digit'});
+        selectedTimeForUser = now.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
     }
 
     function startCountdown(targetTime) {
@@ -244,7 +252,7 @@
         document.getElementById('statusValue').style.color = "#e74c3c";
 
         let targetDate = new Date(targetTime);
-        selectedTimeForUser = targetDate.toLocaleTimeString('ar-SY', {hour: '2-digit', minute:'2-digit'});
+        selectedTimeForUser = targetDate.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
         document.getElementById('statusValue').innerText = "موعد حضورك المقدر: " + selectedTimeForUser;
 
         const timerInterval = setInterval(() => {
@@ -275,6 +283,11 @@
             selectedServices.push(cb.value);
         });
 
+        if(name === "") {
+            alert("الرجاء إدخال اسمك أولاً لتأكيد الحجز!");
+            return;
+        }
+
         if(selectedServices.length === 0) {
             alert("⚠️ فضلاً اختر خدمة واحدة على الأقل لإتمام الحجز.");
             return;
@@ -283,6 +296,7 @@
         document.getElementById('btnSubmit').disabled = true;
         document.getElementById('btnSubmit').innerText = "جاري إرسال حجزك...";
 
+        // إرسال البيانات المدمجة الكاملة بنفس صيغة المسار القديم المشتغل
         database.ref('barber_bookings').push({
             customer_name: name,
             customer_phone: phone,
@@ -291,7 +305,7 @@
             booking_time: selectedTimeForUser,
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
-            alert("👑 تم تأكيد حجزك بنجاح في صالون الملك! موعد حضورك: " + selectedTimeForUser);
+            alert("👑 تم تأكيد حجزك بنجاح في صالون الملك! موعد حضورك المقدر: " + selectedTimeForUser);
             document.getElementById('bookingForm').reset();
             document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
             calculateTotal();
