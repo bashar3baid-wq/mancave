@@ -24,20 +24,17 @@
         h1 { text-align: center; color: var(--accent-gold); font-size: 28px; font-weight: 900; margin-bottom: 5px; }
         .subtitle { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
         
-        .welcome-box { background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(21,31,50,0.5)); border: 1px solid var(--accent-gold); padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 20px; color: #fff; font-size: 14px; line-height: 22px; }
+        .shop-status-wrapper { text-align: center; margin-bottom: 15px; }
+        .shop-status-tag { display: inline-flex; align-items: center; gap: 6px; font-weight: bold; padding: 5px 15px; border-radius: 20px; font-size: 13px; }
+        .shop-open { background: rgba(46, 204, 113, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .shop-closed { background: rgba(231, 76, 60, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+
+        .welcome-box { background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(21,31,50,0.5)); border: 1px solid var(--accent-gold); padding: 12px; border-radius: 12px; text-align: center; margin-bottom: 20px; color: #fff; font-size: 13px; line-height: 20px; }
         
-        .status-panel { background: rgba(212,175,55,0.05); border: 1px dashed var(--accent-gold); padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 25px; }
-        .status-title { font-size: 14px; color: var(--text-muted); }
-        .status-time { font-size: 20px; font-weight: bold; color: var(--accent-green); margin-top: 5px; }
-        .countdown { font-size: 24px; font-weight: 900; color: var(--accent-red); margin-top: 5px; letter-spacing: 1px; }
-
-        .working-hours { font-size: 12px; color: var(--accent-gold); margin-top: 5px; font-weight: bold; }
-
         label { display: block; margin: 20px 0 8px; font-weight: 600; color: var(--accent-gold); font-size: 16px; border-right: 3px solid var(--accent-gold); padding-right: 8px; }
         input, select { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid #233554; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
-        input:focus, select:focus { border-color: var(--accent-gold); }
+        input:focus { border-color: var(--accent-gold); }
         
-        /* تصميم بطاقات الحلاقين الظاهرة في الواجهة */
         .barbers-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
         .barber-card { background: #0b0f19; padding: 15px; border-radius: 12px; border: 1px solid #233554; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; position: relative; }
         .barber-card:hover { border-color: rgba(212,175,55,0.5); }
@@ -51,7 +48,22 @@
         .barber-status.busy { background: rgba(231, 76, 60, 0.2); color: var(--accent-red); }
         .barber-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 18px; text-align: right; }
 
-        /* تصميم الخدمات */
+        /* زر التفاصيل الصغير الأنيق */
+        .details-btn { font-size: 11px; background: #233554; color: #fff; border: 1px solid #34495e; padding: 2px 8px; border-radius: 5px; cursor: pointer; margin-right: 5px; display: none; font-weight: bold; }
+        .details-btn:hover { background: var(--accent-gold); color: #0b0f19; }
+
+        /* حاوية تفاصيل العداد المنسدلة عند الضغط */
+        .inner-countdown-box { background: rgba(231, 76, 60, 0.08); border: 1px dashed var(--accent-red); padding: 12px; border-radius: 8px; margin-top: 10px; font-size: 12px; display: none; text-align: right; line-height: 22px; }
+        .inner-countdown-box .salon-title-bold { font-weight: 900; font-size: 14px; color: var(--accent-gold); display: block; margin-bottom: 5px; text-align: center; }
+        .inner-countdown-box .countdown-msg { color: #ffffff; }
+        .inner-countdown-box .countdown-timer { font-size: 16px; font-weight: 900; color: var(--accent-red); margin: 5px 0; text-align: center; letter-spacing: 0.5px; }
+
+        .modern-time-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 8px; margin-top: 10px; }
+        .time-slot-item { background: #0b0f19; border: 1px solid #233554; padding: 10px 5px; border-radius: 8px; text-align: center; font-size: 13px; color: #fff; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .time-slot-item:hover:not(.unavailable):not(.selected) { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); }
+        .time-slot-item.selected { background: var(--accent-gold); color: #0b0f19; border-color: var(--accent-gold); }
+        .time-slot-item.unavailable { background: rgba(231, 76, 60, 0.08); border-color: rgba(231, 76, 60, 0.2); color: #5c6b82; cursor: not-allowed; text-decoration: line-through; }
+
         .services-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
         .service-item { display: flex; align-items: center; justify-content: space-between; background: #0b0f19; padding: 12px 15px; border-radius: 10px; border: 1px solid #233554; cursor: pointer; transition: 0.2s; }
         .service-item input[type="checkbox"] { display: none; }
@@ -63,6 +75,9 @@
 
         .payment-method { margin-top: 15px; background: rgba(212,175,55,0.02); border: 1px solid #233554; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
         .sham-badge { background: #2980b9; color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 5px; font-weight: bold; }
+
+        .salon-location-box { margin-top: 15px; background: #111b2b; border: 1px solid #233554; border-right: 4px solid #3498db; padding: 12px 15px; border-radius: 10px; font-size: 13px; line-height: 20px; }
+        .location-header { font-weight: bold; color: #3498db; margin-bottom: 2px; display: flex; align-items: center; gap: 5px; }
 
         button { width: 100%; padding: 15px; background: linear-gradient(45deg, #d4af37, #aa841b); border: none; border-radius: 12px; color: #0b0f19; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
         button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212,175,55,0.3); }
@@ -78,70 +93,132 @@
     <h1>👑 صالون الملك 👑</h1>
     <div class="subtitle">احجز دورك إلكترونياً وتجنب الانتظار</div>
 
-    <div class="welcome-box">
-        ✨ أهلاً بك في فضاء الأناقة الملكية.. حيث نهتم بأدق تفاصيل إطلالتك لتغادرنا كالملك. حجزك الإلكتروني يضمن لك الأولوية التامة ووقتك الثمين محل تقديرنا دائماً! ✨
+    <div class="shop-status-wrapper">
+        <span id="shopStatusIndicator" class="shop-status-tag shop-open">جاري التحقق...</span>
     </div>
 
-    <div class="status-panel">
-        <div id="statusLabel" class="status-title">حالة الحجوزات الحالية:</div>
-        <div id="statusValue" class="status-time">جاري التحقق من المواعيد...</div>
-        <div id="countdownDisplay" class="countdown" style="display: none;">00:00</div>
-        <div class="working-hours">⏰ أوقات العمل الرسمية: من الساعة 9:00 صباحاً وحتى 9:00 مساءً</div>
+    <div class="welcome-box">
+        ✨ أهلاً بك في صالون الملك.. حجزك الإلكتروني يضمن لك الأولوية التامة ووقتك الثمين محل تقديرنا دائماً! ✨
     </div>
 
     <form id="bookingForm" onsubmit="confirmAndSend(event)">
         
         <label>اختر الحلاق المفضل لديك:</label>
         <div class="barbers-grid" id="barbersGroup">
+            
+            <!-- الحلاق بشار -->
             <div class="barber-card selected" id="barber-بشار" onclick="selectBarber(this, 'بشار')">
                 <div class="barber-header">
                     <span class="barber-name">✂️ الحلاق بشار</span>
                     <div class="barber-meta">
+                        <button type="button" id="btn-details-بشار" class="details-btn" onclick="toggleDetailsContainer(event, 'بشار')">تفاصيل</button>
                         <span class="barber-badge">موصى به</span>
                         <span id="badge-بشار" class="barber-status available">متوفر الحجز 🟢</span>
                     </div>
                 </div>
                 <div class="barber-desc">صاحب اللمسات السحرية، خبير في أحدث القصات العالمية وتحديد اللحية بدقة متناهية تناسب ملامح وجهك.</div>
+                
+                <div id="inner-countdown-بشار" class="inner-countdown-box" onclick="event.stopPropagation();">
+                    <span class="salon-title-bold">👑 صالون الملك 👑</span>
+                    <div class="countdown-msg">⏳ العداد التنازلي:</div>
+                    <div id="timer-val-بشار" class="countdown-timer">00:00</div>
+                    <div class="countdown-msg">• يمكنك حجز موعدك بعد الدقائق المتبقية بالعداد التنازلي أعلاه.</div>
+                    <div class="countdown-msg">• يمكنك حجز موعدك الآن لنتواصل معك بعد انتهاء الحجز الحالي.</div>
+                    <div class="countdown-msg">• أو حجز الموعد في الوقت الذي يناسبك من الجدول بالأسفل.</div>
+                    <div class="countdown-msg" style="font-weight: bold; color: var(--accent-green); margin-top: 4px; text-align: center;">شكراً لصبركم.. احجز موعدك الآن سنتواصل معك في أسرع وقت!</div>
+                </div>
             </div>
+            
+            <!-- محمد ابو غياث -->
             <div class="barber-card" id="barber-محمد ابو غياث" onclick="selectBarber(this, 'محمد ابو غياث')">
                 <div class="barber-header">
                     <span class="barber-name">✂️ محمد ابو غياث</span>
                     <div class="barber-meta">
+                        <button type="button" id="btn-details-محمد ابو غياث" class="details-btn" onclick="toggleDetailsContainer(event, 'محمد ابو غياث')">تفاصيل</button>
                         <span class="barber-badge">خبير</span>
                         <span id="badge-محمد ابو غياث" class="barber-status available">متوفر الحجز 🟢</span>
                     </div>
                 </div>
                 <div class="barber-desc">فنان السشوار والتصفيف المودرن، يمتلك خبرة طويلة في العناية بالشعر وجعل مظهرك يبدو ملكياً وجذاباً.</div>
+                
+                <div id="inner-countdown-محمد ابو غياث" class="inner-countdown-box" onclick="event.stopPropagation();">
+                    <span class="salon-title-bold">👑 صالون الملك 👑</span>
+                    <div class="countdown-msg">⏳ العداد التنازلي:</div>
+                    <div id="timer-val-محمد ابو غياث" class="countdown-timer">00:00</div>
+                    <div class="countdown-msg">• يمكنك حجز موعدك بعد الدقائق المتبقية بالعداد التنازلي أعلاه.</div>
+                    <div class="countdown-msg">• يمكنك حجز موعدك الآن لنتواصل معك بعد انتهاء الحجز الحالي.</div>
+                    <div class="countdown-msg">• أو حجز الموعد في الوقت الذي يناسبك من الجدول بالأسفل.</div>
+                    <div class="countdown-msg" style="font-weight: bold; color: var(--accent-green); margin-top: 4px; text-align: center;">شكراً لصبركم.. احجز موعدك الآن سنتواصل معك في أسرع وقت!</div>
+                </div>
             </div>
+            
+            <!-- محمد ابو علي -->
             <div class="barber-card" id="barber-محمد ابو علي" onclick="selectBarber(this, 'محمد ابو علي')">
                 <div class="barber-header">
                     <span class="barber-name">✂️ محمد ابو علي</span>
                     <div class="barber-meta">
+                        <button type="button" id="btn-details-محمد ابو علي" class="details-btn" onclick="toggleDetailsContainer(event, 'محمد ابو علي')">تفاصيل</button>
                         <span class="barber-badge">كلاسيك</span>
                         <span id="badge-محمد ابو علي" class="barber-status available">متوفر الحجز 🟢</span>
                     </div>
                 </div>
                 <div class="barber-desc">أستاذ القصات الكلاسيكية وتجهيز العرسان الفخم، دقة وسرعة وااحترافية عالية تجعلك في أيدٍ أمينة.</div>
+                
+                <div id="inner-countdown-محمد ابو علي" class="inner-countdown-box" onclick="event.stopPropagation();">
+                    <span class="salon-title-bold">👑 صالون الملك 👑</span>
+                    <div class="countdown-msg">⏳ العداد التنازلي:</div>
+                    <div id="timer-val-محمد ابو علي" class="countdown-timer">00:00</div>
+                    <div class="countdown-msg">• يمكنك حجز موعدك بعد الدقائق المتبقية بالعداد التنازلي أعلاه.</div>
+                    <div class="countdown-msg">• يمكنك حجز موعدك الآن لنتواصل معك بعد انتهاء الحجز الحالي.</div>
+                    <div class="countdown-msg">• أو حجز الموعد في الوقت الذي يناسبك من الجدول بالأسفل.</div>
+                    <div class="countdown-msg" style="font-weight: bold; color: var(--accent-green); margin-top: 4px; text-align: center;">شكراً لصبركم.. احجز موعدك الآن سنتواصل معك في أسرع وقت!</div>
+                </div>
             </div>
+            
+            <!-- يزن -->
             <div class="barber-card" id="barber-يزن" onclick="selectBarber(this, 'يزن')">
                 <div class="barber-header">
                     <span class="barber-name">✂️ الحلاق يزن</span>
                     <div class="barber-meta">
+                        <button type="button" id="btn-details-يزن" class="details-btn" onclick="toggleDetailsContainer(event, 'يزن')">تفاصيل</button>
                         <span class="barber-badge">مبدع</span>
                         <span id="badge-يزن" class="barber-status available">متوفر الحجز 🟢</span>
                     </div>
                 </div>
                 <div class="barber-desc">مبدع في قصات الشباب الـ Fade والـ المودرن، وخبير العناية بالبشرة والماسكات المغذية لإطلالة مشرقة.</div>
+                
+                <div id="inner-countdown-يزن" class="inner-countdown-box" onclick="event.stopPropagation();">
+                    <span class="salon-title-bold">👑 صالون الملك 👑</span>
+                    <div class="countdown-msg">⏳ العداد التنازلي:</div>
+                    <div id="timer-val-يزن" class="countdown-timer">00:00</div>
+                    <div class="countdown-msg">• يمكنك حجز موعدك بعد الدقائق المتبقية بالعداد التنازلي أعلاه.</div>
+                    <div class="countdown-msg">• يمكنك حجز موعدك الآن لنتواصل معك بعد انتهاء الحجز الحالي.</div>
+                    <div class="countdown-msg">• أو حجز الموعد في الوقت الذي يناسبك من الجدول بالأسفل.</div>
+                    <div class="countdown-msg" style="font-weight: bold; color: var(--accent-green); margin-top: 4px; text-align: center;">شكراً لصبركم.. احجز موعدك الآن سنتواصل معك في أسرع وقت!</div>
+                </div>
             </div>
+            
+            <!-- معاذ -->
             <div class="barber-card" id="barber-معاذ" onclick="selectBarber(this, 'معاذ')">
                 <div class="barber-header">
                     <span class="barber-name">✂️ الحلاق معاذ</span>
                     <div class="barber-meta">
+                        <button type="button" id="btn-details-معاذ" class="details-btn" onclick="toggleDetailsContainer(event, 'معاذ')">تفاصيل</button>
                         <span class="barber-badge">أخصائي</span>
                         <span id="badge-معاذ" class="barber-status available">متوفر الحجز 🟢</span>
                     </div>
                 </div>
                 <div class="barber-desc">مخصص لعلاجات البروتين المتكاملة وفرد الشعر بأمان تام لحماية وتغذية حيوية شعرك.</div>
+                
+                <div id="inner-countdown-معاذ" class="inner-countdown-box" onclick="event.stopPropagation();">
+                    <span class="salon-title-bold">👑 صالون الملك 👑</span>
+                    <div class="countdown-msg">⏳ العداد التنازلي:</div>
+                    <div id="timer-val-معاذ" class="countdown-timer">00:00</div>
+                    <div class="countdown-msg">• يمكنك حجز موعدك بعد الدقائق المتبقية بالعداد التنازلي أعلاه.</div>
+                    <div class="countdown-msg">• يمكنك حجز موعدك الآن لنتواصل معك بعد انتهاء الحجز الحالي.</div>
+                    <div class="countdown-msg">• أو حجز الموعد في الوقت الذي يناسبك من الجدول بالأسفل.</div>
+                    <div class="countdown-msg" style="font-weight: bold; color: var(--accent-green); margin-top: 4px; text-align: center;">شكراً لصبركم.. احجز موعدك الآن سنت معك في أسرع وقت!</div>
+                </div>
             </div>
         </div>
 
@@ -197,19 +274,21 @@
         <div class="payment-method">
             <span>💳 طرق الدفع المتوفرة داخل الصالون:</span>
             <div>
-                <span style="font-size: 12px; margin-left: 5px;">كاش</span>
-                <span class="sham-badge">شام كاش - Sham Cash 📱</span>
+                <span style="font-size: 12px; margin-left: 5px; color: var(--text-muted);">كاش</span>
+                <span class="sham-badge">نقبل الدفع شام كاش - Sham Cash 📱</span>
             </div>
         </div>
 
+        <div class="salon-location-box">
+            <div class="location-header">📍 موقع الصالون:</div>
+            <div>دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">مدخل الصالون: أول شارع رامي ع اليمين</div>
+        </div>
+
         <label>تحديد وقت الموعد المفضل 📅:</label>
-        <select id="bookingTimeSlot" required>
-            <option value="فوري">أقرب موعد متاح تلقائياً (فوري)</option>
-            <option value="09:00 ص - 11:00 ص">الفترة الصباحية (09:00 ص - 11:00 ص)</option>
-            <option value="11:00 ص - 02:00 ظ">فترة الظهر (11:00 ص - 02:00 ظ)</option>
-            <option value="02:00 ظ - 05:00 م">فترة بعد الظهر (02:00 ظ - 05:00 م)</option>
-            <option value="05:00 م - 09:00 م">الفترة المسائية (05:00 م - 09:00 م)</option>
-        </select>
+        <div class="modern-time-grid" id="modernTimeGridContainer">
+            <!-- سيتم توليد المواعيد ساعة بساعة هنا عبر السكريبت وتحديث المحجوز سابقاً -->
+        </div>
 
         <label>اسم الزبون:</label>
         <input type="text" id="customerName" placeholder="اكتب اسمك الكامل" required>
@@ -242,14 +321,22 @@
 
     let selectedBarberName = "بشار"; 
     let nextAvailableTime = 0; 
-    let selectedTimeForUser = "";
-    let countdownInterval = null; // إصلاح تعليق وتداخل العداد
+    let selectedTimeForUser = "فوري";
+    let countdownInterval = null; 
+    let busyBarberGlobal = ""; 
+    let bookedSlotsList = []; 
+
+    const workingHoursSlots = [
+        "09:00 ص", "10:00 ص", "11:00 ص", "12:00 ظ", 
+        "01:00 ظ", "02:00 ظ", "03:00 م", "04:00 م", 
+        "05:00 م", "06:00 م", "07:00 م", "08:00 م"
+    ];
 
     function selectBarber(element, name) {
         document.querySelectorAll('.barber-card').forEach(card => card.classList.remove('selected'));
         element.classList.add('selected');
         selectedBarberName = name;
-        checkShopStatus(); // تحديث فوري بناءً على الوقت الحالي والحلاق المختار
+        checkShopStatus(); 
     }
 
     function toggleService(element) {
@@ -267,121 +354,168 @@
         document.getElementById('totalDisplay').innerText = total + " ل.س";
     }
 
-    // فحص أوقات العمل الرسمية وتغيير الواجهة بشكل فوري وعصري
+    // إظهار وإخفاء حاوية التفاصيل عند النقر على زر "تفاصيل"
+    function toggleDetailsContainer(event, barberName) {
+        event.stopPropagation(); // منع تداخل الحدث مع كرت الحلاق الأساسي
+        const targetBox = document.getElementById('inner-countdown-' + barberName);
+        if (targetBox) {
+            if (targetBox.style.display === "block") {
+                targetBox.style.display = "none";
+            } else {
+                targetBox.style.display = "block";
+            }
+        }
+    }
+
+    function buildModernTimeGrid() {
+        const container = document.getElementById('modernTimeGridContainer');
+        container.innerHTML = "";
+
+        const instantBtn = document.createElement('div');
+        instantBtn.className = "time-slot-item" + (selectedTimeForUser === "فوري" ? " selected" : "");
+        instantBtn.innerText = "فوري الآن";
+        instantBtn.onclick = function() { changeSelectedSlot(instantBtn, "فوري"); };
+        container.appendChild(instantBtn);
+
+        workingHoursSlots.forEach(slot => {
+            const slotBtn = document.createElement('div');
+            const isBooked = bookedSlotsList.includes(slot);
+
+            if (isBooked) {
+                slotBtn.className = "time-slot-item unavailable";
+                slotBtn.innerText = slot + " (غير متوفر)";
+            } else {
+                slotBtn.className = "time-slot-item" + (selectedTimeForUser === slot ? " selected" : "");
+                slotBtn.innerText = slot;
+                slotBtn.onclick = function() { changeSelectedSlot(slotBtn, slot); };
+            }
+            container.appendChild(slotBtn);
+        });
+    }
+
+    function changeSelectedSlot(element, timeVal) {
+        document.querySelectorAll('.time-slot-item').forEach(btn => btn.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedTimeForUser = timeVal;
+    }
+
     function checkShopStatus() {
         let now = new Date();
         let currentHour = now.getHours(); 
+        const statusIndicator = document.getElementById('shopStatusIndicator');
         
-        // الصالون يفتح من 9 صباحاً (9) حتى 9 مساءً (21)
         if (currentHour < 9 || currentHour >= 21) {
-            document.getElementById('statusLabel').innerText = "حالة الحجوزات الحالية:";
-            document.getElementById('statusValue').innerText = "غير متوفر للحجز الآن 🔒 (الصالون مغلق، يفتح الساعة 9:00 صباحاً)";
-            document.getElementById('statusValue').style.color = "#e74c3c";
-            document.getElementById('countdownDisplay').style.display = "none";
+            statusIndicator.innerText = "مغلق حالياً 🔴 (أوقات العمل من 9:00 ص إلى 9:00 م)";
+            statusIndicator.className = "shop-status-tag shop-closed";
             document.getElementById('btnSubmit').disabled = true;
             document.getElementById('btnSubmit').innerText = "الصالون مغلق حالياً";
             
-            // تحديث كافة الشارات للحلاقين
             document.querySelectorAll('.barber-status').forEach(badge => {
                 badge.innerText = "صالون مغلق 🔒";
                 badge.className = "barber-status busy";
             });
             return false;
         } else {
+            statusIndicator.innerText = "مفتوح الآن 🟢 (أوقات العمل من 9:00 ص إلى 9:00 م)";
+            statusIndicator.className = "shop-status-tag shop-open";
             document.getElementById('btnSubmit').disabled = false;
             document.getElementById('btnSubmit').innerText = "تأكيد حجز الموعد الفوري";
             return true;
         }
     }
 
-    // مراقبة الحجوزات من الفايربيس للعداد وإظهار حالة انشغال الحلاق النشط
-    database.ref('barber_bookings').orderByChild('timestamp').limitToLast(1).on('value', snapshot => {
-        // إيقاف أي عداد قديم نشط لمنع التداخل والخلل بالأرقام
+    database.ref('barber_bookings').on('value', snapshot => {
         if(countdownInterval) clearInterval(countdownInterval);
+        bookedSlotsList = []; 
 
-        if (!checkShopStatus()) return; // إذا كان مغلق توقف هنا
+        if (!checkShopStatus()) return; 
 
-        if (snapshot.exists()) {
-            let keys = Object.keys(snapshot.val());
-            let lastBooking = snapshot.val()[keys[0]];
-            let lastTimestamp = lastBooking.timestamp;
-            let currentServerTime = Date.now();
-            let busyBarber = lastBooking.barber_name;
-            
-            // إعادة تعيين جميع شارات الحلاقين إلى متوفر أولاً
-            document.querySelectorAll('.barber-status').forEach(badge => {
-                badge.innerText = "متوفر الحجز 🟢";
-                badge.className = "barber-status available";
-            });
-
-            if (lastTimestamp && (currentServerTime - lastTimestamp < 1200000)) {
-                nextAvailableTime = lastTimestamp + 1200000;
-                
-                // تحديث شارة الحلاق المحجوز حالياً ليظهر في الواجهة الرئيسية أنه مشغول
-                let targetBadge = document.getElementById('badge-' + busyBarber);
-                if(targetBadge) {
-                    targetBadge.innerText = "محجوز الآن 🔴";
-                    targetBadge.className = "barber-status busy";
-                }
-
-                startCountdown(nextAvailableTime, busyBarber);
-            } else {
-                resetStatusToAvailable();
-            }
-        } else {
-            resetStatusToAvailable();
-        }
-    });
-
-    function resetStatusToAvailable() {
-        if (!checkShopStatus()) return;
-        nextAvailableTime = Date.now();
-        document.getElementById('statusLabel').innerText = "حالة الحجوزات الحالية:";
-        document.getElementById('statusValue').innerText = "متوفر الآن للحجز 🟢 الصالون متاح فوراً لم يسبقك أحد!";
-        document.getElementById('statusValue').style.color = "#2ecc71";
-        document.getElementById('countdownDisplay').style.display = "none";
-        
-        // إعادة الحلاقين إلى وضع التوفر
+        // تصفير وتأهيل أزرار التفاصيل والشارات قبل قراءة الحجوزات الحالية
         document.querySelectorAll('.barber-status').forEach(badge => {
             badge.innerText = "متوفر الحجز 🟢";
             badge.className = "barber-status available";
         });
+        document.querySelectorAll('.details-btn').forEach(btn => {
+            btn.style.display = "none";
+        });
+        document.querySelectorAll('.inner-countdown-box').forEach(box => {
+            box.style.display = "none";
+        });
 
-        let now = new Date();
-        selectedTimeForUser = now.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
-    }
+        if (snapshot.exists()) {
+            let allBookings = snapshot.val();
+            let keys = Object.keys(allBookings);
+            
+            let lastBookingKey = keys[keys.length - 1];
+            let lastBooking = allBookings[lastBookingKey];
+            let lastTimestamp = lastBooking.timestamp;
+            let currentServerTime = Date.now();
+            busyBarberGlobal = lastBooking.barber_name;
 
-    function startCountdown(targetTime, barberName) {
-        document.getElementById('statusLabel').innerText = `الكرسي عند الحلاق (${barberName}) مشغول! لحجز موعدك المتاح المتبقي:`;
-        document.getElementById('countdownDisplay').style.display = "block";
-        document.getElementById('statusValue').style.color = "#e74c3c";
+            keys.forEach(key => {
+                let bookingItem = allBookings[key];
+                if (bookingItem.booking_time && bookingItem.booking_time !== "فوري") {
+                    bookedSlotsList.push(bookingItem.booking_time);
+                }
+            });
 
-        let targetDate = new Date(targetTime);
-        selectedTimeForUser = targetDate.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
-        document.getElementById('statusValue').innerText = "موعد حضورك المقدر المتوقع: " + selectedTimeForUser;
+            // عندما يكون الحلاق مشغولاً: تفعيل شارة "مشغول" وزر "تفاصيل"
+            if (lastTimestamp && (currentServerTime - lastTimestamp < 1200000)) {
+                nextAvailableTime = lastTimestamp + 1200000;
+                
+                let targetBadge = document.getElementById('badge-' + busyBarberGlobal);
+                if(targetBadge) {
+                    targetBadge.innerText = "مشغول 🔴";
+                    targetBadge.className = "barber-status busy";
+                }
 
-        // تشغيل عداد منظم مصلح رياضياً وبرمجياً لمنع القفز بالثواني
+                let targetDetailsBtn = document.getElementById('btn-details-' + busyBarberGlobal);
+                if(targetDetailsBtn) {
+                    targetDetailsBtn.style.display = "inline-block";
+                }
+
+                startBarberCardCountdown(nextAvailableTime, busyBarberGlobal);
+            }
+        }
+        
+        buildModernTimeGrid();
+    });
+
+    function startBarberCardCountdown(targetTime, barberName) {
+        let timerDisplayElement = document.getElementById('timer-val-' + barberName);
+
         countdownInterval = setInterval(() => {
             let now = Date.now();
             let distance = targetTime - now;
 
             if (distance < 0) {
                 clearInterval(countdownInterval);
-                resetStatusToAvailable();
+                let targetCountdownBox = document.getElementById('inner-countdown-' + barberName);
+                if(targetCountdownBox) targetCountdownBox.style.display = "none";
+                
+                let targetDetailsBtn = document.getElementById('btn-details-' + barberName);
+                if(targetDetailsBtn) targetDetailsBtn.style.display = "none";
+
+                let targetBadge = document.getElementById('badge-' + barberName);
+                if(targetBadge) {
+                    targetBadge.innerText = "متوفر الحجز 🟢";
+                    targetBadge.className = "barber-status available";
+                }
                 return;
             }
 
             let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            document.getElementById('countdownDisplay').innerText = 
-                (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+            
+            if (timerDisplayElement) {
+                timerDisplayElement.innerText = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+            }
         }, 1000);
     }
 
     function confirmAndSend(event) {
         event.preventDefault();
         
-        // إعادة فحص وقت الإغلاق عند محاولة ضغط الزر للتأكيد الإضافي
         if (!checkShopStatus()) {
             alert("عذراً، الصالون مغلق حالياً ولا يستقبل حجوزات. يرجى زيارتنا خلال أوقات العمل الرسمية.");
             return;
@@ -389,7 +523,6 @@
 
         let name = document.getElementById('customerName').value.trim();
         let phone = document.getElementById('customerPhone').value.trim();
-        let customTimeSlot = document.getElementById('bookingTimeSlot').value;
         
         let selectedServices = [];
         document.querySelectorAll('.services-grid input:checked').forEach(cb => {
@@ -406,9 +539,6 @@
             return;
         }
 
-        // تحديد الوقت النهائي المرسل بناءً على خيار العميل
-        let finalBookingTime = (customTimeSlot === "فوري") ? selectedTimeForUser : customTimeSlot;
-
         document.getElementById('btnSubmit').disabled = true;
         document.getElementById('btnSubmit').innerText = "جاري إرسال حجزك الموقر...";
 
@@ -417,23 +547,23 @@
             customer_phone: phone,
             barber_name: selectedBarberName,
             service_type: selectedServices.join(" + "),
-            booking_time: finalBookingTime,
+            booking_time: selectedTimeForUser,
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
-            alert(`👑 نعيماً مقدماً يا ملك! تم تأكيد حجزك بنجاح عند الحلاق ${selectedBarberName}.\n⏰ الموعد: ${finalBookingTime}\n📱 الدفع متوفر نقدداً أو عبر خدمة شام كاش.`);
+            alert(`👑 نعيماً مقدماً يا ملك! تم تأكيد حجزك بنجاح عند الحلاق ${selectedBarberName}.\n⏰ الموعد: ${selectedTimeForUser}\n📱 نقبل الدفع شام كاش أو كاش.`);
             document.getElementById('bookingForm').reset();
             document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
+            selectedTimeForUser = "فوري";
             calculateTotal();
-            resetStatusToAvailable();
         }).catch(err => {
             alert("خطأ أثناء الإرسال: " + err.message);
+        }).finally(() => {
             checkShopStatus();
         });
     }
     
-    // تشغيل فحص أولي للوقت فور فتح الصفحة مباشرة
     checkShopStatus();
+    buildModernTimeGrid();
 </script>
 </body>
 </html>
-
