@@ -277,7 +277,7 @@
         <label>رقم الهاتف:</label>
         <input type="tel" id="customerPhone" placeholder="09xxxxxxxx" required>
 
-        <button type="submit" id="btnSubmit">تأكيد حجز الموعد الفوري</button>
+        <button type="submit" id="btnSubmit">تأكيد حجز الموعد</button>
     </form>
 
     <footer>
@@ -302,7 +302,7 @@
 
     let selectedBarberName = "بشار"; 
     let nextAvailableTime = 0; 
-    let selectedTimeForUser = "فوري";
+    let selectedTimeForUser = "09:00 ص"; // القيمة الافتراضية بدلاً من فوري عند الإغلاق
     let countdownInterval = null; 
     let busyBarberGlobal = ""; 
     let bookedSlotsList = []; 
@@ -351,10 +351,20 @@
         const container = document.getElementById('modernTimeGridContainer');
         container.innerHTML = "";
 
+        let now = new Date();
+        let currentHour = now.getHours();
+        let isClosed = (currentHour < 9 || currentHour >= 21);
+
+        // زر فوري الآن يظهر فقط إذا كان الصالون مفتوحاً
         const instantBtn = document.createElement('div');
-        instantBtn.className = "time-slot-item" + (selectedTimeForUser === "فوري" ? " selected" : "");
-        instantBtn.innerText = "فوري الآن";
-        instantBtn.onclick = function() { changeSelectedSlot(instantBtn, "فوري"); };
+        if (isClosed) {
+            instantBtn.className = "time-slot-item unavailable";
+            instantBtn.innerText = "فوري الآن (مغلق)";
+        } else {
+            instantBtn.className = "time-slot-item" + (selectedTimeForUser === "فوري" ? " selected" : "");
+            instantBtn.innerText = "فوري الآن";
+            instantBtn.onclick = function() { changeSelectedSlot(instantBtn, "فوري"); };
+        }
         container.appendChild(instantBtn);
 
         workingHoursSlots.forEach(slot => {
@@ -385,14 +395,19 @@
         const statusIndicator = document.getElementById('shopStatusIndicator');
         
         if (currentHour < 9 || currentHour >= 21) {
-            statusIndicator.innerText = "مغلق حالياً 🔴 (أوقات العمل من 9:00 ص إلى 9:00 م)";
+            statusIndicator.innerText = "مغلق حالياً 🌙 (يمكنك حجز موعد مسبق لليوم التالي)";
             statusIndicator.className = "shop-status-tag shop-closed";
-            document.getElementById('btnSubmit').disabled = true;
-            document.getElementById('btnSubmit').innerText = "الصالون مغلق حالياً";
+            document.getElementById('btnSubmit').disabled = false; // لا نغلق الزر
+            document.getElementById('btnSubmit').innerText = "تأكيد حجز الموعد المسبق";
             
+            // إذا كان المستخدم يختار فوري وهو مغلق، نحول خياره لأول ساعة في اليوم التالي تلقائياً
+            if (selectedTimeForUser === "فوري") {
+                selectedTimeForUser = "09:00 ص";
+            }
+
             document.querySelectorAll('.barber-status').forEach(badge => {
-                badge.innerText = "مغلق 🔒";
-                badge.className = "barber-status busy";
+                badge.innerText = "متاح مسبق 📅";
+                badge.className = "barber-status available";
             });
             return false;
         } else {
@@ -408,11 +423,14 @@
         if(countdownInterval) clearInterval(countdownInterval);
         bookedSlotsList = []; 
 
-        if (!checkShopStatus()) return; 
+        checkShopStatus(); 
 
         document.querySelectorAll('.barber-status').forEach(badge => {
-            badge.innerText = "متوفر 🟢";
-            badge.className = "barber-status available";
+            let now = new Date();
+            if (now.getHours() >= 9 && now.getHours() < 21) {
+                badge.innerText = "متوفر 🟢";
+                badge.className = "barber-status available";
+            }
         });
         document.querySelectorAll('.details-btn').forEach(btn => {
             btn.style.display = "none"; 
@@ -428,7 +446,6 @@
             let lastBookingKey = keys[keys.length - 1];
             let lastBooking = allBookings[lastBookingKey];
             
-            // قراءة التحديثات بناءً على المفاتيح الجديدة المتوافقة
             let lastTimestamp = lastBooking.timestamp;
             let currentServerTime = Date.now();
             busyBarberGlobal = lastBooking.barber;
@@ -440,7 +457,9 @@
                 }
             });
 
-            if (lastTimestamp && (currentServerTime - lastTimestamp < 1200000)) {
+            // العداد التنازلي يشتغل فقط بالنهار أثناء الدوام الفعلي
+            let nowHour = new Date().getHours();
+            if (nowHour >= 9 && nowHour < 21 && lastTimestamp && (currentServerTime - lastTimestamp < 1200000)) {
                 nextAvailableTime = lastTimestamp + 1200000;
                 
                 let targetBadge = document.getElementById('badge-' + busyBarberGlobal);
@@ -496,11 +515,6 @@
     function confirmAndSend(event) {
         event.preventDefault();
         
-        if (!checkShopStatus()) {
-            alert("عذراً، الصالون مغلق حالياً ولا يستقبل حجوزات.");
-            return;
-        }
-
         let name = document.getElementById('customerName').value.trim();
         let phone = document.getElementById('customerPhone').value.trim();
         
@@ -519,27 +533,35 @@
             return;
         }
 
+        if(selectedTimeForUser === "فوري") {
+            let nowHour = new Date().getHours();
+            if (nowHour < 9 || nowHour >= 21) {
+                alert("عذراً، لا يمكن اختيار حجز فوري لأن الصالون مغلق الآن. فضلاً اختر ساعة محددة لليوم التالي.");
+                return;
+            }
+        }
+
         document.getElementById('btnSubmit').disabled = true;
         document.getElementById('btnSubmit').innerText = "جاري إرسال حجزك الموقر...";
 
-        // إرسال البيانات بالمفاتيح المطابقة لتطبيق سكيتشوير 100%
         database.ref('barber_bookings').push({
             Name: name,
             phone: phone,
             time: selectedTimeForUser,
             barber: selectedBarberName,
-            service: selectedServices.join(" + "), // إضافة حقل الخدمة المطلوبة هنا
+            service: selectedServices.join(" + "), 
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
             alert(`👑 نعيماً مقدماً يا ملك! تم تأكيد حجزك بنجاح عند الحلاق ${selectedBarberName}.\n⏰ الموعد: ${selectedTimeForUser}\n📱 متوفر الدفع عبر شام كاش.`);
             document.getElementById('bookingForm').reset();
             document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
-            selectedTimeForUser = "فوري";
+            selectedTimeForUser = "09:00 ص";
             calculateTotal();
         }).catch(err => {
             alert("خطأ أثناء الإرسال: " + err.message);
         }).finally(() => {
             checkShopStatus();
+            buildModernTimeGrid();
         });
     }
     
