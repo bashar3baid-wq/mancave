@@ -427,14 +427,16 @@
             
             let lastBookingKey = keys[keys.length - 1];
             let lastBooking = allBookings[lastBookingKey];
+            
+            // قراءة التحديثات بناءً على المفاتيح الجديدة المتوافقة
             let lastTimestamp = lastBooking.timestamp;
             let currentServerTime = Date.now();
-            busyBarberGlobal = lastBooking.barber_name;
+            busyBarberGlobal = lastBooking.barber;
 
             keys.forEach(key => {
                 let bookingItem = allBookings[key];
-                if (bookingItem.booking_time && bookingItem.booking_time !== "فوري") {
-                    bookedSlotsList.push(bookingItem.booking_time);
+                if (bookingItem.time && bookingItem.time !== "فوري") {
+                    bookedSlotsList.push(bookingItem.time);
                 }
             });
 
@@ -449,7 +451,7 @@
 
                 let targetDetailsBtn = document.getElementById('btn-details-' + busyBarberGlobal);
                 if(targetDetailsBtn) {
-                    targetDetailsBtn.style.display = "block"; // تم إصلاح التكرار البرمجي هنا
+                    targetDetailsBtn.style.display = "block";
                 }
 
                 startBarberCardCountdown(nextAvailableTime, busyBarberGlobal);
@@ -508,7 +510,7 @@
         });
 
         if(name === "") {
-            alert("الرجاء إدخل اسمك أولاً لتأكيد الحجز!");
+            alert("الرجاء إدخال اسمك أولاً لتأكيد الحجز!");
             return;
         }
 
@@ -520,13 +522,13 @@
         document.getElementById('btnSubmit').disabled = true;
         document.getElementById('btnSubmit').innerText = "جاري إرسال حجزك الموقر...";
 
-        // تم تعديل أسماء المفاتيح هنا لتطابق سكيتشوير تماماً
+        // إرسال البيانات بالمفاتيح المطابقة لتطبيق سكيتشوير 100%
         database.ref('barber_bookings').push({
-            name: name,          // تم تعديلها من customer_name
-            phone: phone,        // تم تعديلها من customer_phone
-            barber: selectedBarberName, // تم تعديلها من barber_name
-            service_type: selectedServices.join(" + "),
-            time: selectedTimeForUser,  // تم تعديلها من booking_time
+            Name: name,
+            phone: phone,
+            time: selectedTimeForUser,
+            barber: selectedBarberName,
+            service: selectedServices.join(" + "), // إضافة حقل الخدمة المطلوبة هنا
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
             alert(`👑 نعيماً مقدماً يا ملك! تم تأكيد حجزك بنجاح عند الحلاق ${selectedBarberName}.\n⏰ الموعد: ${selectedTimeForUser}\n📱 متوفر الدفع عبر شام كاش.`);
@@ -546,3 +548,4 @@
 </script>
 </body>
 </html>
+
