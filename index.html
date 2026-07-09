@@ -302,7 +302,7 @@
 
     let selectedBarberName = "بشار"; 
     let nextAvailableTime = 0; 
-    let selectedTimeForUser = "09:00 ص"; // القيمة الافتراضية بدلاً من فوري عند الإغلاق
+    let selectedTimeForUser = "09:00 ص"; 
     let countdownInterval = null; 
     let busyBarberGlobal = ""; 
     let bookedSlotsList = []; 
@@ -355,7 +355,6 @@
         let currentHour = now.getHours();
         let isClosed = (currentHour < 9 || currentHour >= 21);
 
-        // زر فوري الآن يظهر فقط إذا كان الصالون مفتوحاً
         const instantBtn = document.createElement('div');
         if (isClosed) {
             instantBtn.className = "time-slot-item unavailable";
@@ -397,10 +396,9 @@
         if (currentHour < 9 || currentHour >= 21) {
             statusIndicator.innerText = "مغلق حالياً 🌙 (يمكنك حجز موعد مسبق لليوم التالي)";
             statusIndicator.className = "shop-status-tag shop-closed";
-            document.getElementById('btnSubmit').disabled = false; // لا نغلق الزر
+            document.getElementById('btnSubmit').disabled = false; 
             document.getElementById('btnSubmit').innerText = "تأكيد حجز الموعد المسبق";
             
-            // إذا كان المستخدم يختار فوري وهو مغلق، نحول خياره لأول ساعة في اليوم التالي تلقائياً
             if (selectedTimeForUser === "فوري") {
                 selectedTimeForUser = "09:00 ص";
             }
@@ -419,6 +417,7 @@
         }
     }
 
+    // تم تعديل الاستماع ليتوافق مع مسميات سكتشوير الجديدة بقاعدة البيانات
     database.ref('barber_bookings').on('value', snapshot => {
         if(countdownInterval) clearInterval(countdownInterval);
         bookedSlotsList = []; 
@@ -448,16 +447,15 @@
             
             let lastTimestamp = lastBooking.timestamp;
             let currentServerTime = Date.now();
-            busyBarberGlobal = lastBooking.barber;
+            busyBarberGlobal = lastBooking.barber_name; // تعديل هنا لمطابقة مفتاح سكتشوير
 
             keys.forEach(key => {
                 let bookingItem = allBookings[key];
-                if (bookingItem.time && bookingItem.time !== "فوري") {
-                    bookedSlotsList.push(bookingItem.time);
+                if (bookingItem.booking_time && bookingItem.booking_time !== "فوري") { // تعديل هنا لمطابقة مفتاح سكتشوير
+                    bookedSlotsList.push(bookingItem.booking_time);
                 }
             });
 
-            // العداد التنازلي يشتغل فقط بالنهار أثناء الدوام الفعلي
             let nowHour = new Date().getHours();
             if (nowHour >= 9 && nowHour < 21 && lastTimestamp && (currentServerTime - lastTimestamp < 1200000)) {
                 nextAvailableTime = lastTimestamp + 1200000;
@@ -512,6 +510,7 @@
         }, 1000);
     }
 
+    // دالة الإرسال معدلة بالكامل لتطابق مفاتيح سكتشوير ومساره الصحيح
     function confirmAndSend(event) {
         event.preventDefault();
         
@@ -544,12 +543,13 @@
         document.getElementById('btnSubmit').disabled = true;
         document.getElementById('btnSubmit').innerText = "جاري إرسال حجزك الموقر...";
 
+        // الإرسال تحت مجلد barber_bookings بالمفاتيح الدقيقة لسكتشوير
         database.ref('barber_bookings').push({
-            Name: name,
-            phone: phone,
-            time: selectedTimeForUser,
-            barber: selectedBarberName,
-            service: selectedServices.join(" + "), 
+            customer_name: name,
+            customer_phone: phone,
+            booking_time: selectedTimeForUser,
+            barber_name: selectedBarberName,
+            service_type: selectedServices.join(" + "), 
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
             alert(`👑 نعيماً مقدماً يا ملك! تم تأكيد حجزك بنجاح عند الحلاق ${selectedBarberName}.\n⏰ الموعد: ${selectedTimeForUser}\n📱 متوفر الدفع عبر شام كاش.`);
@@ -570,4 +570,3 @@
 </script>
 </body>
 </html>
-
