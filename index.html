@@ -36,7 +36,6 @@
         input, select { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid var(--border-color); border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
         input:focus { border-color: var(--accent-gold); }
         
-        /* شريط اختيار الأيام الجديد */
         .days-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
         .day-tab { background: #0b0f19; border: 1px solid var(--border-color); padding: 10px; border-radius: 10px; text-align: center; font-size: 13px; cursor: pointer; transition: 0.2s; font-weight: 600; }
         .day-tab.active { background: linear-gradient(45deg, #d4af37, #aa841b); color: #0b0f19; border-color: var(--accent-gold); font-weight: bold; }
@@ -83,14 +82,17 @@
 
         .payment-method { margin-top: 15px; background: linear-gradient(90deg, rgba(41, 128, 185, 0.1) 0%, rgba(21, 31, 50, 0.5) 100%); border: 1px solid #2980b9; padding: 14px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: bold; color: #fff; }
 
-        /* تعديل قسم خريطة وموقع الصالون بشكل احترافي */
+        /* ستايل الخريطة والزر المحدثين */
         .salon-location-box { margin-top: 15px; background: #111b2b; border: 1px solid var(--border-color); border-right: 4px solid #3498db; padding: 15px; border-radius: 10px; font-size: 13px; line-height: 22px; }
         .location-header { font-weight: bold; color: #3498db; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; font-size: 15px; }
-        .map-preview-container { width: 100%; height: 130px; margin-top: 10px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--border-color); background: #0b0f19; }
-        .map-preview-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
-        .map-overlay-btn { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: #fff; font-weight: bold; font-size: 14px; transition: 0.3s; }
-        .map-overlay-btn:hover { background: rgba(11, 15, 25, 0.4); color: var(--accent-gold); }
-        .map-overlay-btn svg { fill: currentColor; width: 28px; height: 28px; }
+        
+        .map-preview-container { width: 100%; height: 170px; margin-top: 12px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(212,175,55,0.2); background: #0b0f19; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: block; text-decoration: none; position: relative; }
+        .map-preview-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.95; transition: 0.3s; cursor: pointer; }
+        .map-preview-container:hover .map-preview-img { transform: scale(1.02); opacity: 1; border-color: var(--accent-gold); }
+        
+        .map-bottom-link-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: linear-gradient(45deg, #2980b9, #3498db); border: none; border-radius: 8px; color: #fff; padding: 10px; font-weight: bold; font-size: 13.5px; margin-top: 10px; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2); }
+        .map-bottom-link-btn:hover { background: linear-gradient(45deg, #3498db, #2980b9); color: var(--accent-gold); transform: translateY(-1px); }
+        .map-bottom-link-btn svg { fill: currentColor; width: 18px; height: 18px; }
 
         button { width: 100%; padding: 15px; background: linear-gradient(45deg, #d4af37, #aa841b); border: none; border-radius: 12px; color: #0b0f19; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
         button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212,175,55,0.3); }
@@ -98,7 +100,6 @@
 
         .countdown-row-container { grid-column: span 2; width: 100%; }
 
-        /* نافذة التنبيه الاحترافية المدمجة المخصصة */
         .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 20px; }
         .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
         .custom-modal-card { background: var(--card-bg); border: 2px solid var(--accent-gold); padding: 25px; border-radius: 15px; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.6); transform: translateY(-2px); transition: transform 0.3s ease; }
@@ -114,7 +115,6 @@
 </head>
 <body>
 
-<!-- نافذة التنبيه الاحترافية -->
 <div class="custom-modal-overlay" id="customAlertModal">
     <div class="custom-modal-card">
         <span class="modal-icon" id="modalIcon">👑</span>
@@ -304,17 +304,17 @@
             <div>دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
             <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">مدخل الصالون: أول شارع رامي ع اليمين</div>
             
-            <!-- قسم الخريطة والصور التوضيحية المطور -->
-            <div class="map-preview-container">
-                <!-- يمكنك استبدال الرابط أدناه برابط صورتك الكروكية للصالون أو صورة قوقل ماب ثابتة -->
-                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" alt="خريطة صالون الملك" class="map-preview-img">
-                <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-overlay-btn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
-                    اضغط هنا لعرض الموقع والتوجه إلى الصالون عبر قوقل ماب
-                </a>
-            </div>
+            <!-- تم تعديل هذا القسم: الضغط على الصورة أو الزر تحتها يحول فوراً لخرائط قوقل -->
+            <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-preview-container" title="اضغط على الخريطة للتوجه إلى الموقع">
+                <img src="maps.png" onerror="this.onerror=null; this.src='maps.jpg';" alt="خريطة صالون الملك" class="map-preview-img">
+            </a>
+            
+            <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-bottom-link-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                اضغط هنا لعرض الموقع والتوجه إلى الصالون عبر قوقل ماب
+            </a>
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
@@ -358,17 +358,15 @@
     let selectedTimeForUser = "09:00 ص"; 
     let countdownInterval = null; 
     let busyBarberGlobal = ""; 
-    let allGlobalBookings = {}; // لحفظ كافة الحجوزات وفلترتها ذكياً
-    let selectedDayIndex = 0; // 0 = اليوم، 1 = غداً، 2 = بعد غد
+    let allGlobalBookings = {}; 
+    let selectedDayIndex = 0; 
 
-    // تم تعديل الصيغ وحذف حرف الـ ظ بناءً على طلبك
     const workingHoursSlots = [
         "09:00 ص", "10:00 ص", "11:00 ص", "12:00 م", 
         "01:00 م", "02:00 م", "03:00 م", "04:00 م", 
         "05:00 م", "06:00 م", "07:00 م", "08:00 م"
     ];
 
-    // دالات التحكم بالنافذة المنبثقة الاحترافية
     function showCustomAlert(title, message, icon = "👑") {
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('modalMessage').innerText = message;
@@ -380,7 +378,6 @@
         document.getElementById('customAlertModal').classList.remove('active');
     }
 
-    // تنسيق التواريخ بشكل نصي لمطابقة يوم الحجز ذكياً دون تعليق
     function getFormattedDateString(offset) {
         let d = new Date();
         d.setDate(d.getDate() + offset);
@@ -390,9 +387,7 @@
         return `${year}-${month}-${day}`;
     }
 
-    // تحديث واجهة أسماء الأيام المعروضة للزبائن بشكل أنيق
     function updateDaysLabels() {
-        const daysText = ["اليوم", "غداً", "بعد غد"];
         document.getElementById('tab-day-0').innerText = `اليوم (${getFormattedDateString(0).substring(5)})`;
         document.getElementById('tab-day-1').innerText = `غداً (${getFormattedDateString(1).substring(5)})`;
         document.getElementById('tab-day-2').innerText = `بعد غد (${getFormattedDateString(2).substring(5)})`;
@@ -406,7 +401,6 @@
         const labels = ["اليوم", "غداً", "بعد غد"];
         document.getElementById('selectedDayLabel').innerText = `(تاريخ الموعد: ${labels[index]} ${getFormattedDateString(index)})`;
         
-        // إعادة تهيئة التوقيت المختار تلقائياً لتفادي حجز أوقات قديمة
         if(selectedDayIndex === 0) {
             checkShopStatus();
         } else {
@@ -419,7 +413,7 @@
         document.querySelectorAll('.barber-card').forEach(card => card.classList.remove('selected'));
         element.classList.add('selected');
         selectedBarberName = name;
-        buildModernTimeGrid(); // إعادة بناء الأوقات المتاحة لهذا الحلاق حصراً فوراً
+        buildModernTimeGrid(); 
     }
 
     function toggleService(element) {
@@ -445,7 +439,6 @@
         }
     }
 
-    // بناء شبكة الأوقات الذكية والمستقلة لكل حلاق وبناءً على اليوم المختار
     function buildModernTimeGrid() {
         const container = document.getElementById('modernTimeGridContainer');
         container.innerHTML = "";
@@ -454,7 +447,6 @@
         let currentHour = now.getHours();
         let isClosedToday = (currentHour < 9 || currentHour >= 21);
 
-        // إنشاء خيار الحجز الفوري فقط إذا كان الحجز لليوم والصالون مفتوح
         if (selectedDayIndex === 0) {
             const instantBtn = document.createElement('div');
             if (isClosedToday) {
@@ -468,14 +460,12 @@
             container.appendChild(instantBtn);
         }
 
-        // استخراج قائمة الساعات المحجوزة للحلاق المحدد في اليوم المحدد لمنع التداخل والتعليق
         let targetTargetDateStr = getFormattedDateString(selectedDayIndex);
         let activeBookedSlots = [];
 
         Object.keys(allGlobalBookings).forEach(key => {
             let bookingItem = allGlobalBookings[key];
             
-            // تحقق من مطابقة الحلاق
             if (bookingItem.barber_name === selectedBarberName) {
                 let isMatchDay = false;
                 
@@ -488,7 +478,6 @@
                 }
 
                 if (isMatchDay && bookingItem.booking_time && bookingItem.booking_time !== "فوري") {
-                    // إصلاح ومطابقة الصيغ القديمة (حذف الـ ظ تلقائياً في الفلترة إن وجد)
                     let normalizedSlot = bookingItem.booking_time.replace(" ظ", " م");
                     activeBookedSlots.push(normalizedSlot);
                 }
@@ -499,7 +488,6 @@
             const slotBtn = document.createElement('div');
             const isBooked = activeBookedSlots.includes(slot);
 
-            // إذا كان الموعد لليوم، نقوم بتعطيل الساعات الفائتة من الوقت الحالي
             let isPastHour = false;
             if (selectedDayIndex === 0) {
                 let slotHour = parseInt(slot.substring(0, 2));
@@ -556,7 +544,6 @@
         }
     }
 
-    // الاستماع لقاعدة البيانات وإجراء التحديث الفوري التلقائي دون أي تعليق
     database.ref('barber_bookings').on('value', snapshot => {
         if(countdownInterval) clearInterval(countdownInterval);
         allGlobalBookings = {}; 
@@ -589,7 +576,6 @@
             busyBarberGlobal = lastBooking.barber_name; 
 
             let nowHour = new Date().getHours();
-            // تعديل مدة فضا الحلاق ليصبح 25 دقيقة بدقة (25 * 60 * 1000 = 1,500,000 مللي ثانية)
             if (nowHour >= 9 && nowHour < 21 && lastTimestamp && (currentServerTime - lastTimestamp < 1500000)) {
                 nextAvailableTime = lastTimestamp + 1500000;
                 
@@ -677,12 +663,11 @@
 
         let finalBookingDate = getFormattedDateString(selectedDayIndex);
 
-        // الإرسال المتوافق مع سكتشوير مع حماية الأوقات وتخزين التاريخ بشكل إضافي آمن لمنع التداخل
         database.ref('barber_bookings').push({
             customer_name: name,
             customer_phone: phone,
             booking_time: selectedTimeForUser,
-            booking_date: finalBookingDate, // مضاف لدعم تصفية الأيام القادمة بذكاء
+            booking_date: finalBookingDate, 
             barber_name: selectedBarberName,
             service_type: selectedServices.join(" + "), 
             timestamp: firebase.database.ServerValue.TIMESTAMP
@@ -706,7 +691,6 @@
         });
     }
     
-    // تشغيل وإعداد الواجهات عند التحميل الأول
     updateDaysLabels();
     checkShopStatus();
     buildModernTimeGrid();
