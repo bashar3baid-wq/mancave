@@ -36,6 +36,11 @@
         input, select { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid var(--border-color); border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
         input:focus { border-color: var(--accent-gold); }
         
+        /* شريط اختيار الأيام الجديد */
+        .days-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .day-tab { background: #0b0f19; border: 1px solid var(--border-color); padding: 10px; border-radius: 10px; text-align: center; font-size: 13px; cursor: pointer; transition: 0.2s; font-weight: 600; }
+        .day-tab.active { background: linear-gradient(45deg, #d4af37, #aa841b); color: #0b0f19; border-color: var(--accent-gold); font-weight: bold; }
+
         .barbers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .barber-card { background: #0d1626; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; position: relative; justify-content: space-between; }
         .barber-card:hover { border-color: rgba(212,175,55,0.4); transform: translateY(-2px); }
@@ -78,8 +83,14 @@
 
         .payment-method { margin-top: 15px; background: linear-gradient(90deg, rgba(41, 128, 185, 0.1) 0%, rgba(21, 31, 50, 0.5) 100%); border: 1px solid #2980b9; padding: 14px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: bold; color: #fff; }
 
-        .salon-location-box { margin-top: 15px; background: #111b2b; border: 1px solid var(--border-color); border-right: 4px solid #3498db; padding: 12px 15px; border-radius: 10px; font-size: 13px; line-height: 20px; }
-        .location-header { font-weight: bold; color: #3498db; margin-bottom: 2px; display: flex; align-items: center; gap: 5px; }
+        /* تعديل قسم خريطة وموقع الصالون بشكل احترافي */
+        .salon-location-box { margin-top: 15px; background: #111b2b; border: 1px solid var(--border-color); border-right: 4px solid #3498db; padding: 15px; border-radius: 10px; font-size: 13px; line-height: 22px; }
+        .location-header { font-weight: bold; color: #3498db; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; font-size: 15px; }
+        .map-preview-container { width: 100%; height: 130px; margin-top: 10px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--border-color); background: #0b0f19; }
+        .map-preview-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+        .map-overlay-btn { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: #fff; font-weight: bold; font-size: 14px; transition: 0.3s; }
+        .map-overlay-btn:hover { background: rgba(11, 15, 25, 0.4); color: var(--accent-gold); }
+        .map-overlay-btn svg { fill: currentColor; width: 28px; height: 28px; }
 
         button { width: 100%; padding: 15px; background: linear-gradient(45deg, #d4af37, #aa841b); border: none; border-radius: 12px; color: #0b0f19; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
         button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212,175,55,0.3); }
@@ -87,11 +98,31 @@
 
         .countdown-row-container { grid-column: span 2; width: 100%; }
 
+        /* نافذة التنبيه الاحترافية المدمجة المخصصة */
+        .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 20px; }
+        .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .custom-modal-card { background: var(--card-bg); border: 2px solid var(--accent-gold); padding: 25px; border-radius: 15px; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.6); transform: translateY(-2px); transition: transform 0.3s ease; }
+        .modal-icon { font-size: 45px; margin-bottom: 10px; display: block; }
+        .modal-title { font-size: 20px; font-weight: bold; color: var(--accent-gold); margin-bottom: 10px; }
+        .modal-message { font-size: 14px; color: #fff; line-height: 24px; margin-bottom: 20px; }
+        .modal-close-btn { background: var(--accent-gold); color: #0b0f19; font-weight: bold; padding: 10px 30px; border-radius: 8px; border: none; cursor: pointer; font-size: 15px; width: auto; margin-top: 0; }
+        .modal-close-btn:hover { background: #fff; }
+
         footer { text-align: center; margin-top: 30px; font-size: 12px; color: var(--text-muted); line-height: 20px; }
         footer a { color: var(--accent-gold); text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
+
+<!-- نافذة التنبيه الاحترافية -->
+<div class="custom-modal-overlay" id="customAlertModal">
+    <div class="custom-modal-card">
+        <span class="modal-icon" id="modalIcon">👑</span>
+        <div class="modal-title" id="modalTitle">تنبيه الموعد</div>
+        <div class="modal-message" id="modalMessage">تمت العملية بنجاح!</div>
+        <button type="button" class="modal-close-btn" onclick="closeCustomAlert()">حسناً</button>
+    </div>
+</div>
 
 <div class="container">
     <h1>👑 صالون الملك 👑</h1>
@@ -107,6 +138,13 @@
 
     <form id="bookingForm" onsubmit="confirmAndSend(event)">
         
+        <label>اختر تاريخ يوم الحضور 📅:</label>
+        <div class="days-tabs" id="daysTabsContainer">
+            <div class="day-tab active" id="tab-day-0" onclick="switchDay(0)">اليوم</div>
+            <div class="day-tab" id="tab-day-1" onclick="switchDay(1)">غداً</div>
+            <div class="day-tab" id="tab-day-2" onclick="switchDay(2)">بعد غد</div>
+        </div>
+
         <label>اختر الحلاق المفضل لديك:</label>
         <div class="barbers-grid" id="barbersGroup">
             
@@ -265,9 +303,24 @@
             <div class="location-header">📍 موقع الصالون:</div>
             <div>دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
             <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">مدخل الصالون: أول شارع رامي ع اليمين</div>
+            
+            <!-- قسم الخريطة والصور التوضيحية المطور -->
+            <div class="map-preview-container">
+                <!-- يمكنك استبدال الرابط أدناه برابط صورتك الكروكية للصالون أو صورة قوقل ماب ثابتة -->
+                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" alt="خريطة صالون الملك" class="map-preview-img">
+                <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-overlay-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    اضغط هنا لعرض الموقع والتوجه إلى الصالون عبر قوقل ماب
+                </a>
+            </div>
         </div>
 
-        <label>تحديد وقت الموعد المفضل 📅:</label>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+            <label style="margin: 0;">تحديد وقت الموعد المفضل 📅:</label>
+            <span id="selectedDayLabel" style="font-size: 13px; color: var(--accent-gold); font-weight: bold;">(تاريخ الموعد: اليوم)</span>
+        </div>
         <div class="modern-time-grid" id="modernTimeGridContainer">
         </div>
 
@@ -305,19 +358,68 @@
     let selectedTimeForUser = "09:00 ص"; 
     let countdownInterval = null; 
     let busyBarberGlobal = ""; 
-    let bookedSlotsList = []; 
+    let allGlobalBookings = {}; // لحفظ كافة الحجوزات وفلترتها ذكياً
+    let selectedDayIndex = 0; // 0 = اليوم، 1 = غداً، 2 = بعد غد
 
+    // تم تعديل الصيغ وحذف حرف الـ ظ بناءً على طلبك
     const workingHoursSlots = [
-        "09:00 ص", "10:00 ص", "11:00 ص", "12:00 ظ", 
-        "01:00 ظ", "02:00 ظ", "03:00 م", "04:00 م", 
+        "09:00 ص", "10:00 ص", "11:00 ص", "12:00 م", 
+        "01:00 م", "02:00 م", "03:00 م", "04:00 م", 
         "05:00 م", "06:00 م", "07:00 م", "08:00 م"
     ];
+
+    // دالات التحكم بالنافذة المنبثقة الاحترافية
+    function showCustomAlert(title, message, icon = "👑") {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMessage').innerText = message;
+        document.getElementById('modalIcon').innerText = icon;
+        document.getElementById('customAlertModal').classList.add('active');
+    }
+
+    function closeCustomAlert() {
+        document.getElementById('customAlertModal').classList.remove('active');
+    }
+
+    // تنسيق التواريخ بشكل نصي لمطابقة يوم الحجز ذكياً دون تعليق
+    function getFormattedDateString(offset) {
+        let d = new Date();
+        d.setDate(d.getDate() + offset);
+        let day = ("0" + d.getDate()).slice(-2);
+        let month = ("0" + (d.getMonth() + 1)).slice(-2);
+        let year = d.getFullYear();
+        return `${year}-${month}-${day}`;
+    }
+
+    // تحديث واجهة أسماء الأيام المعروضة للزبائن بشكل أنيق
+    function updateDaysLabels() {
+        const daysText = ["اليوم", "غداً", "بعد غد"];
+        document.getElementById('tab-day-0').innerText = `اليوم (${getFormattedDateString(0).substring(5)})`;
+        document.getElementById('tab-day-1').innerText = `غداً (${getFormattedDateString(1).substring(5)})`;
+        document.getElementById('tab-day-2').innerText = `بعد غد (${getFormattedDateString(2).substring(5)})`;
+    }
+
+    function switchDay(index) {
+        selectedDayIndex = index;
+        document.querySelectorAll('.day-tab').forEach((tab, idx) => {
+            tab.classList.toggle('active', idx === index);
+        });
+        const labels = ["اليوم", "غداً", "بعد غد"];
+        document.getElementById('selectedDayLabel').innerText = `(تاريخ الموعد: ${labels[index]} ${getFormattedDateString(index)})`;
+        
+        // إعادة تهيئة التوقيت المختار تلقائياً لتفادي حجز أوقات قديمة
+        if(selectedDayIndex === 0) {
+            checkShopStatus();
+        } else {
+            selectedTimeForUser = "09:00 ص";
+        }
+        buildModernTimeGrid();
+    }
 
     function selectBarber(element, name) {
         document.querySelectorAll('.barber-card').forEach(card => card.classList.remove('selected'));
         element.classList.add('selected');
         selectedBarberName = name;
-        checkShopStatus(); 
+        buildModernTimeGrid(); // إعادة بناء الأوقات المتاحة لهذا الحلاق حصراً فوراً
     }
 
     function toggleService(element) {
@@ -339,40 +441,77 @@
         event.stopPropagation(); 
         const targetBox = document.getElementById('inner-countdown-' + barberName);
         if (targetBox) {
-            if (targetBox.style.display === "block") {
-                targetBox.style.display = "none";
-            } else {
-                targetBox.style.display = "block";
-            }
+            targetBox.style.display = (targetBox.style.display === "block") ? "none" : "block";
         }
     }
 
+    // بناء شبكة الأوقات الذكية والمستقلة لكل حلاق وبناءً على اليوم المختار
     function buildModernTimeGrid() {
         const container = document.getElementById('modernTimeGridContainer');
         container.innerHTML = "";
 
         let now = new Date();
         let currentHour = now.getHours();
-        let isClosed = (currentHour < 9 || currentHour >= 21);
+        let isClosedToday = (currentHour < 9 || currentHour >= 21);
 
-        const instantBtn = document.createElement('div');
-        if (isClosed) {
-            instantBtn.className = "time-slot-item unavailable";
-            instantBtn.innerText = "فوري الآن (مغلق)";
-        } else {
-            instantBtn.className = "time-slot-item" + (selectedTimeForUser === "فوري" ? " selected" : "");
-            instantBtn.innerText = "فوري الآن";
-            instantBtn.onclick = function() { changeSelectedSlot(instantBtn, "فوري"); };
+        // إنشاء خيار الحجز الفوري فقط إذا كان الحجز لليوم والصالون مفتوح
+        if (selectedDayIndex === 0) {
+            const instantBtn = document.createElement('div');
+            if (isClosedToday) {
+                instantBtn.className = "time-slot-item unavailable";
+                instantBtn.innerText = "فوري الآن (مغلق)";
+            } else {
+                instantBtn.className = "time-slot-item" + (selectedTimeForUser === "فوري" ? " selected" : "");
+                instantBtn.innerText = "فوري الآن";
+                instantBtn.onclick = function() { changeSelectedSlot(instantBtn, "فوري"); };
+            }
+            container.appendChild(instantBtn);
         }
-        container.appendChild(instantBtn);
+
+        // استخراج قائمة الساعات المحجوزة للحلاق المحدد في اليوم المحدد لمنع التداخل والتعليق
+        let targetTargetDateStr = getFormattedDateString(selectedDayIndex);
+        let activeBookedSlots = [];
+
+        Object.keys(allGlobalBookings).forEach(key => {
+            let bookingItem = allGlobalBookings[key];
+            
+            // تحقق من مطابقة الحلاق
+            if (bookingItem.barber_name === selectedBarberName) {
+                let isMatchDay = false;
+                
+                if (bookingItem.booking_date) {
+                    if (bookingItem.booking_date === targetTargetDateStr) isMatchDay = true;
+                } else if (bookingItem.timestamp) {
+                    let bDate = new Date(bookingItem.timestamp);
+                    let bDateStr = `${bDate.getFullYear()}-${("0" + (bDate.getMonth() + 1)).slice(-2)}-${("0" + bDate.getDate()).slice(-2)}`;
+                    if (bDateStr === targetTargetDateStr) isMatchDay = true;
+                }
+
+                if (isMatchDay && bookingItem.booking_time && bookingItem.booking_time !== "فوري") {
+                    // إصلاح ومطابقة الصيغ القديمة (حذف الـ ظ تلقائياً في الفلترة إن وجد)
+                    let normalizedSlot = bookingItem.booking_time.replace(" ظ", " م");
+                    activeBookedSlots.push(normalizedSlot);
+                }
+            }
+        });
 
         workingHoursSlots.forEach(slot => {
             const slotBtn = document.createElement('div');
-            const isBooked = bookedSlotsList.includes(slot);
+            const isBooked = activeBookedSlots.includes(slot);
 
-            if (isBooked) {
+            // إذا كان الموعد لليوم، نقوم بتعطيل الساعات الفائتة من الوقت الحالي
+            let isPastHour = false;
+            if (selectedDayIndex === 0) {
+                let slotHour = parseInt(slot.substring(0, 2));
+                let isPM = slot.includes("م");
+                if (isPM && slotHour !== 12) slotHour += 12;
+                if (!isPM && slotHour === 12) slotHour = 0;
+                if (currentHour >= slotHour) isPastHour = true;
+            }
+
+            if (isBooked || isPastHour) {
                 slotBtn.className = "time-slot-item unavailable";
-                slotBtn.innerText = slot + " (غير متوفر)";
+                slotBtn.innerText = isBooked ? slot + " (محجوز)" : slot + " (مضى)";
             } else {
                 slotBtn.className = "time-slot-item" + (selectedTimeForUser === slot ? " selected" : "");
                 slotBtn.innerText = slot;
@@ -412,15 +551,15 @@
             statusIndicator.innerText = "مفتوح الآن 🟢 (أوقات العمل من 9:00 ص إلى 9:00 م)";
             statusIndicator.className = "shop-status-tag shop-open";
             document.getElementById('btnSubmit').disabled = false;
-            document.getElementById('btnSubmit').innerText = "تأكيد حجز الموعد الفوري";
+            document.getElementById('btnSubmit').innerText = "تأكيد حجز الموعد";
             return true;
         }
     }
 
-    // تم تعديل الاستماع ليتوافق مع مسميات سكتشوير الجديدة بقاعدة البيانات
+    // الاستماع لقاعدة البيانات وإجراء التحديث الفوري التلقائي دون أي تعليق
     database.ref('barber_bookings').on('value', snapshot => {
         if(countdownInterval) clearInterval(countdownInterval);
-        bookedSlotsList = []; 
+        allGlobalBookings = {}; 
 
         checkShopStatus(); 
 
@@ -439,26 +578,20 @@
         });
 
         if (snapshot.exists()) {
-            let allBookings = snapshot.val();
-            let keys = Object.keys(allBookings);
+            allGlobalBookings = snapshot.val();
+            let keys = Object.keys(allGlobalBookings);
             
             let lastBookingKey = keys[keys.length - 1];
-            let lastBooking = allBookings[lastBookingKey];
+            let lastBooking = allGlobalBookings[lastBookingKey];
             
             let lastTimestamp = lastBooking.timestamp;
             let currentServerTime = Date.now();
-            busyBarberGlobal = lastBooking.barber_name; // تعديل هنا لمطابقة مفتاح سكتشوير
-
-            keys.forEach(key => {
-                let bookingItem = allBookings[key];
-                if (bookingItem.booking_time && bookingItem.booking_time !== "فوري") { // تعديل هنا لمطابقة مفتاح سكتشوير
-                    bookedSlotsList.push(bookingItem.booking_time);
-                }
-            });
+            busyBarberGlobal = lastBooking.barber_name; 
 
             let nowHour = new Date().getHours();
-            if (nowHour >= 9 && nowHour < 21 && lastTimestamp && (currentServerTime - lastTimestamp < 1200000)) {
-                nextAvailableTime = lastTimestamp + 1200000;
+            // تعديل مدة فضا الحلاق ليصبح 25 دقيقة بدقة (25 * 60 * 1000 = 1,500,000 مللي ثانية)
+            if (nowHour >= 9 && nowHour < 21 && lastTimestamp && (currentServerTime - lastTimestamp < 1500000)) {
+                nextAvailableTime = lastTimestamp + 1500000;
                 
                 let targetBadge = document.getElementById('badge-' + busyBarberGlobal);
                 if(targetBadge) {
@@ -510,7 +643,6 @@
         }, 1000);
     }
 
-    // دالة الإرسال معدلة بالكامل لتطابق مفاتيح سكتشوير ومساره الصحيح
     function confirmAndSend(event) {
         event.preventDefault();
         
@@ -523,19 +655,19 @@
         });
 
         if(name === "") {
-            alert("الرجاء إدخال اسمك أولاً لتأكيد الحجز!");
+            showCustomAlert("تنبيه الحجز ⚠️", "الرجاء إدخال اسمك أولاً لتأكيد الحجز!", "👤");
             return;
         }
 
         if(selectedServices.length === 0) {
-            alert("⚠️ فضلاً اختر خدمة واحدة على الأقل لإتمام الحجز.");
+            showCustomAlert("تنبيه الخدمات ⚠️", "فضلاً اختر خدمة واحدة على الأقل لإتمام حجزك الموقر.", "✂️");
             return;
         }
 
-        if(selectedTimeForUser === "فوري") {
+        if(selectedTimeForUser === "فوري" && selectedDayIndex === 0) {
             let nowHour = new Date().getHours();
             if (nowHour < 9 || nowHour >= 21) {
-                alert("عذراً، لا يمكن اختيار حجز فوري لأن الصالون مغلق الآن. فضلاً اختر ساعة محددة لليوم التالي.");
+                showCustomAlert("عذراً 🌙", "لا يمكن اختيار حجز فوري لأن الصالون مغلق حالياً. فضلاً اختر ساعة محددة للحضور.", "⏳");
                 return;
             }
         }
@@ -543,30 +675,42 @@
         document.getElementById('btnSubmit').disabled = true;
         document.getElementById('btnSubmit').innerText = "جاري إرسال حجزك الموقر...";
 
-        // الإرسال تحت مجلد barber_bookings بالمفاتيح الدقيقة لسكتشوير
+        let finalBookingDate = getFormattedDateString(selectedDayIndex);
+
+        // الإرسال المتوافق مع سكتشوير مع حماية الأوقات وتخزين التاريخ بشكل إضافي آمن لمنع التداخل
         database.ref('barber_bookings').push({
             customer_name: name,
             customer_phone: phone,
             booking_time: selectedTimeForUser,
+            booking_date: finalBookingDate, // مضاف لدعم تصفية الأيام القادمة بذكاء
             barber_name: selectedBarberName,
             service_type: selectedServices.join(" + "), 
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
-            alert(`👑 نعيماً مقدماً يا ملك! تم تأكيد حجزك بنجاح عند الحلاق ${selectedBarberName}.\n⏰ الموعد: ${selectedTimeForUser}\n📱 متوفر الدفع عبر شام كاش.`);
+            showCustomAlert(
+                "تم التأكيد بنجاح 🎉", 
+                `نعيماً مقدماً يا ملك! تم تأكيد حجزك بنجاح عند الحلاق (${selectedBarberName}).\n⏰ الموعد: ${selectedTimeForUser} \n📅 التاريخ: ${finalBookingDate}\n📱 متوفر الدفع عبر شام كاش.`, 
+                "👑"
+            );
             document.getElementById('bookingForm').reset();
             document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
             selectedTimeForUser = "09:00 ص";
+            selectedDayIndex = 0;
+            switchDay(0);
             calculateTotal();
         }).catch(err => {
-            alert("خطأ أثناء الإرسال: " + err.message);
+            showCustomAlert("خطأ في الإرسال ❌", "حدث خطأ غير متوقع: " + err.message, "⚠️");
         }).finally(() => {
             checkShopStatus();
             buildModernTimeGrid();
         });
     }
     
+    // تشغيل وإعداد الواجهات عند التحميل الأول
+    updateDaysLabels();
     checkShopStatus();
     buildModernTimeGrid();
 </script>
 </body>
 </html>
+
