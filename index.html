@@ -28,6 +28,15 @@
         h1 { text-align: center; color: var(--accent-gold); font-size: 30px; font-weight: 900; letter-spacing: 0.5px; margin-bottom: 4px; text-shadow: 0 2px 10px rgba(229, 193, 88, 0.2); }
         .subtitle { text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 20px; font-weight: 600; }
         
+        /* تصميم صندوق حالة الحجز المباشر المضاف حديثاً */
+        .live-status-container { background: #161e2e; border: 2px dashed rgba(229, 193, 88, 0.2); padding: 15px; border-radius: 16px; margin-bottom: 20px; display: none; transition: 0.3s ease; }
+        .live-status-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; margin-bottom: 8px; font-size: 14px; }
+        .live-badge { padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: bold; }
+        .status-pending { background: rgba(229, 193, 88, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+        .status-confirmed { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .status-cancelled { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .live-note-box { background: var(--input-bg); padding: 10px; border-radius: 10px; margin-top: 8px; border-right: 4px solid #3b82f6; font-size: 12.5px; color: #fff; line-height: 20px; }
+
         .shop-status-wrapper { text-align: center; margin-bottom: 15px; }
         .shop-status-tag { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; padding: 6px 16px; border-radius: 50px; font-size: 12.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .shop-open { background: rgba(16, 185, 129, 0.12); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
@@ -126,6 +135,16 @@
     <h1>👑 صالون الملك 👑</h1>
     <div class="subtitle">احجز دورك إلكترونياً وتجنب الانتظار</div>
 
+    <!-- قسم تتبع حالة الحجز الفعلي (يظهر فقط إذا كان لدى الزبون حجز نشط) -->
+    <div id="liveStatusContainer" class="live-status-container">
+        <div class="live-status-header">
+            <span>📡 تتبع موعدك الحالي:</span>
+            <span id="liveStatusBadge" class="live-badge status-pending">قيد الانتظار ⏳</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted);" id="liveStatusDetails">جاري تحميل بيانات موعدك الأخير...</div>
+        <div id="liveAdminNoteBox" class="live-note-box" style="display: none;"></div>
+    </div>
+
     <div class="shop-status-wrapper">
         <span id="shopStatusIndicator" class="shop-status-tag shop-open">جاري التحقق...</span>
     </div>
@@ -146,7 +165,6 @@
         <label>اختر الحلاق المفضل لديك:</label>
         <div class="barbers-grid" id="barbersGroup">
             
-            <!-- تم إضافة بطاقة أي حلاق متوفر كخيار أول وبكامل العرض -->
             <div class="barber-card selected" id="barber-أي حلاق متوفر" onclick="selectBarber(this, 'أي حلاق متوفر')" style="grid-column: span 2;">
                 <div class="barber-header" style="flex-direction: row; justify-content: space-between; width: 100%;">
                     <span class="barber-name">⚡ أي حلاق متوفر</span>
@@ -161,7 +179,7 @@
 
             <div class="countdown-row-container">
                 <div id="inner-countdown-أي حلاق متوفر" class="inner-countdown-box" onclick="event.stopPropagation();">
-                    <span class="salon-title-bold">👑 صالون الملك (أيا حلاق) 👑</span>
+                    <span class="salon-title-bold">👑 صالون الملك (أي حلاق) 👑</span>
                     <div class="countdown-msg">⏳ العداد التنازلي: <span id="timer-val-أي حلاق متوفر" class="countdown-timer">00:00</span></div>
                 </div>
             </div>
@@ -373,14 +391,12 @@
     let allGlobalBookings = {}; 
     let selectedDayIndex = 0; 
 
-    // تم تحديث المصفوفة لتشمل كل نصف ساعة بناءً على طلبك
     const workingHoursSlots = [
         "09:00 ص", "09:30 ص", "10:00 ص", "10:30 ص", "11:00 ص", "11:30 ص", "12:00 م", "12:30 م", 
         "01:00 م", "01:30 م", "02:00 م", "02:30 م", "03:00 م", "03:30 م", "04:00 م", "04:30 م", 
         "05:00 م", "05:30 م", "06:00 م", "06:30 م", "07:00 م", "07:30 م", "08:00 م", "08:30 م", "09:00 م"
     ];
 
-    // دالة الترحيب الذكية بحسب التوقيت الفعلي للزبون
     function setWelcomeGreeting() {
         let currentHour = new Date().getHours();
         let greetingWord = "✨ أهلاً بك في صالون الملك";
@@ -394,6 +410,56 @@
         }
         
         document.getElementById('welcomeGreetingBox').innerText = `${greetingWord}.. حجزك الإلكتروني يضمن لك الأولوية التامة ووقتك الثمين محل تقديرنا دائماً! ✨`;
+    }
+
+    // دالة لتتبع حالة الحجز النشط في الوقت الفعلي من الفايربيس والمخزن في متصفح الزبون
+    function checkActiveBookingStatus() {
+        const localBookingKey = localStorage.getItem('last_king_salon_booking_key');
+        const statusContainer = document.getElementById('liveStatusContainer');
+        
+        if (!localBookingKey) {
+            statusContainer.style.display = 'none';
+            return;
+        }
+
+        // الاستماع المباشر للتغيرات القادمة من سكتشوير
+        database.ref('barber_bookings/' + localBookingKey).on('value', snapshot => {
+            if (!snapshot.exists()) {
+                statusContainer.style.display = 'none';
+                return;
+            }
+
+            statusContainer.style.display = 'block';
+            const bookingData = snapshot.val();
+            
+            const badge = document.getElementById('liveStatusBadge');
+            const details = document.getElementById('liveStatusDetails');
+            const noteBox = document.getElementById('liveAdminNoteBox');
+
+            // قراءة الحقول النصية (status) و (admin_note) المرسلة من سكتشوير
+            const currentStatus = bookingData.status || 'pending'; 
+            const adminNote = bookingData.admin_note || '';
+
+            details.innerText = `الحلاق: ${bookingData.barber_name} | ⏰ الموعد: ${bookingData.booking_time}`;
+
+            if (currentStatus === 'confirmed') {
+                badge.innerText = 'تم تأكيد موعدك بنجاح ✅';
+                badge.className = 'live-badge status-confirmed';
+            } else if (currentStatus === 'cancelled') {
+                badge.innerText = 'تم إلغاء الموعد ❌';
+                badge.className = 'live-badge status-cancelled';
+            } else {
+                badge.innerText = 'قيد الانتظار ⏳';
+                badge.className = 'live-badge status-pending';
+            }
+
+            if (adminNote.trim() !== '') {
+                noteBox.style.display = 'block';
+                noteBox.innerText = `💬 ملاحظة الصالون: ${adminNote}`;
+            } else {
+                noteBox.style.display = 'none';
+            }
+        });
     }
 
     function showCustomAlert(title, message, icon = "👑") {
@@ -513,7 +579,6 @@
                 }
 
                 if (isMatchDay && bookingItem.booking_time) {
-                    // استخراج الوقت فقط في حال كان النص مخزناً مدمجاً معه اليوم
                     let rawTime = bookingItem.booking_time;
                     if(rawTime.includes(" - ")) {
                         rawTime = rawTime.split(" - ")[1];
@@ -708,31 +773,41 @@
         document.getElementById('btnSubmit').innerText = "جاري إرسال حجزك الموقر...";
 
         let finalBookingDate = getFormattedDateString(selectedDayIndex);
-        
-        // تعديل لعرض وحفظ الوقت مدمجاً معه اليوم بشكل مقروء للتطبيق (مثال: غداً الساعة 10:30 ص)
         let dayLabel = getDayLabelText(selectedDayIndex);
         let timeToSendToFirebase = selectedTimeForUser === "فوري" ? "فوري الآن" : `${dayLabel} - ${selectedTimeForUser}`;
 
-        database.ref('barber_bookings').push({
+        // إرسال الحجز مع قيم افتراضية للحالة (status) والملاحظة (admin_note) ليقرأها تطبيق سكتشوير
+        let newBookingRef = database.ref('barber_bookings').push();
+        
+        newBookingRef.set({
             customer_name: name,
             customer_phone: phone,
-            booking_time: timeToSendToFirebase, // يتم إرسالها لتطبيق الفايربيس مدمجة بوضوح التوقيت
+            booking_time: timeToSendToFirebase,
             booking_date: finalBookingDate, 
             barber_name: selectedBarberName,
             service_type: selectedServices.join(" + "), 
+            status: "pending",       // الحقل الافتراضي قيد الانتظار
+            admin_note: "",          // الحقل الافتراضي للملاحظة
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
+            // حفظ المفتاح الفريد تلقائياً في المتصفح لمراقبة الطلب والرجوع إليه دون تسجيل دخول
+            localStorage.setItem('last_king_salon_booking_key', newBookingRef.key);
+            
             showCustomAlert(
                 "تم التأكيد بنجاح 🎉", 
-                `نعيماً مقدماً يا ملك! تم تأكيد حجزك بنجاح.\nالحلاق: (${selectedBarberName})\n⏰ الموعد المحدد: ${timeToSendToFirebase} \n📅 التاريخ: ${finalBookingDate}\n📱 متوفر الدفع عبر شام كاش.`, 
+                `نعيماً مقدماً يا ملك! تم إرسال حجزك وهو الآن (قيد الانتظار) وسيتم تحديث الحالة أمامك بالصفحة فوراً عبر تطبيقنا.`, 
                 "👑"
             );
+            
             document.getElementById('bookingForm').reset();
             document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
             selectedTimeForUser = "09:00 ص";
             selectedDayIndex = 0;
             switchDay(0);
             calculateTotal();
+            
+            // تشغيل التتبع فوراً للموعد الجديد
+            checkActiveBookingStatus();
         }).catch(err => {
             showCustomAlert("خطأ في الإرسال ❌", "حدث خطأ غير متوقع: " + err.message, "⚠️");
         }).finally(() => {
@@ -741,11 +816,14 @@
         });
     }
     
-    // تشغيل الدوال الأساسية عند تحميل الصفحة
     setWelcomeGreeting();
     updateDaysLabels();
     checkShopStatus();
     buildModernTimeGrid();
+    
+    // تشغيل فحص تتبع الحجز بمجرد فتح المتصفح
+    checkActiveBookingStatus();
 </script>
 </body>
 </html>
+
