@@ -28,7 +28,7 @@
         h1 { text-align: center; color: var(--accent-gold); font-size: 30px; font-weight: 900; letter-spacing: 0.5px; margin-bottom: 4px; text-shadow: 0 2px 10px rgba(229, 193, 88, 0.2); }
         .subtitle { text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 20px; font-weight: 600; }
         
-        /* تصميم صندوق حالة الحجز المباشر المضاف حديثاً */
+        /* تصميم صندوق حالة الحجز المباشر المحدث */
         .live-status-container { background: #161e2e; border: 2px dashed rgba(229, 193, 88, 0.2); padding: 15px; border-radius: 16px; margin-bottom: 20px; display: none; transition: 0.3s ease; }
         .live-status-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; margin-bottom: 8px; font-size: 14px; }
         .live-badge { padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: bold; }
@@ -135,7 +135,7 @@
     <h1>👑 صالون الملك 👑</h1>
     <div class="subtitle">احجز دورك إلكترونياً وتجنب الانتظار</div>
 
-    <!-- قسم تتبع حالة الحجز الفعلي (يظهر فقط إذا كان لدى الزبون حجز نشط) -->
+    <!-- قسم تتبع حالة الحجز الفعلي المطوّر -->
     <div id="liveStatusContainer" class="live-status-container">
         <div class="live-status-header">
             <span>📡 تتبع موعدك الحالي:</span>
@@ -412,7 +412,7 @@
         document.getElementById('welcomeGreetingBox').innerText = `${greetingWord}.. حجزك الإلكتروني يضمن لك الأولوية التامة ووقتك الثمين محل تقديرنا دائماً! ✨`;
     }
 
-    // دالة لتتبع حالة الحجز النشط في الوقت الفعلي من الفايربيس والمخزن في متصفح الزبون
+    // الدالة المعدلة كلياً لتتبع التغيرات في الوقت الفعلي وضبط حالات (قيد الانتظار - تم التأكيد - الحذف والإنهاء)
     function checkActiveBookingStatus() {
         const localBookingKey = localStorage.getItem('last_king_salon_booking_key');
         const statusContainer = document.getElementById('liveStatusContainer');
@@ -422,21 +422,23 @@
             return;
         }
 
-        // الاستماع المباشر للتغيرات القادمة من سكتشوير
         database.ref('barber_bookings/' + localBookingKey).on('value', snapshot => {
-            if (!snapshot.exists()) {
-                statusContainer.style.display = 'none';
-                return;
-            }
-
             statusContainer.style.display = 'block';
-            const bookingData = snapshot.val();
             
             const badge = document.getElementById('liveStatusBadge');
             const details = document.getElementById('liveStatusDetails');
             const noteBox = document.getElementById('liveAdminNoteBox');
 
-            // قراءة الحقول النصية (status) و (admin_note) المرسلة من سكتشوير
+            if (!snapshot.exists()) {
+                // عندما يقوم صاحب الصالون بالضغط على إنهاء الحجز (يُحذف الحجز من الفايربيس وينتقل للأرشيف الداخلي)
+                badge.innerText = 'تم إنهاء الموعد أو حذفه 🟢';
+                badge.className = 'live-badge status-confirmed';
+                details.innerText = 'شكراً لزيارتك لصالون الملك، تم إكمال الحجز بنجاح ونعيماً مقدماً يا غالي!';
+                noteBox.style.display = 'none';
+                return;
+            }
+
+            const bookingData = snapshot.val();
             const currentStatus = bookingData.status || 'pending'; 
             const adminNote = bookingData.admin_note || '';
 
@@ -448,6 +450,7 @@
             } else if (currentStatus === 'cancelled') {
                 badge.innerText = 'تم إلغاء الموعد ❌';
                 badge.className = 'live-badge status-cancelled';
+                details.innerText = 'نعتذر منك، لقد تم إلغاء هذا الموعد من قبل إدارة الصالون.';
             } else {
                 badge.innerText = 'قيد الانتظار ⏳';
                 badge.className = 'live-badge status-pending';
@@ -776,7 +779,6 @@
         let dayLabel = getDayLabelText(selectedDayIndex);
         let timeToSendToFirebase = selectedTimeForUser === "فوري" ? "فوري الآن" : `${dayLabel} - ${selectedTimeForUser}`;
 
-        // إرسال الحجز مع قيم افتراضية للحالة (status) والملاحظة (admin_note) ليقرأها تطبيق سكتشوير
         let newBookingRef = database.ref('barber_bookings').push();
         
         newBookingRef.set({
@@ -786,11 +788,10 @@
             booking_date: finalBookingDate, 
             barber_name: selectedBarberName,
             service_type: selectedServices.join(" + "), 
-            status: "pending",       // الحقل الافتراضي قيد الانتظار
-            admin_note: "",          // الحقل الافتراضي للملاحظة
+            status: "pending",       
+            admin_note: "",          
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
-            // حفظ المفتاح الفريد تلقائياً في المتصفح لمراقبة الطلب والرجوع إليه دون تسجيل دخول
             localStorage.setItem('last_king_salon_booking_key', newBookingRef.key);
             
             showCustomAlert(
@@ -806,7 +807,6 @@
             switchDay(0);
             calculateTotal();
             
-            // تشغيل التتبع فوراً للموعد الجديد
             checkActiveBookingStatus();
         }).catch(err => {
             showCustomAlert("خطأ في الإرسال ❌", "حدث خطأ غير متوقع: " + err.message, "⚠️");
@@ -821,7 +821,6 @@
     checkShopStatus();
     buildModernTimeGrid();
     
-    // تشغيل فحص تتبع الحجز بمجرد فتح المتصفح
     checkActiveBookingStatus();
 </script>
 </body>
