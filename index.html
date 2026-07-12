@@ -91,10 +91,17 @@
 
         /* نافذة تتبع الموعد المعززة والمثبتة للتحديثات */
         .tracking-box { display: none; background: #111827; border: 2px solid var(--accent-gold); padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.7); margin-top: 20px; }
-        .status-badge { display: inline-block; padding: 10px 30px; border-radius: 25px; font-weight: bold; font-size: 17px; margin: 15px 0; }
+        .status-badge { display: inline-block; padding: 10px 30px; border-radius: 25px; font-weight: bold; font-size: 17px; margin: 15px 0; width: 100%; max-width: 320px; text-align: center; }
         .status-waiting { background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
         .status-confirmed { background: rgba(46, 204, 113, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
         .status-cancelled { background: rgba(231, 76, 60, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .status-finished { background: linear-gradient(45deg, #d4af37, #ff8c00); color: #0b0f19; box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); animation: pulse 1.5s infinite; cursor: pointer; border: none; }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
 
         .tracking-welcome-msg { background: #070a12; padding: 15px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 20px; font-size: 13.5px; line-height: 22px; color: #f3f4f6; }
 
@@ -173,7 +180,6 @@
                 <span class="barber-name">✂️ معاذ</span>
                 <div class="barber-desc">تنظيف البشرة الاحترافي وتلوين الشعر.</div>
             </div>
-            <!-- تم تعديل الحلاق السادس بناء على طلبك ليصبح: أي حلاق متوفر حالياً -->
             <div class="barber-card" id="barber-اي_حلاق_متوفر" onclick="selectBarber(this, 'أي حلاق متوفر حالياً')">
                 <span class="barber-name">⚡ أي حلاق متوفر حالياً</span>
                 <div class="barber-desc">للحصول على الخدمة الفورية المباشرة بدون انتظار.</div>
@@ -207,7 +213,6 @@
                 <span class="service-price">150 ل.س</span>
                 <input type="checkbox" value="ماسكات الوجه" data-price="150">
             </div>
-            <!-- خدمات إضافية مميزة من اختيارنا وتعديل خدمة البروتين حسب طلبك -->
             <div class="service-item" onclick="toggleService(this)">
                 <div class="service-info">
                     <span>جلسة بروتين متكاملة للشعر</span>
@@ -268,6 +273,18 @@
         <button type="submit" id="btnSubmit">تأكيد حجز الموعد</button>
     </form>
 
+    <!-- تم إضافة الخريطة هنا في الصفحة الرئيسية أيضاً لتسهيل الوصول المباشر للزبون -->
+    <div class="salon-location-box" style="margin-top: 30px;">
+        <div class="location-header">📍 عنوان صالون الملك بالتفصيل:</div>
+        <div style="margin-bottom: 5px; color:#e5e7eb;">دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
+        <a href="https://Maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-preview-container">
+            <img src="Maps.png" onerror="this.onerror=null; this.src='Maps.jpg';" alt="خريطة صالون الملك" class="map-preview-img">
+        </a>
+        <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-bottom-link-btn">
+            فتح تطبيق Google Maps والتوجه للصالون مباشرة
+        </a>
+    </div>
+
     <footer>
         جميع الحقوق محفوظة © 2026 <a href="https://bashar3baid-wq.github.io/Best.of/" target="_blank">Best of</a>
     </footer>
@@ -282,7 +299,7 @@
         أهلاً بك يا غالي في مملكتك! تم حجز مقعدك بنجاح ونحن الآن بانتظار إشعار الإدارة لتأكيد الحجز. تمهل قليلاً وتابع التحديث المباشر من هذه الصفحة.
     </div>
     
-    <div id="trackingStatusBadge" class="status-badge status-waiting">قيد الانتظار ⏳</div>
+    <div id="trackingStatusBadge" class="status-badge status-waiting">قيد الانتظار وتجهيز المقعد ⏳</div>
     
     <div style="background: #070a12; padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); text-align: right; margin-bottom: 25px; line-height: 28px;">
         <div>👤 <strong>الاسم الكريم:</strong> <span id="trackName">-</span></div>
@@ -327,11 +344,11 @@
     let selectedDayIndex = -1; 
     let isShopOpenGlobal = true;
 
-    // إضافة أوقات النصف المطلوبة
+    // الساعات بنظام النصف ساعة المطور والمتوافق بالكامل مع التطبيق
     const workingHoursSlots = [
-        "09:00 ص", "10:00 ص", "11:00 ص", "12:00 م", 
-        "01:00 م", "01:30 م", "02:00 م", "02:30 م", "03:00 م", "04:00 م", 
-        "05:00 م", "06:00 م", "07:00 م", "08:00 م"
+        "09:00 ص", "09:30 ص", "10:00 ص", "10:30 ص", "11:00 ص", "11:30 ص", "12:00 م", "12:30 م", 
+        "01:00 م", "01:30 م", "02:00 م", "02:30 م", "03:00 م", "03:30 م", "04:00 م", "04:30 م", 
+        "05:00 م", "05:30 م", "06:00 م", "06:30 م", "07:00 م", "07:30 م", "08:00 م", "08:30 م", "09:00 م"
     ];
 
     const arabicDays = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
@@ -366,7 +383,6 @@
         return `${d.getFullYear()}-${("0" + (d.getMonth() + 1)).slice(-2)}-${("0" + d.getDate()).slice(-2)}`;
     }
 
-    // فحص وتغيير تصميم المفتوح والمغلق ليكون عصري وفصل الأوقات لحالها
     function checkShopStatus() {
         let now = new Date();
         let currentHour = now.getHours();
@@ -391,7 +407,6 @@
         let now = new Date();
         let startOffset = 0;
         
-        // عند تخطي الساعة التاسعة ليلاً، يختفي اليوم الحالي من الحجز ويتحول لليوم التالي فوراً
         if (now.getHours() >= 21) {
             startOffset = 1; 
         }
@@ -439,8 +454,6 @@
         document.querySelectorAll('.barber-card').forEach(card => card.classList.remove('selected'));
         element.classList.add('selected');
         selectedBarberName = name;
-        
-        // إعادة تهيئة اختيار الوقت واليوم عند تغيير الحلاق لضمان دقة الاختيار الفوري أو المجدول
         selectedTimeForUser = "";
         buildModernTimeGrid(); 
     }
@@ -460,7 +473,14 @@
         document.getElementById('totalDisplay').innerText = total + " ل.س";
     }
 
-    // بناء شبكة الساعات الذكية: إذا كان الخيار "أي حلاق متوفر حالياً" يظهر خيار "فوري" فقط
+    function parseTimeStrToMinutes(timeStr) {
+        let [time, period] = timeStr.split(" ");
+        let [hours, mins] = time.split(":").map(Number);
+        if (period === "م" && hours !== 12) hours += 12;
+        if (period === "ص" && hours === 12) hours = 0;
+        return (hours * 60) + mins;
+    }
+
     function buildModernTimeGrid() {
         const container = document.getElementById('modernTimeGridContainer');
         const mainLabel = document.getElementById('timeGridMainLabel');
@@ -486,13 +506,21 @@
         Object.keys(allGlobalBookings).forEach(key => {
             let bookingItem = allGlobalBookings[key];
             if (bookingItem.barber_name === selectedBarberName && bookingItem.booking_date === targetDateStr) {
-                if (bookingItem.booking_time) {
+                if (bookingItem.booking_time && (bookingItem.status === "waiting" || bookingItem.status === "confirmed")) {
                     activeBookedSlots.push(bookingItem.booking_time.replace(" ظ", " م"));
                 }
             }
         });
 
+        let now = new Date();
+        let currentMinutes = (now.getHours() * 60) + now.getMinutes();
+
         workingHoursSlots.forEach(slot => {
+            if (selectedDayIndex === 0) {
+                let slotMins = parseTimeStrToMinutes(slot);
+                if (slotMins <= currentMinutes) return;
+            }
+
             const isBooked = activeBookedSlots.includes(slot);
             const slotBtn = document.createElement('div');
 
@@ -525,14 +553,17 @@
         }
         buildModernTimeGrid();
         
-        // فحص ما إذا كان الزبون يملك حجزاً مسجلاً مسبقاً في المتصفح لمنع الخروج وحفظ الحالة حتى بعد التحديث
         let savedKey = localStorage.getItem('activeKingSalonBookingKey');
         if (savedKey) {
             if (snapshot.hasChild(savedKey)) {
                 renderTrackingUI(savedKey, snapshot.child(savedKey).val());
             } else {
-                // إذا تم مسح الموعد نهائياً من قبل الإدارة في التطبيق، يظهر خيار العودة وتصفير المحلية
-                renderCancelledOrDeletedUI();
+                let lastKnownStatus = localStorage.getItem('lastKnownKingStatus');
+                if (lastKnownStatus === "finished") {
+                    renderTrackingUI(savedKey, { status: "finished" });
+                } else {
+                    renderCancelledOrDeletedUI();
+                }
             }
         }
     });
@@ -583,36 +614,48 @@
         newBookingRef.set(bookingPayload).then(() => {
             closeCustomAlert();
             localStorage.setItem('activeKingSalonBookingKey', bookingKey);
+            localStorage.setItem('lastKnownKingStatus', 'waiting');
             renderTrackingUI(bookingKey, bookingPayload);
         }).catch(err => {
             showCustomAlert("خطأ في الإرسال ❌", "حدث خطأ غير متوقع: " + err.message, "⚠️");
         });
     }
 
-    // تفعيل صفحة التتبع الذكية المقاومة للتحديث وتغيير النصوص ترحيبياً حسب الحالة
     function renderTrackingUI(bookingKey, data) {
         document.getElementById('mainContainer').style.display = "none";
         document.getElementById('trackingContainer').style.display = "block";
         
-        document.getElementById('trackName').innerText = data.customer_name;
-        document.getElementById('trackBarber').innerText = data.barber_name;
-        document.getElementById('trackTime').innerText = data.booking_time;
-        document.getElementById('trackDate').innerText = data.booking_date;
+        if (data.customer_name) {
+            document.getElementById('trackName').innerText = data.customer_name;
+            document.getElementById('trackBarber').innerText = data.barber_name;
+            document.getElementById('trackTime').innerText = data.booking_time;
+            document.getElementById('trackDate').innerText = data.booking_date;
+        }
 
         const badge = document.getElementById('trackingStatusBadge');
         const msgBox = document.getElementById('trackingDynamicMessage');
         const backBtn = document.getElementById('backToHomeBtn');
+        badge.onclick = null;
 
         if (data.status === "waiting") {
             badge.innerText = "قيد الانتظار وتجهيز المقعد ⏳";
             badge.className = "status-badge status-waiting";
             msgBox.innerHTML = `✨ <strong>يا مية أهلاً وسهلاً بك يا ملك!</strong> حجزك مسجل لدينا الآن بنجاح. يرجى التمهل قليلاً وعدم إغلاق الصفحة، الإدارة تقوم بمراجعة وتأكيد دورك الملوكي حالياً لتوفير أفضل سبل الراحة الفاخرة لك.`;
-            backBtn.style.display = "none"; // حظر الخروج حتى يتم المعالجة والمسح
+            backBtn.style.display = "none"; 
+            localStorage.setItem('lastKnownKingStatus', 'waiting');
         } else if (data.status === "confirmed") {
             badge.innerText = "تم تأكيد موعدك بنجاح ونعيماً سلفاً 🎉👑";
             badge.className = "status-badge status-confirmed";
             msgBox.innerHTML = `🌟 <strong>أهلاً بملكنا الغالي! أبشر.. تم تأكيد حجزك رسمياً!</strong><br>الرجاء عدم التأخر عن موعدك المحدد لضمان تقديم فخامة الأداء الفوري. نعيماً سلفاً ومقعدك بانتظار تشريفك الفخم! ✂️👑`;
             backBtn.style.display = "none"; 
+            localStorage.setItem('lastKnownKingStatus', 'confirmed');
+        } else if (data.status === "finished") {
+            badge.innerText = "👑 نعيماً يا ملك (اضغط هنا للعودة)";
+            badge.className = "status-badge status-finished";
+            msgBox.innerHTML = `✨ <strong>نعيماً يا غالي وأهلاً بك دائماً في صالون الملك!</strong><br>تم إنهاء خدمتك بنجاح ومقعدك الملوكي جاهز لأي زيارة قادمة تشرفنا بها. اضغط على الزر الذهبي أو الزر بالأسفل للعودة وحجز دور جديد في أي وقت!`;
+            backBtn.style.display = "block";
+            badge.onclick = clearTrackingAndReturn;
+            localStorage.setItem('lastKnownKingStatus', 'finished');
         } else if (data.status === "cancelled") {
             renderCancelledOrDeletedUI();
         }
@@ -629,11 +672,13 @@
         badge.innerText = "أُلغي موعدك للأسف 🔴";
         badge.className = "status-badge status-cancelled";
         msgBox.innerHTML = `😔 <strong>نعتذر منك بشدة يا غالي..</strong> لقد تم إلغاء الموعد أو إزالته من قبل الإدارة نظراً لضغط العمل المتزايد بالصالون أو لتداخل غير مقصود. يمكنك الآن الضغط على الزر أدناه والعودة مجدداً لاختيار حلاق أو وقت آخر يناسبك تماماً.`;
-        backBtn.style.display = "block"; // إظهار زر الخروج بعد الإلغاء فقط
+        backBtn.style.display = "block"; 
+        localStorage.setItem('lastKnownKingStatus', 'cancelled');
     }
 
     function clearTrackingAndReturn() {
         localStorage.removeItem('activeKingSalonBookingKey');
+        localStorage.removeItem('lastKnownKingStatus');
         document.getElementById('trackingContainer').style.display = "none";
         document.getElementById('mainContainer').style.display = "block";
         document.getElementById('bookingForm').reset();
@@ -653,3 +698,4 @@
 </script>
 </body>
 </html>
+
