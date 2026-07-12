@@ -3,699 +3,875 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صالون الملك - حجز مواعد إلكتروني</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
+    <title>صالون الملك - حجز مواعيد</title>
+    <!-- تضمين مكتبة SweetAlert2 للتنبيهات الاحترافية -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #111827;
-            --accent-gold: #d4af37;
-            --accent-orange: #ff8c00;
-            --text-main: #ffffff;
-            --text-muted: #9ca3af;
-            --border-color: #1f2937;
-            --accent-purple: #6366f1;
-            --accent-green: #2ecc71;
-            --accent-red: #e74c3c;
+            --primary: #d4af37;
+            --primary-hover: #aa892c;
+            --bg-dark: #121212;
+            --surface: #1e1e1e;
+            --text: #ffffff;
+            --text-muted: #b3b3b3;
+            --accent: #ff9800;
+            --success: #4caf50;
+            --danger: #f44336;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid rgba(212,175,55,0.15); }
-        h1 { text-align: center; color: var(--accent-gold); font-size: 30px; font-weight: 900; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 15px; }
-        
-        /* تصميم أنيق وعصري لحالة الصالون وفصل أوقات العمل */
-        .shop-status-container { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 25px; }
-        .modern-status-badge { font-size: 15px; font-weight: 700; padding: 8px 24px; border-radius: 30px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; }
-        .status-open { background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(46, 204, 113, 0.05)); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4); }
-        .status-closed { background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.05)); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4); }
-        .working-hours-text { font-size: 12.5px; color: var(--text-muted); font-weight: 600; background: rgba(31, 41, 55, 0.5); padding: 4px 14px; border-radius: 12px; border: 1px solid var(--border-color); }
 
-        /* تجميل وترتيب عبارات الترحيب لتصبح أصغر وأرتب */
-        .welcome-box { background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(255,140,0,0.03)); border-right: 4px solid var(--accent-gold); padding: 12px 16px; border-radius: 8px 16px 16px 8px; text-align: justify; margin-bottom: 25px; color: #e5e7eb; font-size: 12.5px; line-height: 20px; }
-        
-        label { display: block; margin: 25px 0 12px; font-weight: 700; color: var(--accent-gold); font-size: 16px; border-right: 4px solid var(--accent-orange); padding-right: 10px; }
-        input, select { width: 100%; padding: 14px; background: #070a12; border: 1px solid var(--border-color); border-radius: 12px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--accent-gold); }
-        
-        .barbers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
-        .barber-card { background: #070a12; padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 110px; }
-        .barber-card:hover { border-color: var(--accent-orange); transform: translateY(-2px); }
-        .barber-card.selected { border-color: var(--accent-gold); background: linear-gradient(145deg, #0d1626 0%, rgba(212,175,55,0.06) 100%); box-shadow: 0 8px 20px rgba(212,175,55,0.15); position: relative; }
-        .barber-card.selected::after { content: '✓'; position: absolute; top: 8px; left: 10px; color: var(--accent-gold); font-weight: bold; font-size: 16px; }
-        .barber-name { font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 6px; }
-        .barber-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* قسم تحديد التاريخ والوقت */
-        .fresha-section { background: #070a12; border: 1px solid var(--border-color); padding: 20px; border-radius: 20px; margin-top: 15px; }
-        .fresha-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 15px; }
-        
-        .days-carousel { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .days-carousel::-webkit-scrollbar { display: none; }
-        
-        .fresha-day-card { flex: 0 0 calc(33.33% - 7px); background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px 5px; border-radius: 16px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; gap: 4px; }
-        .fresha-day-name { font-size: 12px; color: var(--text-muted); }
-        .fresha-day-num { font-size: 20px; font-weight: 900; color: #fff; }
-        .fresha-day-month { font-size: 11px; color: var(--text-muted); }
-        
-        .fresha-day-card.active { background: #5c62ec; border-color: #5c62ec; }
-        .fresha-day-card.active .fresha-day-name, 
-        .fresha-day-card.active .fresha-day-num, 
-        .fresha-day-card.active .fresha-day-month { color: #ffffff; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-        .fresha-time-container { display: none; margin-top: 20px; }
-        .fresha-time-label { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 10px; }
-        .modern-time-grid { display: flex; flex-direction: column; gap: 8px; }
-        
-        .time-slot-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px 20px; border-radius: 14px; text-align: left; font-size: 15px; color: #fff; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: flex-end; align-items: center; }
-        .time-slot-item:hover:not(.unavailable):not(.selected) { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); }
-        .time-slot-item.selected { border: 2px solid #5c62ec; background: rgba(92, 98, 236, 0.05); color: #fff; }
-        
-        .time-slot-item.unavailable { background: rgba(231, 76, 60, 0.08); border-color: rgba(231, 76, 60, 0.3); color: #7f8c8d; cursor: not-allowed; text-decoration: line-through; }
-        .time-slot-item.unavailable::before { content: "(محجوز) "; margin-left: auto; color: var(--accent-red); font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block; }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
 
-        .services-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .service-item { display: flex; align-items: center; justify-content: space-between; background: #070a12; padding: 14px 18px; border-radius: 14px; border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
-        .service-item input[type="checkbox"] { display: none; }
-        .service-item.selected { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); }
-        .service-price { color: var(--accent-gold); font-weight: bold; font-size: 14px; }
-        .service-desc-line { font-size: 11px; color: var(--text-muted); display: block; margin-top: 3px; font-weight: normal; }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
 
-        .total-box { margin-top: 25px; padding: 18px; background: #070a12; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent-orange); }
-        .total-amount { font-size: 22px; font-weight: 900; color: var(--accent-gold); }
+        .logo-area h1 {
+            font-size: 26px;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
 
-        .payment-method { margin-top: 15px; background: linear-gradient(90deg, rgba(255, 140, 0, 0.1) 0%, rgba(17, 24, 39, 0.5) 100%); border: 1px solid var(--accent-orange); padding: 14px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; color: #fff; }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
 
-        /* نافذة تتبع الموعد المعززة والمثبتة للتحديثات */
-        .tracking-box { display: none; background: #111827; border: 2px solid var(--accent-gold); padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.7); margin-top: 20px; }
-        .status-badge { display: inline-block; padding: 10px 30px; border-radius: 25px; font-weight: bold; font-size: 17px; margin: 15px 0; width: 100%; max-width: 320px; text-align: center; }
-        .status-waiting { background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
-        .status-confirmed { background: rgba(46, 204, 113, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
-        .status-cancelled { background: rgba(231, 76, 60, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
-        .status-finished { background: linear-gradient(45deg, #d4af37, #ff8c00); color: #0b0f19; box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); animation: pulse 1.5s infinite; cursor: pointer; border: none; }
-        
+        .shop-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .shop-status.closed {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--danger);
+        }
+
+        .section-title {
+            font-size: 15px;
+            color: var(--primary);
+            margin: 20px 0 12px 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid-select {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .card-option {
+            background: #262626;
+            border: 2px solid transparent;
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .card-option:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .card-option.selected {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--primary);
+        }
+
+        .card-option .icon {
+            font-size: 22px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .card-option .name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .carousel {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carousel-item {
+            flex: 0 0 calc(33.33% - 7px);
+            background: #262626;
+            border: 2px solid transparent;
+            padding: 12px;
+            border-radius: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.23s ease;
+        }
+
+        .carousel-item.selected {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--primary);
+        }
+
+        .carousel-item .day {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .carousel-item .date {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            max-height: 180px;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+
+        .time-slot {
+            background: #262626;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .time-slot.selected {
+            background: var(--primary);
+            color: #000;
+            font-weight: bold;
+        }
+
+        .time-slot.booked {
+            background: #1a1a1a;
+            color: #444;
+            text-decoration: line-through;
+            cursor: not-allowed;
+            pointer-events: none;
+            border: none;
+        }
+
+        .services-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #262626;
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background 0.2s;
+        }
+
+        .service-item.selected {
+            border-color: rgba(212, 175, 55, 0.3);
+            background: rgba(212, 175, 55, 0.04);
+        }
+
+        .service-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .service-item checkbox-mock {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #555;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .service-item.selected checkbox-mock {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .service-item.selected checkbox-mock::after {
+            content: "✓";
+            color: #000;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .service-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .service-price {
+            font-size: 14px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: #262626;
+            border: 1px solid transparent;
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.25s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            background: #2a2a2a;
+        }
+
+        .checkout-box {
+            background: rgba(255, 152, 0, 0.05);
+            border: 1px dashed rgba(255, 152, 0, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checkout-box .total-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .checkout-box .total-price {
+            font-size: 20px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary), #b8952c);
+            color: #000;
+            border: none;
+            padding: 15px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* شاشة التتبع المباشر الحية */
+        .live-tracking-box {
+            display: none;
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .tracking-status-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
         }
 
-        .tracking-welcome-msg { background: #070a12; padding: 15px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 20px; font-size: 13.5px; line-height: 22px; color: #f3f4f6; }
+        .tracking-status-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
 
-        /* نافذة الانتظار والتنبيهات */
-        .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 7, 18, 0.9); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.4s ease; padding: 20px; }
-        .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .custom-modal-card { background: #111827; border: 2px solid var(--accent-gold); padding: 30px 25px; border-radius: 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
-        .modal-spinner { width: 45px; height: 45px; border: 4px solid rgba(212,175,55,0.1); border-top: 4px solid var(--accent-gold); border-radius: 50%; margin: 0 auto 20px auto; animation: spin 1s linear infinite; display: none; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .modal-icon { font-size: 55px; margin-bottom: 15px; display: block; }
-        .modal-title { font-size: 22px; font-weight: 800; color: var(--accent-gold); margin-bottom: 12px; }
-        .modal-message { font-size: 14.5px; color: #f3f4f6; line-height: 24px; margin-bottom: 25px; }
-        .modal-close-btn { background: linear-gradient(45deg, var(--accent-gold), var(--accent-orange)); color: #0b0f19; font-weight: bold; padding: 12px 35px; border-radius: 10px; border: none; cursor: pointer; font-size: 15px; }
-        
-        .salon-location-box { margin-top: 15px; background: #070a12; border: 1px solid var(--border-color); border-right: 4px solid #3498db; padding: 15px; border-radius: 12px; font-size: 13px; line-height: 22px; text-align: right; }
-        .location-header { font-weight: bold; color: #3498db; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; font-size: 15px; }
-        .map-preview-container { width: 100%; height: 140px; margin-top: 12px; border-radius: 10px; overflow: hidden; display: block; border: 1px solid var(--border-color); }
-        .map-preview-img { width: 100%; height: 100%; object-fit: cover; }
-        .map-bottom-link-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #fff; padding: 10px; font-weight: bold; text-decoration: none; margin-top: 10px; font-size: 13px; }
+        .tracking-status-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            background: #262626;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
 
-        button[type="submit"] { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--accent-gold), var(--accent-orange)); border: none; border-radius: 14px; color: #0b0f19; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 30px; transition: 0.3s; }
-        button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,140,0,0.3); }
-        button[type="submit"]:disabled { background: #374151; color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
-        
-        footer { text-align: center; margin-top: 40px; font-size: 12px; color: var(--text-muted); line-height: 20px; border-top: 1px solid var(--border-color); padding-top: 20px; }
-        footer a { color: var(--accent-gold); text-decoration: none; font-weight: bold; }
+        .tracking-details-list {
+            text-align: right;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(212,175,55,0.1);
+        }
+
+        .tracking-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13.5px;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #262626;
+        }
+
+        .tracking-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .tracking-label { color: var(--text-muted); }
+        .tracking-value { color: #fff; font-weight: 500; }
+
+        .map-preview {
+            width: 100%;
+            height: 120px;
+            background: #262626;
+            border-radius: 12px;
+            margin-top: 15px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #333;
+        }
+
+        .map-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+
+        .map-overlay-btn {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.4);
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            gap: 6px;
+        }
+
+        .payment-notice {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .loader {
+            border: 3px solid #333;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
-<div class="custom-modal-overlay" id="customAlertModal">
-    <div class="custom-modal-card">
-        <div class="modal-spinner" id="modalSpinner"></div>
-        <span class="modal-icon" id="modalIcon">👑</span>
-        <div class="modal-title" id="modalTitle">تنبيه الموعد</div>
-        <div class="modal-message" id="modalMessage">جاري المعالجة...</div>
-        <button type="button" class="modal-close-btn" id="modalCloseBtn" onclick="closeCustomAlert()">حسناً</button>
-    </div>
-</div>
+<div class="container">
+    <!-- شاشة إدخال وحجز البيانات الرئيسية -->
+    <div id="booking-flow">
+        <header>
+            <div class="logo-area">
+                <h1>ملك الصالونات 👑</h1>
+                <p class="subtitle">احجز موعدك الإلكتروني بدقيقة واحدة</p>
+            </div>
+            <div id="shop-status-tag" class="shop-status">جاري التحقق من حالة الصالون...</div>
+        </header>
 
-<!-- الواجهة الرئيسية للحجز -->
-<div class="container" id="mainContainer">
-    <h1>👑 صالون الملك 👑</h1>
-    <div class="subtitle">فخامة الأداء ودقة المواعيد تناسب ملوك مجتمعنا</div>
-
-    <div class="shop-status-container">
-        <span id="shopStatusIndicator" class="modern-status-badge">جاري الفحص المباشر...</span>
-        <span class="working-hours-text">أوقات استقبال الزبائن الكرام: 9:00 صباحاً - 9:00 مساءً</span>
-    </div>
-
-    <div class="welcome-box">
-        مرحباً بك في نظام الحجز المطور لصالون الملك. فضلاً، املأ الخيارات التالية وسيتم تحديث وحجب الأوقات تلقائياً لضمان راحتك وتفادي الانتظار.
-    </div>
-
-    <form id="bookingForm" onsubmit="confirmAndSend(event)">
-        
-        <label>اختر الحلاق المفضل لديك ✂️:</label>
-        <div class="barbers-grid" id="barbersGroup">
-            <div class="barber-card" id="barber-بشار" onclick="selectBarber(this, 'بشار')">
-                <span class="barber-name">✂️ بشار</span>
-                <div class="barber-desc">أحدث القصات وتحديد اللحية بدقة.</div>
-            </div>
-            <div class="barber-card" id="barber-محمد ابو غياث" onclick="selectBarber(this, 'محمد ابو غياث')">
-                <span class="barber-name">✂️ أبو غياث</span>
-                <div class="barber-desc">فنان السشوار والتصفيف المودرن.</div>
-            </div>
-            <div class="barber-card" id="barber-محمد ابو علي" onclick="selectBarber(this, 'محمد ابو علي')">
-                <span class="barber-name">✂️ أبو علي</span>
-                <div class="barber-desc">القصات الكلاسيكية وتجهيز العرسان.</div>
-            </div>
-            <div class="barber-card" id="barber-يزن" onclick="selectBarber(this, 'يزن')">
-                <span class="barber-name">✂️ يزن</span>
-                <div class="barber-desc">مبدع قصات الفيد والماسكات الفخمة.</div>
-            </div>
-            <div class="barber-card" id="barber-معاذ" onclick="selectBarber(this, 'معاذ')">
-                <span class="barber-name">✂️ معاذ</span>
-                <div class="barber-desc">تنظيف البشرة الاحترافي وتلوين الشعر.</div>
-            </div>
-            <div class="barber-card" id="barber-اي_حلاق_متوفر" onclick="selectBarber(this, 'أي حلاق متوفر حالياً')">
-                <span class="barber-name">⚡ أي حلاق متوفر حالياً</span>
-                <div class="barber-desc">للحصول على الخدمة الفورية المباشرة بدون انتظار.</div>
-            </div>
-        </div>
-
-        <label>الخدمات المطلوبة (يمكنك اختيار خدمات متعددة):</label>
-        <div class="services-grid">
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>حلاقة شعر</span></div>
-                <span class="service-price">300 ل.س</span>
-                <input type="checkbox" value="حلاقة شعر" data-price="300">
-            </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>حلاقة ذقن</span></div>
-                <span class="service-price">300 ل.س</span>
-                <input type="checkbox" value="حلاقة ذقن" data-price="300">
-            </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>حلاقة شعر وذقن</span></div>
-                <span class="service-price">500 ل.س</span>
-                <input type="checkbox" value="حلاقة شعر وذقن" data-price="500">
-            </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>سشوار وتصفيف شعر</span></div>
-                <span class="service-price">300 ل.س</span>
-                <input type="checkbox" value="سشوار وتصفيف شعر" data-price="300">
-            </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>ماسكات العناية بالوجه</span></div>
-                <span class="service-price">150 ل.س</span>
-                <input type="checkbox" value="ماسكات الوجه" data-price="150">
-            </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>جلسة بروتين متكاملة للشعر</span>
-                    <span class="service-desc-line">السعر حسب طول الشعر يحدد داخل الصالون</span>
+        <main>
+            <div class="section-title">👤 اختر الحلاق المفضل</div>
+            <div class="grid-select">
+                <div class="card-option selected" onclick="selectBarber('الملك أبو يعقوب', this)">
+                    <span class="icon">✂️</span>
+                    <span class="name">الملك أبو يعقوب</span>
                 </div>
-                <span class="service-price">حسب الطول</span>
-                <input type="checkbox" value="جلسة بروتين (يحدد السعر بالصالون)" data-price="0">
-            </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>صبغة شعر إيطالية متكاملة</span>
-                    <span class="service-desc-line">تغطية كاملة للشيب بأجود المواد</span>
-                </div>
-                <span class="service-price">400 ل.س</span>
-                <input type="checkbox" value="صبغة شعر إيطالية" data-price="400">
-            </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>حمام زيت علاجي بالبخار</span>
-                    <span class="service-desc-line">تغذية بصيلات الشعر وإعادة الحيوية</span>
-                </div>
-                <span class="service-price">200 ل.س</span>
-                <input type="checkbox" value="حمام زيت بالبخار" data-price="200">
-            </div>
-        </div>
-
-        <div class="total-box">
-            <span class="total-title">الحساب الإجمالي التقريبي:</span>
-            <span id="totalDisplay" class="total-amount">0 ل.س</span>
-        </div>
-
-        <div class="payment-method">
-            📱 متوفر الدفع عبر شام كاش - Sham Cash
-        </div>
-
-        <!-- قائمة حجز التاريخ والوقت المدمجة -->
-        <div class="fresha-section">
-            <div class="fresha-title">تحديد التاريخ والوقت</div>
-            
-            <div class="days-carousel" id="freshaDaysCarousel">
-                <!-- توليد الأيام برمجياً -->
-            </div>
-            
-            <div class="fresha-time-container" id="freshaTimeContainer">
-                <div class="fresha-time-label" id="timeGridMainLabel">يرجى اختيار وقت الحضور للموعد:</div>
-                <div class="modern-time-grid" id="modernTimeGridContainer">
-                    <!-- تظهر الساعات هنا فقط عند ضغط الزبون على اليوم -->
+                <div class="card-option" onclick="selectBarber('الكينغ أبو العز', this)">
+                    <span class="icon">💈</span>
+                    <span class="name">الكينغ أبو العز</span>
                 </div>
             </div>
+
+            <div class="section-title">📅 اختر اليوم</div>
+            <div class="carousel" id="days-carousel"></div>
+
+            <div class="section-title">⏰ الأوقات المتاحة للطلب</div>
+            <div class="time-grid" id="time-slots-container"></div>
+
+            <div class="section-title">💼 الخدمات المطلوبة</div>
+            <div class="services-list">
+                <div class="service-item" onclick="toggleService('حلاقة شعر ملكية', 5000, this)">
+                    <div class="service-info">
+                        <checkbox-mock></checkbox-mock>
+                        <span class="service-name">حلاقة شعر ملكية</span>
+                    </div>
+                    <span class="service-price">5,000 ل.س</span>
+                </div>
+                <div class="service-item" onclick="toggleService('حلاقة ذقن هوليوود', 3500, this)">
+                    <div class="service-info">
+                        <checkbox-mock></checkbox-mock>
+                        <span class="service-name">حلاقة ذقن هوليوود</span>
+                    </div>
+                    <span class="service-price">3,500 ل.س</span>
+                </div>
+                <div class="service-item" onclick="toggleService('تنظيف بشرة كولاجين', 4000, this)">
+                    <div class="service-info">
+                        <checkbox-mock></checkbox-mock>
+                        <span class="service-name">تنظيف بشرة كولاجين</span>
+                    </div>
+                    <span class="service-price">4,000 ل.س</span>
+                </div>
+                <div class="service-item" onclick="toggleService('سشوار وتصفيف ملكي', 2000, this)">
+                    <div class="service-info">
+                        <checkbox-mock></checkbox-mock>
+                        <span class="service-name">سشوار وتصفيف ملكي</span>
+                    </div>
+                    <span class="service-price">2,000 ل.س</span>
+                </div>
+            </div>
+
+            <div class="section-title">📱 بيانات الاتصال الأساسية</div>
+            <div class="input-group">
+                <input type="text" id="client-name" placeholder="اكتب اسمك الثلاثي الكريم هنا..." autocomplete="off">
+            </div>
+
+            <div class="checkout-box">
+                <span class="total-label">الحساب الإجمالي التقريبي:</span>
+                <span class="total-price" id="total-price-display">0 ل.س</span>
+            </div>
+
+            <button class="btn-submit" id="submit-btn" onclick="processBookingSubmission()">تأكيد حجز الموعد فوراً</button>
+        </main>
+    </div>
+
+    <!-- شاشة التتبع الحية بعد إرسال الطلب بنجاح -->
+    <div id="live-tracking" class="live-tracking-box">
+        <div class="tracking-status-icon" id="track-icon">⏳</div>
+        <div class="tracking-status-title" id="track-title">قيد الانتظار والمراجعة...</div>
+        <div class="tracking-status-desc" id="track-desc">
+            جاري مراجعة طلب حجزك الآن من قبل إدارة الصالون لترتيب المقاعد، يرجى إبقاء هذه الصفحة مفتوحة لمشاهدة التحديث الحي.
         </div>
 
-        <label>اسم الزبون:</label>
-        <input type="text" id="customerName" placeholder="اكتب اسمك الكامل" required>
+        <div class="tracking-details-list">
+            <div class="tracking-item"><span class="tracking-label">رقم الحجز الفريد:</span><span class="tracking-value" id="lbl-track-id">-</span></div>
+            <div class="tracking-item"><span class="tracking-label">اسم الزبون:</span><span class="tracking-value" id="lbl-track-name">-</span></div>
+            <div class="tracking-item"><span class="tracking-label">الكابتن الحلاق:</span><span class="tracking-value" id="lbl-track-barber">-</span></div>
+            <div class="tracking-item"><span class="tracking-label">توقيت الحجز:</span><span class="tracking-value" id="lbl-track-time">-</span></div>
+            <div class="tracking-item"><span class="tracking-label">الخدمات الكلية:</span><span class="tracking-value" id="lbl-track-services">-</span></div>
+            <div class="tracking-item"><span class="tracking-label">كلفة الخدمات:</span><span class="tracking-value" id="lbl-track-total" style="color:var(--accent); font-weight:bold;">-</span></div>
+        </div>
 
-        <label>رقم الهاتف:</label>
-        <input type="tel" id="customerPhone" placeholder="09xxxxxxxx" required>
+        <div class="map-preview">
+            <img src="Maps.png" alt="موقع الصالون" onerror="this.src='https://via.placeholder.com/480x120/262626/888888?text=%D8%B5%D8%A7%D9%84%D9%84%D9%84%D9%88%D9%86+%D8%A7%D9%84%D9%85%D9%84%D9%83+%D9%81%D9%8A+%D8%AF%D9%85%D8%B4%D9%82'">
+            <a href="https://maps.google.com/?q=Damascus+Merjeh+Square" target="_blank" class="map-overlay-btn">📍 اضغط لفتح موقع الصالون على الخريطة</a>
+        </div>
 
-        <button type="submit" id="btnSubmit">تأكيد حجز الموعد</button>
-    </form>
-
-    <!-- تم إضافة الخريطة هنا في الصفحة الرئيسية أيضاً لتسهيل الوصول المباشر للزبون -->
-    <div class="salon-location-box" style="margin-top: 30px;">
-        <div class="location-header">📍 عنوان صالون الملك بالتفصيل:</div>
-        <div style="margin-bottom: 5px; color:#e5e7eb;">دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
-        <a href="https://Maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-preview-container">
-            <img src="Maps.png" onerror="this.onerror=null; this.src='Maps.jpg';" alt="خريطة صالون الملك" class="map-preview-img">
-        </a>
-        <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-bottom-link-btn">
-            فتح تطبيق Google Maps والتوجه للصالون مباشرة
-        </a>
+        <div class="payment-notice">⚡ نتشرف بكم دائماً • متوفر لدينا الدفع عبر شام كاش</div>
     </div>
-
-    <footer>
-        جميع الحقوق محفوظة © 2026 <a href="https://bashar3baid-wq.github.io/Best.of/" target="_blank">Best of</a>
-    </footer>
-</div>
-
-<!-- واجهة تتبع حالة الموعد الاحترافية الثابتة والمقاومة للتحديث وحفظ البيانات متكاملة -->
-<div class="container tracking-box" id="trackingContainer">
-    <h2>👑 تتبع حالة موعدك الملوكي 👑</h2>
-    
-    <!-- عبارات الترحيب والتهنئة والنصائح التفاعلية اللطيفة -->
-    <div class="tracking-welcome-msg" id="trackingDynamicMessage">
-        أهلاً بك يا غالي في مملكتك! تم حجز مقعدك بنجاح ونحن الآن بانتظار إشعار الإدارة لتأكيد الحجز. تمهل قليلاً وتابع التحديث المباشر من هذه الصفحة.
-    </div>
-    
-    <div id="trackingStatusBadge" class="status-badge status-waiting">قيد الانتظار وتجهيز المقعد ⏳</div>
-    
-    <div style="background: #070a12; padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); text-align: right; margin-bottom: 25px; line-height: 28px;">
-        <div>👤 <strong>الاسم الكريم:</strong> <span id="trackName">-</span></div>
-        <div>✂️ <strong>الحلاق المختار:</strong> <span id="trackBarber">-</span></div>
-        <div>⏰ <strong>وقت الحضور:</strong> <span id="trackTime">-</span></div>
-        <div>📅 <strong>التاريخ المجدول:</strong> <span id="trackDate">-</span></div>
-    </div>
-    
-    <!-- عرض موقع الصالون مدمجاً داخل صفحة التتبع لتسهيل الوصول المباشر للزبون -->
-    <div class="salon-location-box" style="margin-bottom: 25px;">
-        <div class="location-header">📍 عنوان صالون الملك بالتفصيل:</div>
-        <div style="margin-bottom: 5px; color:#e5e7eb;">دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
-        <a href="https://Maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-preview-container">
-            <img src="Maps.png" onerror="this.onerror=null; this.src='Maps.jpg';" alt="خريطة صالون الملك" class="map-preview-img">
-        </a>
-        <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-bottom-link-btn">
-            فتح تطبيق Google Maps والتوجه للصالون مباشرة
-        </a>
-    </div>
-    
-    <!-- زر العودة يظهر فقط بعد الإلغاء ولا يمكن الخروج من الصفحة بالأنظمة الطبيعية في حال الانتظار/التأكيد -->
-    <button type="button" id="backToHomeBtn" class="modal-close-btn" onclick="clearTrackingAndReturn()" style="background: #1f2937; color: #fff; width: 100%; display:none;">العودة للصفحة الرئيسية</button>
 </div>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyAyqYbnurEZe7uMe3eXO07qefcDJUdvlPY",
-        authDomain: "aqarlak-9009a.firebaseapp.com",
-        databaseURL: "https://aqarlak-9009a-default-rtdb.firebaseio.com",
-        projectId: "aqarlak-9009a",
-        storageBucket: "aqarlak-9009a.firebasestorage.app",
-        messagingSenderId: "656527514630",
-        appId: "1:656527514630:web:9b44decd58d7539ebc7787"
+    // إعدادات الاتصال المباشر بقاعدة بيانات Firebase Realtime Database الخاصة بك
+    const FIREBASE_DB_URL = "https://barber-almalik-default-rtdb.firebaseio.com/barber_bookings";
+
+    // كائن البيانات العام لتخزين مدخلات المستخدم الحالية
+    let currentBookingData = {
+        barber: "الملك أبو يعقوب",
+        dayString: "",
+        dayRaw: "",
+        timeSlot: "",
+        services: [],
+        totalPrice: 0
     };
-    
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
 
-    let selectedBarberName = ""; 
-    let selectedTimeForUser = ""; 
-    let allGlobalBookings = {}; 
-    let selectedDayIndex = -1; 
-    let isShopOpenGlobal = true;
+    let selectedServicesMap = new Map();
+    let firebaseListenerRef = null; 
+    let currentActiveBookingId = null; 
 
-    // الساعات بنظام النصف ساعة المطور والمتوافق بالكامل مع التطبيق
-    const workingHoursSlots = [
-        "09:00 ص", "09:30 ص", "10:00 ص", "10:30 ص", "11:00 ص", "11:30 ص", "12:00 م", "12:30 م", 
-        "01:00 م", "01:30 م", "02:00 م", "02:30 م", "03:00 م", "03:30 م", "04:00 م", "04:30 م", 
-        "05:00 م", "05:30 م", "06:00 م", "06:30 م", "07:00 م", "07:30 م", "08:00 م", "08:30 م", "09:00 م"
-    ];
-
-    const arabicDays = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
-    const arabicMonths = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
-
-    function showSmartLoading() {
-        document.getElementById('modalTitle').innerText = "قيد الانتظار...";
-        document.getElementById('modalMessage').innerText = "جاري الحفظ والتحقق من التزامن السحابي الفوري، يرجى الانتظار لحفظ الموعد الملوكي الخاص بك...";
-        document.getElementById('modalIcon').style.display = "none";
-        document.getElementById('modalSpinner').style.display = "block";
-        document.getElementById('modalCloseBtn').style.display = "none";
-        document.getElementById('customAlertModal').classList.add('active');
-    }
-
-    function showCustomAlert(title, message, icon = "👑") {
-        document.getElementById('modalSpinner').style.display = "none";
-        document.getElementById('modalIcon').style.display = "block";
-        document.getElementById('modalIcon').innerText = icon;
-        document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalMessage').innerText = message;
-        document.getElementById('modalCloseBtn').style.display = "inline-block";
-        document.getElementById('customAlertModal').classList.add('active');
-    }
-
-    function closeCustomAlert() {
-        document.getElementById('customAlertModal').classList.remove('active');
-    }
-
-    function getFormattedDateString(offset) {
-        let d = new Date();
-        d.setDate(d.getDate() + offset);
-        return `${d.getFullYear()}-${("0" + (d.getMonth() + 1)).slice(-2)}-${("0" + d.getDate()).slice(-2)}`;
-    }
-
-    function checkShopStatus() {
-        let now = new Date();
-        let currentHour = now.getHours();
-        const statusIndicator = document.getElementById('shopStatusIndicator');
+    // تشغيل وإعداد العناصر فور تحميل المستند بالكامل
+    window.addEventListener('DOMContentLoaded', () => {
+        checkShopOpeningHours();
+        buildThreeDaysCarousel();
         
-        if (currentHour < 9 || currentHour >= 21) {
-            statusIndicator.innerText = "مغلق الآن 🌙";
-            statusIndicator.className = "modern-status-badge status-closed";
-            isShopOpenGlobal = false;
-        } else {
-            statusIndicator.innerText = "مفتوح الآن 🟢";
-            statusIndicator.className = "modern-status-badge status-open";
-            isShopOpenGlobal = true;
-        }
-    }
-
-    function generateFreshaDays() {
-        checkShopStatus();
-        const carousel = document.getElementById('freshaDaysCarousel');
-        carousel.innerHTML = "";
-
-        let now = new Date();
-        let startOffset = 0;
-        
-        if (now.getHours() >= 21) {
-            startOffset = 1; 
-        }
-
-        for (let i = startOffset; i < startOffset + 3; i++) {
-            let targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + i);
-
-            let dayName = arabicDays[targetDate.getDay()];
-            let displayLabel = dayName;
-            
-            let todayStr = getFormattedDateString(0);
-            let checkStr = `${targetDate.getFullYear()}-${("0" + (targetDate.getMonth() + 1)).slice(-2)}-${("0" + targetDate.getDate()).slice(-2)}`;
-            
-            if (checkStr === todayStr) displayLabel = "اليوم (" + dayName + ")";
-            else if (i === 1) displayLabel = "غداً (" + dayName + ")";
-            else if (i === 2) displayLabel = "بعد غد (" + dayName + ")";
-
-            let dayNum = targetDate.getDate();
-            let monthName = arabicMonths[targetDate.getMonth()];
-
-            const card = document.createElement('div');
-            card.className = `fresha-day-card ${i === selectedDayIndex ? 'active' : ''}`;
-            let currentIndex = i;
-            card.onclick = () => switchDay(currentIndex);
-
-            card.innerHTML = `
-                <span class="fresha-day-name">${displayLabel}</span>
-                <span class="fresha-day-num">${dayNum}</span>
-                <span class="fresha-day-month">${monthName}</span>
-            `;
-            carousel.appendChild(card);
-        }
-    }
-
-    function switchDay(index) {
-        selectedDayIndex = index;
-        generateFreshaDays();
-        selectedTimeForUser = ""; 
-        document.getElementById('freshaTimeContainer').style.display = "block"; 
-        buildModernTimeGrid();
-    }
-
-    function selectBarber(element, name) {
-        document.querySelectorAll('.barber-card').forEach(card => card.classList.remove('selected'));
-        element.classList.add('selected');
-        selectedBarberName = name;
-        selectedTimeForUser = "";
-        buildModernTimeGrid(); 
-    }
-
-    function toggleService(element) {
-        const checkbox = element.querySelector('input[type="checkbox"]');
-        checkbox.checked = !checkbox.checked;
-        element.classList.toggle('selected', checkbox.checked);
-        calculateTotal();
-    }
-
-    function calculateTotal() {
-        let total = 0;
-        document.querySelectorAll('.services-grid input:checked').forEach(cb => {
-            total += parseInt(cb.getAttribute('data-price'));
-        });
-        document.getElementById('totalDisplay').innerText = total + " ل.س";
-    }
-
-    function parseTimeStrToMinutes(timeStr) {
-        let [time, period] = timeStr.split(" ");
-        let [hours, mins] = time.split(":").map(Number);
-        if (period === "م" && hours !== 12) hours += 12;
-        if (period === "ص" && hours === 12) hours = 0;
-        return (hours * 60) + mins;
-    }
-
-    function buildModernTimeGrid() {
-        const container = document.getElementById('modernTimeGridContainer');
-        const mainLabel = document.getElementById('timeGridMainLabel');
-        container.innerHTML = "";
-
-        if (selectedDayIndex === -1) return;
-
-        if (selectedBarberName === "أي حلاق متوفر حالياً") {
-            mainLabel.innerText = "الحجز الفوري السريع الذكي:";
-            
-            const slotBtn = document.createElement('div');
-            slotBtn.className = "time-slot-item" + (selectedTimeForUser === "حضور فوري مباشر" ? " selected" : "");
-            slotBtn.innerText = "حضور فوري مباشر (الآن)";
-            slotBtn.onclick = function() { changeSelectedSlot(slotBtn, "حضور فوري مباشر"); };
-            container.appendChild(slotBtn);
-            return;
-        }
-
-        mainLabel.innerText = "يرجى اختيار وقت الحضور للموعد:";
-        let targetDateStr = getFormattedDateString(selectedDayIndex);
-        let activeBookedSlots = [];
-
-        Object.keys(allGlobalBookings).forEach(key => {
-            let bookingItem = allGlobalBookings[key];
-            if (bookingItem.barber_name === selectedBarberName && bookingItem.booking_date === targetDateStr) {
-                if (bookingItem.booking_time && (bookingItem.status === "waiting" || bookingItem.status === "confirmed")) {
-                    activeBookedSlots.push(bookingItem.booking_time.replace(" ظ", " م"));
-                }
-            }
-        });
-
-        let now = new Date();
-        let currentMinutes = (now.getHours() * 60) + now.getMinutes();
-
-        workingHoursSlots.forEach(slot => {
-            if (selectedDayIndex === 0) {
-                let slotMins = parseTimeStrToMinutes(slot);
-                if (slotMins <= currentMinutes) return;
-            }
-
-            const isBooked = activeBookedSlots.includes(slot);
-            const slotBtn = document.createElement('div');
-
-            if (isBooked) {
-                slotBtn.className = "time-slot-item unavailable";
-                slotBtn.innerText = slot;
-            } else {
-                slotBtn.className = "time-slot-item" + (selectedTimeForUser === slot ? " selected" : "");
-                slotBtn.innerText = slot;
-                slotBtn.onclick = function() { changeSelectedSlot(slotBtn, slot); };
-            }
-            container.appendChild(slotBtn);
-        });
-    }
-
-    function changeSelectedSlot(element, timeVal) {
-        if (!selectedBarberName) {
-            showCustomAlert("تنبيه الحلاق ⚠️", "يرجى اختيار الحلاق المفضل أولاً قبل تحديد وقت الحضور!", "✂️");
-            return;
-        }
-        document.querySelectorAll('.time-slot-item').forEach(btn => btn.classList.remove('selected'));
-        element.classList.add('selected');
-        selectedTimeForUser = timeVal;
-    }
-
-    database.ref('barber_bookings').on('value', snapshot => {
-        allGlobalBookings = {}; 
-        if (snapshot.exists()) {
-            allGlobalBookings = snapshot.val();
-        }
-        buildModernTimeGrid();
-        
-        let savedKey = localStorage.getItem('activeKingSalonBookingKey');
-        if (savedKey) {
-            if (snapshot.hasChild(savedKey)) {
-                renderTrackingUI(savedKey, snapshot.child(savedKey).val());
-            } else {
-                let lastKnownStatus = localStorage.getItem('lastKnownKingStatus');
-                if (lastKnownStatus === "finished") {
-                    renderTrackingUI(savedKey, { status: "finished" });
-                } else {
-                    renderCancelledOrDeletedUI();
-                }
-            }
+        // التحقق من وجود حجز نشط ومخزن سابقاً في ذاكرة المتصفح المحلية
+        const savedId = localStorage.getItem('active_barber_booking_id');
+        if(savedId) {
+            currentActiveBookingId = savedId;
+            activateLiveTrackingScreen(savedId);
         }
     });
 
-    function confirmAndSend(event) {
-        event.preventDefault();
+    // 1. حساب حالة فتح وإغلاق الصالون بناءً على التوقيت المحلي (من 9 صباحاً حتى 9 مساءً)
+    function checkShopOpeningHours() {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const tag = document.getElementById('shop-status-tag');
         
-        let name = document.getElementById('customerName').value.trim();
-        let phone = document.getElementById('customerPhone').value.trim();
+        if(currentHour >= 9 && currentHour < 21) {
+            tag.innerText = "مفتوح الآن وجاهز لاستقبالكم 💈";
+            tag.classList.remove('closed');
+        } else {
+            tag.innerText = "مغلق الآن 🌙 أوقات العمل (9ص - 9م)";
+            tag.classList.add('closed');
+        }
+    }
+
+    // 2. بناء شريط الأيام الذكي (اليوم، غداً، بعد غد) مع التواريخ والأيام المقابلة
+    function buildThreeDaysCarousel() {
+        const carousel = document.getElementById('days-carousel');
+        carousel.innerHTML = "";
+        const daysNames = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
         
-        let selectedServices = [];
-        document.querySelectorAll('.services-grid input:checked').forEach(cb => {
-            selectedServices.push(cb.value);
+        for (let i = 0; i < 3; i++) {
+            let targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + i);
+            
+            let dayName = i === 0 ? "اليوم" : (i === 1 ? "غداً" : daysNames[targetDate.getDay()]);
+            let dateFormatted = targetDate.getDate() + "/" + (targetDate.getMonth() + 1);
+            let rawKey = targetDate.getFullYear() + "-" + String(targetDate.getMonth() + 1).padStart(2, '0') + "-" + String(targetDate.getDate()).padStart(2, '0');
+            
+            let item = document.createElement('div');
+            item.className = `carousel-item ${i === 0 ? 'selected' : ''}`;
+            item.innerHTML = `<div class="day">${dayName}</div><div class="date">${dateFormatted}</div>`;
+            
+            if(i === 0) {
+                currentBookingData.dayString = `${dayName} (${dateFormatted})`;
+                currentBookingData.dayRaw = rawKey;
+            }
+            
+            item.onclick = () => {
+                document.querySelectorAll('.carousel-item').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+                currentBookingData.dayString = `${dayName} (${dateFormatted})`;
+                currentBookingData.dayRaw = rawKey;
+                currentBookingData.timeSlot = ""; 
+                fetchAndFilterTimeSlots();
+            };
+            
+            carousel.appendChild(item);
+        }
+        fetchAndFilterTimeSlots();
+    }
+
+    // 3. توليد شبكة الأوقات وفلترتها (إخفاء الساعات الفائتة لليوم + جلب المواعيد المحجوزة من Firebase)
+    async function fetchAndFilterTimeSlots() {
+        const container = document.getElementById('time-slots-container');
+        container.innerHTML = `<div style="grid-column: span 4; text-align:center; font-size:12px; color:var(--text-muted);">جاري فحص الأوقات المتاحة حياً...</div>`;
+        
+        let allSlots = [];
+        for(let h = 9; h <= 20; h++) {
+            let hourString = h > 12 ? (h - 12) : h;
+            let period = h >= 12 ? "م" : "ص";
+            allSlots.push({ rawHour: h, rawMin: 0, label: `${hourString}:00 ${period}` });
+            allSlots.push({ rawHour: h, rawMin: 30, label: `${hourString}:30 ${period}` });
+        }
+
+        let bookedSlots = [];
+        try {
+            const response = await fetch(`${FIREBASE_DB_URL}.json`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data) {
+                    for (let id in data) {
+                        let b = data[id];
+                        // تصفية وحصر المواعيد للحلاق المختار واليوم المختار والتأكد من أنها غير ملغية
+                        if (b.barber === currentBookingData.barber && b.dayRaw === currentBookingData.dayRaw && b.status !== "cancelled") {
+                            bookedSlots.push(b.timeSlot);
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("خطأ أثناء جلب المواعيد المحجوزة:", e);
+        }
+
+        container.innerHTML = "";
+        const now = new Date();
+        const isToday = currentBookingData.dayString.includes("اليوم");
+
+        allSlots.forEach(slot => {
+            let div = document.createElement('div');
+            div.className = "time-slot";
+            div.innerText = slot.label;
+
+            // أ) التحقق وإغلاق الساعات الفائتة بالزمن الحقيقي لليوم الحالي
+            if (isToday) {
+                if (slot.rawHour < now.getHours() || (slot.rawHour === now.getHours() && slot.rawMin <= now.getMinutes())) {
+                    div.classList.add('booked');
+                    container.appendChild(div);
+                    return;
+                }
+            }
+
+            // ب) التحقق وإغلاق الساعات المحجوزة مسبقاً من قبل زبائن آخرين
+            if (bookedSlots.includes(slot.label)) {
+                div.classList.add('booked');
+            } else {
+                div.onclick = () => {
+                    document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+                    div.classList.add('selected');
+                    currentBookingData.timeSlot = slot.label;
+                };
+            }
+            container.appendChild(div);
         });
 
-        if(!selectedBarberName) {
-            showCustomAlert("اختيار الحلاق ⚠️", "يرجى مراجعة القسم العلوي واختيار الحلاق المطلوب أولاً.", "👤");
+        if(container.children.length === 0) {
+            container.innerHTML = `<div style="grid-column: span 4; text-align:center; font-size:13px; color:var(--danger);">نعتذر، لا توجد ساعات متبقية للطلب في هذا اليوم!</div>`;
+        }
+    }
+
+    function selectBarber(name, element) {
+        document.querySelectorAll('.grid-select .card-option').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        currentBookingData.barber = name;
+        currentBookingData.timeSlot = ""; 
+        fetchAndFilterTimeSlots();
+    }
+
+    function toggleService(name, price, element) {
+        if(selectedServicesMap.has(name)) {
+            selectedServicesMap.delete(name);
+            element.classList.remove('selected');
+        } else {
+            selectedServicesMap.set(name, price);
+            element.classList.add('selected');
+        }
+        
+        let sum = 0;
+        let list = [];
+        selectedServicesMap.forEach((val, key) => {
+            sum += val;
+            list.push(key);
+        });
+        
+        currentBookingData.totalPrice = sum;
+        currentBookingData.services = list;
+        document.getElementById('total-price-display').innerText = sum.toLocaleString() + " ل.س";
+    }
+
+    // 4. معالجة وتأكيد الطلب وإرساله إلى الـ Firebase بنجاح واحترافية
+    async function processBookingSubmission() {
+        const clientName = document.getElementById('client-name').value.trim();
+        const btn = document.getElementById('submit-btn');
+
+        if(!currentBookingData.timeSlot) {
+            Swal.fire({ icon: 'warning', title: 'تنبيه ناقص', text: 'من فضلك قم باختيار توقيت الحجز المناسب أولاً من شبكة الأوقات المتاحة!', confirmButtonText: 'حسناً' });
+            return;
+        }
+        if(currentBookingData.services.length === 0) {
+            Swal.fire({ icon: 'warning', title: 'الخدمات فارغة', text: 'يرجى تحديد خدمة واحدة على الأقل لكي نتمكن من الحجز لك!', confirmButtonText: 'حسناً' });
+            return;
+        }
+        if(!clientName || clientName.length < 3) {
+            Swal.fire({ icon: 'warning', title: 'الاسم غير دقيق', text: 'يرجى كتابة اسمك الكريم الثلاثي بشكل صحيح لمطابقته عند الحضور!', confirmButtonText: 'حسناً' });
             return;
         }
 
-        if(selectedServices.length === 0) {
-            showCustomAlert("تنبيه الخدمات ⚠️", "فضلاً اختر خدمة واحدة على الأقل لإتمام حجزك.", "✂️");
-            return;
-        }
+        // تحويل وتأمين الزر لحالة التحميل لمنع النقرات المتكررة العشوائية
+        btn.disabled = true;
+        btn.innerHTML = `<span class="loader"></span> جاري صياغة وحفظ طلب حجزك الملكي...`;
 
-        if(selectedDayIndex === -1 || selectedTimeForUser === "") {
-            showCustomAlert("تحدد الوقت ⚠️", "يرجى الضغط على كرت اليوم المفضل واختيار ساعة الحضور المتناسقة.", "⏳");
-            return;
-        }
-
-        showSmartLoading();
-
-        let finalBookingDate = getFormattedDateString(selectedDayIndex);
-        let newBookingRef = database.ref('barber_bookings').push();
-        let bookingKey = newBookingRef.key;
-
-        let bookingPayload = {
-            customer_name: name,
-            customer_phone: phone,
-            booking_time: selectedTimeForUser,
-            booking_date: finalBookingDate, 
-            barber_name: selectedBarberName,
-            service_type: selectedServices.join(" + "), 
-            status: "waiting", 
-            timestamp: firebase.database.ServerValue.TIMESTAMP
+        const finalPayload = {
+            id: "KNG-" + Math.floor(1000 + Math.random() * 9000),
+            clientName: clientName,
+            barber: currentBookingData.barber,
+            dayString: currentBookingData.dayString,
+            dayRaw: currentBookingData.dayRaw,
+            timeSlot: currentBookingData.timeSlot,
+            services: currentBookingData.services.join(' + '),
+            totalPrice: currentBookingData.totalPrice.toLocaleString() + " ل.س",
+            status: "pending", 
+            timestamp: new Date().toISOString()
         };
 
-        newBookingRef.set(bookingPayload).then(() => {
-            closeCustomAlert();
-            localStorage.setItem('activeKingSalonBookingKey', bookingKey);
-            localStorage.setItem('lastKnownKingStatus', 'waiting');
-            renderTrackingUI(bookingKey, bookingPayload);
-        }).catch(err => {
-            showCustomAlert("خطأ في الإرسال ❌", "حدث خطأ غير متوقع: " + err.message, "⚠️");
-        });
-    }
+        try {
+            const response = await fetch(`${FIREBASE_DB_URL}.json`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(finalPayload)
+            });
 
-    function renderTrackingUI(bookingKey, data) {
-        document.getElementById('mainContainer').style.display = "none";
-        document.getElementById('trackingContainer').style.display = "block";
-        
-        if (data.customer_name) {
-            document.getElementById('trackName').innerText = data.customer_name;
-            document.getElementById('trackBarber').innerText = data.barber_name;
-            document.getElementById('trackTime').innerText = data.booking_time;
-            document.getElementById('trackDate').innerText = data.booking_date;
-        }
+            if(response.ok) {
+                const resData = await response.json();
+                const firebaseGeneratedId = resData.name; 
+                
+                // حفظ المعرف الفريد محلياً لضمان عدم ضياع التتبع
+                localStorage.setItem('active_barber_booking_id', firebaseGeneratedId);
+                currentActiveBookingId = firebaseGeneratedId;
 
-        const badge = document.getElementById('trackingStatusBadge');
-        const msgBox = document.getElementById('trackingDynamicMessage');
-        const backBtn = document.getElementById('backToHomeBtn');
-        badge.onclick = null;
-
-        if (data.status === "waiting") {
-            badge.innerText = "قيد الانتظار وتجهيز المقعد ⏳";
-            badge.className = "status-badge status-waiting";
-            msgBox.innerHTML = `✨ <strong>يا مية أهلاً وسهلاً بك يا ملك!</strong> حجزك مسجل لدينا الآن بنجاح. يرجى التمهل قليلاً وعدم إغلاق الصفحة، الإدارة تقوم بمراجعة وتأكيد دورك الملوكي حالياً لتوفير أفضل سبل الراحة الفاخرة لك.`;
-            backBtn.style.display = "none"; 
-            localStorage.setItem('lastKnownKingStatus', 'waiting');
-        } else if (data.status === "confirmed") {
-            badge.innerText = "تم تأكيد موعدك بنجاح ونعيماً سلفاً 🎉👑";
-            badge.className = "status-badge status-confirmed";
-            msgBox.innerHTML = `🌟 <strong>أهلاً بملكنا الغالي! أبشر.. تم تأكيد حجزك رسمياً!</strong><br>الرجاء عدم التأخر عن موعدك المحدد لضمان تقديم فخامة الأداء الفوري. نعيماً سلفاً ومقعدك بانتظار تشريفك الفخم! ✂️👑`;
-            backBtn.style.display = "none"; 
-            localStorage.setItem('lastKnownKingStatus', 'confirmed');
-        } else if (data.status === "finished") {
-            badge.innerText = "👑 نعيماً يا ملك (اضغط هنا للعودة)";
-            badge.className = "status-badge status-finished";
-            msgBox.innerHTML = `✨ <strong>نعيماً يا غالي وأهلاً بك دائماً في صالون الملك!</strong><br>تم إنهاء خدمتك بنجاح ومقعدك الملوكي جاهز لأي زيارة قادمة تشرفنا بها. اضغط على الزر الذهبي أو الزر بالأسفل للعودة وحجز دور جديد في أي وقت!`;
-            backBtn.style.display = "block";
-            badge.onclick = clearTrackingAndReturn;
-            localStorage.setItem('lastKnownKingStatus', 'finished');
-        } else if (data.status === "cancelled") {
-            renderCancelledOrDeletedUI();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم إرسال الطلب بنجاح',
+                    text: 'تلقينا طلب حجزك، سيتم نقلك الآن تلقائياً لشاشة التتبع الحي المباشر لانتظار رد الإدارة.',
+                    confirmButtonText: 'دخول شاشة التتبع ⌛'
+                }).then(() => {
+                    activateLiveTrackingScreen(firebaseGeneratedId);
+                });
+            } else {
+                throw new Error("استجابة المخدم غير ناجحة");
+            }
+        } catch(err) {
+            Swal.fire({ icon: 'error', title: 'فشل الاتصال الخارجي', text: 'تعذر إتمام الحجز بسبب ضعف مؤقت بالإنترنت، يرجى إعادة المحاولة فوراً.', confirmButtonText: 'حسناً' });
+            btn.disabled = false;
+            btn.innerText = "تأكيد حجز الموعد فوراً";
         }
     }
 
-    function renderCancelledOrDeletedUI() {
-        document.getElementById('mainContainer').style.display = "none";
-        document.getElementById('trackingContainer').style.display = "block";
-        
-        const badge = document.getElementById('trackingStatusBadge');
-        const msgBox = document.getElementById('trackingDynamicMessage');
-        const backBtn = document.getElementById('backToHomeBtn');
+    // 5. تفعيل شاشة التتبع والربط الحي المتكامل المستمر مع قاعدة البيانات
+    function activateLiveTrackingScreen(firebaseId) {
+        document.getElementById('booking-flow').style.display = 'none';
+        document.getElementById('live-tracking').style.display = 'block';
 
-        badge.innerText = "أُلغي موعدك للأسف 🔴";
-        badge.className = "status-badge status-cancelled";
-        msgBox.innerHTML = `😔 <strong>نعتذر منك بشدة يا غالي..</strong> لقد تم إلغاء الموعد أو إزالته من قبل الإدارة نظراً لضغط العمل المتزايد بالصالون أو لتداخل غير مقصود. يمكنك الآن الضغط على الزر أدناه والعودة مجدداً لاختيار حلاق أو وقت آخر يناسبك تماماً.`;
-        backBtn.style.display = "block"; 
-        localStorage.setItem('lastKnownKingStatus', 'cancelled');
-    }
+        if (firebaseListenerRef) clearInterval(firebaseListenerRef);
 
-    function clearTrackingAndReturn() {
-        localStorage.removeItem('activeKingSalonBookingKey');
-        localStorage.removeItem('lastKnownKingStatus');
-        document.getElementById('trackingContainer').style.display = "none";
-        document.getElementById('mainContainer').style.display = "block";
-        document.getElementById('bookingForm').reset();
-        
-        document.querySelectorAll('.barber-card').forEach(c => c.classList.remove('selected'));
-        document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
-        
-        selectedBarberName = "";
-        selectedTimeForUser = "";
-        selectedDayIndex = -1;
-        document.getElementById('freshaTimeContainer').style.display = "none";
-        generateFreshaDays();
-        calculateTotal();
+        // إنشاء حلقة اتصال تفقدية مستمرة ودورية كل 3 ثوانٍ لمراقبة الحالات دون أي اختفاء للشاشة
+        firebaseListenerRef = setInterval(() => {
+            fetch(`${FIREBASE_DB_URL}/${firebaseId}.json`)
+            .then(res => res.json())
+            .then(booking => {
+                if(!booking) {
+                    // إذا قام الآدمن بإنهاء الحجز أو حذفه تماماً، نقوم بإرجاع الشاشة للوضع الرئيسي للزبون الجديد
+                    clearInterval(firebaseListenerRef);
+                    localStorage.removeItem('active_barber_booking_id');
+                    Swal.fire({ icon: 'info', title: 'انتهى الحجز', text: 'تم إنهاء موعدك الحالي أو انتهاء صلاحيته من قبل الإدارة بنجاح ونعيماً لك!', confirmButtonText: 'حجز موعد جديد 💈' }).then(() => {
+                        window.location.reload();
+                    });
+                    return;
+                }
+
+                // تعبئة حقول التتبع بالمعلومات الثابتة المسترجعة
+                document.getElementById('lbl-track-id').innerText = booking.id;
+                document.getElementById('lbl-track-name').innerText = booking.clientName;
+                document.getElementById('lbl-track-barber').innerText = booking.barber;
+                document.getElementById('lbl-track-time').innerText = booking.dayString + " الساعة " + booking.timeSlot;
+                document.getElementById('lbl-track-services').innerText = booking.services;
+                document.getElementById('lbl-track-total').innerText = booking.totalPrice;
+
+                // قراءة وفحص حالة الطلب (الحالة ثابتة في الصفحة ولا ترجع للخلف)
+                const iconEl = document.getElementById('track-icon');
+                const titleEl = document.getElementById('track-title');
+                const descEl = document.getElementById('track-desc');
+
+                if (booking.status === "pending") {
+                    iconEl.innerText = "⏳";
+                    titleEl.innerText = "قيد الانتظار والمراجعة...";
+                    titleEl.style.color = "var(--accent)";
+                    descEl.innerText = "جاري مراجعة طلب حجزك الآن من قبل إدارة الصالون لترتيب المقاعد، يرجى إبقاء هذه الصفحة مفتوحة لمشاهدة التحديث الحي.";
+                } 
+                else if (booking.status === "confirmed") {
+                    iconEl.innerText = "🎉";
+                    titleEl.innerText = "تم تأكيد موعدك بنجاح";
+                    titleEl.style.color = "var(--success)";
+                    // النص المطلوب الترحيبي مع نعيماً وسيبقى ثابتاً في الشاشة
+                    descEl.innerHTML = "<strong style='color:#fff; font-size:15px;'>أهلاً بك ونعيماً سلفاً وكالعادة صالون الملك يرحب بك 👑✨</strong><br><br>تفضّل بالحضور في الموعد المحدد لك تماماً، نحن بانتظارك بكل حب لتجهيزك.";
+                } 
+                else if (booking.status === "cancelled") {
+                    iconEl.innerText = "💔";
+                    titleEl.innerText = "تم إلغاء موعدك للأسف";
+                    titleEl.style.color = "var(--danger)";
+                    // النص المطلوب عند الإلغاء مع بقاء الشاشة مفتوحة وثابتة
+                    descEl.innerHTML = "<span style='color:var(--danger); font-weight:bold;'>ألغي موعدك للأسف 💔</span><br><br>إذا كنت تعتقد أن هذا الإلغاء تم بالخطأ أو ترغب في الاستفسار، يرجى الاتصال بإدارة الصالون مباشرة أو مراجعة الحجز المختار.";
+                }
+            })
+            .catch(err => console.error("فشل الاتصال المباشر للتتبع الحقيقي:", err));
+        }, 3000);
     }
-    
-    generateFreshaDays();
 </script>
+
 </body>
 </html>
-
