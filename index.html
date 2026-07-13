@@ -48,6 +48,8 @@
         .barber-card.selected::after { content: '✓'; position: absolute; top: 8px; left: 10px; color: var(--accent-gold); font-weight: bold; font-size: 16px; }
         .barber-name { font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 6px; }
         .barber-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+        .barber-card.friday-locked { border-color: rgba(231, 76, 60, 0.3) !important; background: rgba(231, 76, 60, 0.05) !important; cursor: not-allowed !important; transform: none !important; }
+        .barber-card.friday-locked .barber-desc { color: var(--accent-red) !important; font-weight: bold; font-size: 10.5px; }
 
         /* قسم تحديد التاريخ والوقت */
         .fresha-section { background: #070a12; border: 1px solid var(--border-color); padding: 20px; border-radius: 20px; margin-top: 15px; }
@@ -68,14 +70,16 @@
 
         .fresha-time-container { display: none; margin-top: 20px; }
         .fresha-time-label { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 10px; }
-        .modern-time-grid { display: flex; flex-direction: column; gap: 8px; }
         
-        .time-slot-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px 20px; border-radius: 14px; text-align: left; font-size: 15px; color: #fff; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: flex-end; align-items: center; }
+        /* تعديل شبكة الساعات لتظهر على شكل مصفوفة مربعات 3 أعمدة */
+        .modern-time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        
+        .time-slot-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px 8px; border-radius: 14px; text-align: center; font-size: 13px; color: #fff; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .time-slot-item:hover:not(.unavailable):not(.selected) { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); }
         .time-slot-item.selected { border: 2px solid #5c62ec; background: rgba(92, 98, 236, 0.05); color: #fff; }
         
         .time-slot-item.unavailable { background: rgba(231, 76, 60, 0.08); border-color: rgba(231, 76, 60, 0.3); color: #7f8c8d; cursor: not-allowed; text-decoration: line-through; }
-        .time-slot-item.unavailable::before { content: "(محجوز) "; margin-left: auto; color: var(--accent-red); font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block; }
+        .time-slot-item.unavailable::before { content: "(محجوز)"; margin-bottom: 4px; color: var(--accent-red); font-size: 10px; font-weight: bold; text-decoration: none; display: block; }
 
         .services-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
         .service-item { display: flex; align-items: center; justify-content: space-between; background: #070a12; padding: 14px 18px; border-radius: 14px; border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
@@ -442,15 +446,56 @@
         }
     }
 
+    function updateBarbersUIForFriday(isFriday) {
+        document.querySelectorAll('.barber-card').forEach(card => {
+            const id = card.id;
+            const descEl = card.querySelector('.barber-desc');
+            
+            if (isFriday && id !== 'barber-اي_حلاق_متوفر') {
+                card.classList.add('friday-locked');
+                if (!descEl.dataset.original) {
+                    descEl.dataset.original = descEl.innerText;
+                }
+                descEl.innerText = "لا يمكن الحجز اليوم الجمعة اختر خاصية ايا حلاقه متوفر لستقبالك من الحلاقه الموجود حالين في الصالون";
+            } else {
+                card.classList.remove('friday-locked');
+                if (descEl.dataset.original) {
+                    descEl.innerText = descEl.dataset.original;
+                }
+            }
+        });
+    }
+
     function switchDay(index) {
         selectedDayIndex = index;
         generateFreshaDays();
         selectedTimeForUser = ""; 
+        
+        let targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + index);
+        let isFriday = (targetDate.getDay() === 5);
+        
+        updateBarbersUIForFriday(isFriday);
+        
+        if (isFriday && selectedBarberName !== "" && selectedBarberName !== "أي حلاق متوفر حالياً") {
+            document.querySelectorAll('.barber-card').forEach(card => card.classList.remove('selected'));
+            selectedBarberName = "";
+        }
+
         document.getElementById('freshaTimeContainer').style.display = "block"; 
         buildModernTimeGrid();
     }
 
     function selectBarber(element, name) {
+        let targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + selectedDayIndex);
+        let isFriday = (selectedDayIndex !== -1 && targetDate.getDay() === 5);
+
+        if (isFriday && element.id !== 'barber-اي_حلاق_متوفر') {
+            showCustomAlert("عذراً ⚠️", "لا يمكن الحجز اليوم الجمعة اختر خاصية ايا حلاقه متوفر لستقبالك من الحلاقه الموجود حالين في الصالون", "✂️");
+            return;
+        }
+
         document.querySelectorAll('.barber-card').forEach(card => card.classList.remove('selected'));
         element.classList.add('selected');
         selectedBarberName = name;
@@ -493,6 +538,7 @@
             
             const slotBtn = document.createElement('div');
             slotBtn.className = "time-slot-item" + (selectedTimeForUser === "حضور فوري مباشر" ? " selected" : "");
+            slotBtn.style.gridColumn = "span 3";
             slotBtn.innerText = "حضور فوري مباشر (الآن)";
             slotBtn.onclick = function() { changeSelectedSlot(slotBtn, "حضور فوري مباشر"); };
             container.appendChild(slotBtn);
@@ -558,10 +604,8 @@
             if (snapshot.hasChild(savedKey)) {
                 renderTrackingUI(savedKey, snapshot.child(savedKey).val());
             } else {
-                // تعديل ذكي ومناسب جداً برأيي: التحقق مما إذا كان الإخفاء ناتج عن عملية إنهاء الحجز الناجحة (completed)
                 let lastKnownStatus = localStorage.getItem('lastKnownKingStatus');
                 if (lastKnownStatus === "confirmed") {
-                    // إذا كان مؤكداً واختفى فجأة، فهذا يعني أن الإدارة ضغطت على "إنهاء الحجز" وتم نقله للأرشيف وحذفه سحابياً
                     localStorage.setItem('lastKnownKingStatus', 'finished');
                     renderTrackingUI(savedKey, { status: "finished" });
                 } else if (lastKnownStatus === "finished") {
