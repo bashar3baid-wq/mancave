@@ -48,14 +48,8 @@
         .barber-card.selected::after { content: '✓'; position: absolute; top: 8px; left: 10px; color: var(--accent-gold); font-weight: bold; font-size: 16px; }
         .barber-name { font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 6px; }
         .barber-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
-        
-        /* ستايل الجمعة */
         .barber-card.friday-locked { border-color: rgba(231, 76, 60, 0.3) !important; background: rgba(231, 76, 60, 0.05) !important; cursor: not-allowed !important; transform: none !important; }
         .barber-card.friday-locked .barber-desc { color: var(--accent-red) !important; font-weight: bold; font-size: 10.5px; }
-
-        /* ستايل الحلاق المعطل (الإضافة الجديدة) */
-        .barber-card.unavailable-locked { border-color: rgba(231, 76, 60, 0.3) !important; background: rgba(231, 76, 60, 0.05) !important; cursor: not-allowed !important; transform: none !important; opacity: 0.6; }
-        .barber-card.unavailable-locked .barber-desc { color: var(--accent-red) !important; font-weight: bold; font-size: 11px; }
 
         /* قسم تحديد التاريخ والوقت */
         .fresha-section { background: #070a12; border: 1px solid var(--border-color); padding: 20px; border-radius: 20px; margin-top: 15px; }
@@ -354,37 +348,6 @@
     let selectedDayIndex = -1; 
     let isShopOpenGlobal = true;
 
-    /* -- الإضافة الجديدة: التحقق من توفر الحلاقين من فايربيس -- */
-    let barbersAvailabilityGlobal = {};
-    database.ref('barbers_status').on('value', snapshot => {
-        if (snapshot.exists()) {
-            barbersAvailabilityGlobal = snapshot.val();
-            applyBarbersAvailability();
-        }
-    });
-
-    function applyBarbersAvailability() {
-        document.querySelectorAll('.barber-card').forEach(card => {
-            // استخراج اسم الحلاق كما هو مسجل بقاعدة البيانات
-            let rawName = card.querySelector('.barber-name').innerText.replace('✂️', '').replace('⚡', '').trim();
-            const descEl = card.querySelector('.barber-desc');
-            
-            if (barbersAvailabilityGlobal[rawName] === false) {
-                card.classList.add('unavailable-locked');
-                if (!descEl.dataset.originalStatus) {
-                    descEl.dataset.originalStatus = descEl.innerText;
-                }
-                descEl.innerText = "الحلاق معطل وغير متوفر الآن ❌";
-            } else {
-                card.classList.remove('unavailable-locked');
-                if (descEl.dataset.originalStatus) {
-                    descEl.innerText = descEl.dataset.originalStatus;
-                }
-            }
-        });
-    }
-    /* -- نهاية الإضافة الجديدة -- */
-
     // الساعات بنظام النصف ساعة المطور والمتوافق بالكامل مع التطبيق
     const workingHoursSlots = [
         "09:00 ص", "09:30 ص", "10:00 ص", "10:30 ص", "11:00 ص", "11:30 ص", "12:00 م", "12:30 م", 
@@ -501,9 +464,6 @@
                 }
             }
         });
-        
-        // إعادة تطبيق التحقق من الحلاقين المعطلين حتى لا يتداخل مع الجمعة
-        applyBarbersAvailability();
     }
 
     function switchDay(index) {
@@ -527,12 +487,6 @@
     }
 
     function selectBarber(element, name) {
-        /* -- الإضافة: منع اختيار الحلاق إذا كان معطلاً من التطبيق -- */
-        if (element.classList.contains('unavailable-locked')) {
-            showCustomAlert(​"عذراً ⚠️", "عذراً، هذا الحلاق غير متاح في الوقت الحالي، نعتذر عن إزعاجك.", "❌");
-            return;
-        }
-
         let targetDate = new Date();
         targetDate.setDate(targetDate.getDate() + selectedDayIndex);
         let isFriday = (selectedDayIndex !== -1 && targetDate.getDay() === 5);
@@ -793,4 +747,3 @@
 </script>
 </body>
 </html>
-
