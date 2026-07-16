@@ -300,7 +300,7 @@
     
     <!-- عبارات الترحيب والتهنئة والنصائح التفاعلية اللطيفة -->
     <div class="tracking-welcome-msg" id="trackingDynamicMessage">
-        أهلاً بك يا غالي في مملكتك! تم حجز مقعدك بنجاح ونحن الآن بانتظار إشعار الإدارة لتأكيد الحجز. تمهل قليلاً وتابع التحديث المباشر من هذه الصفحة.
+        أهلاً بك يا غالي في مملكتك! تم حجز مقعدك بنجاح ونحن الآن بانتظار إشعار الإدارة لتأكيد الحجز. تمهّل قليلاً وتابع التحديث المباشر من هذه الصفحة.
     </div>
     
     <div id="trackingStatusBadge" class="status-badge status-waiting">قيد الانتظار وتجهيز المقعد ⏳</div>
@@ -592,6 +592,67 @@
         selectedTimeForUser = timeVal;
     }
 
+    // ========================================================
+    // نظام مراقبة حالة الحلاقين المباشر (تحديث تلقائي للموقع)
+    // ========================================================
+    database.ref('barber_status').on('value', (snapshot) => {
+        const statuses = snapshot.val() || {};
+        
+        // خريطة لربط الأسماء بقاعدة البيانات بمعرف الكارت الحقيقي في الـ HTML
+        const barbers = [
+            { dbName: "بشار", elementId: "barber-بشار" },
+            { dbName: "محمد ابو غياث", elementId: "barber-محمد ابو غياث" }, 
+            { dbName: "محمد ابو علي", elementId: "barber-محمد ابو علي" },     
+            { dbName: "يزن", elementId: "barber-يزن" },
+            { dbName: "معاذ", elementId: "barber-معاذ" }
+        ];
+
+        barbers.forEach(barber => {
+            const card = document.getElementById(barber.elementId);
+            if (card) {
+                const descEl = card.querySelector('.barber-desc'); 
+                
+                // قراءة الحالة من الفايربيس (إذا لم تكن موجودة نعتبره متواجد تلقائياً)
+                const isAvailable = statuses[barber.dbName] !== false;
+
+                if (!isAvailable) {
+                    // 1. في حال كان الحلاق (غائب / مغلق):
+                    card.style.pointerEvents = 'none';         // منع الزبون من النقر عليه
+                    card.style.opacity = '0.4';               // تبهيت الكرت بصرياً
+                    card.style.filter = 'grayscale(80%)';       // تحويل الصورة للأبيض والأسود لتبدو ملغية
+                    card.style.border = '1px solid #ff453a';   // إطار أحمر خفيف ناعم
+                    card.style.transition = 'all 0.3s ease';
+                    
+                    if (descEl) {
+                        // حفظ الوصف الأصلي للحلاق لاستعادته لاحقاً
+                        if (!descEl.dataset.originalText) {
+                            descEl.dataset.originalText = descEl.innerText;
+                        }
+                        descEl.innerHTML = "<span style='color: #ff453a; font-weight: bold;'>غير متواجد حالياً 🔴</span>";
+                    }
+
+                    // إذا كان الزبون قد حدد هذا الحلاق قبل إغلاقه، نقوم بإلغاء التحديد فوراً لمنع حجز موعد وهمي
+                    if (selectedBarberName === barber.dbName) {
+                        card.classList.remove('selected');
+                        selectedBarberName = "";
+                        selectedTimeForUser = "";
+                        buildModernTimeGrid(); // إعادة بناء شبكة الأوقات لتختفي
+                    }
+                } else {
+                    // 2. في حال كان الحلاق (متواجد / متاح):
+                    card.style.pointerEvents = 'auto';         // السماح بالنقر مجدداً
+                    card.style.opacity = '1';                 // إعادة السطوع الكامل
+                    card.style.filter = 'none';               // إلغاء فلتر الأبيض والأسود
+                    card.style.border = '';                   // إعادة الإطار الافتراضي
+                    
+                    if (descEl && descEl.dataset.originalText) {
+                        descEl.innerText = descEl.dataset.originalText; // استرجاع النص الأصلي
+                    }
+                }
+            }
+        });
+    });
+
     database.ref('barber_bookings').on('value', snapshot => {
         allGlobalBookings = {}; 
         if (snapshot.exists()) {
@@ -747,3 +808,4 @@
 </script>
 </body>
 </html>
+
