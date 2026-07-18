@@ -301,7 +301,7 @@
     
     <!-- عبارات الترحيب والتهنئة والنصائح التفاعلية اللطيفة -->
     <div class="tracking-welcome-msg" id="trackingDynamicMessage">
-        أهلاً بك يا غالي في مملكتك! تم حجز مقعدك بنجاح ونحن الآن بانتظار إشعار الإدارة لتأكيد الحجز. تمهل قليلاً وتابع التحديث المباشر من هذه الصفحة.
+        أهلاً بك يا غالي في مملكتك! تم حجز مقعدك بنجاح ونحن الآن بانتظار إشعار الإدارة لتأكيد الحجز. تمهّل قليلاً وتابع التحديث المباشر من هذه الصفحة.
     </div>
     
     <div id="trackingStatusBadge" class="status-badge status-waiting">قيد الانتظار وتجهيز المقعد ⏳</div>
@@ -593,6 +593,67 @@
         selectedTimeForUser = timeVal;
     }
 
+    // ========================================================
+    // نظام مراقبة حالة الحلاقين المباشر (تحديث تلقائي للموقع)
+    // ========================================================
+    database.ref('barber_status').on('value', (snapshot) => {
+        const statuses = snapshot.val() || {};
+        
+        // خريطة لربط الأسماء بقاعدة البيانات بمعرف الكارت الحقيقي في الـ HTML
+        const barbers = [
+            { dbName: "بشار", elementId: "barber-بشار" },
+            { dbName: "محمد ابو غياث", elementId: "barber-محمد ابو غياث" }, 
+            { dbName: "محمد ابو علي", elementId: "barber-محمد ابو علي" },     
+            { dbName: "يزن", elementId: "barber-يزن" },
+            { dbName: "معاذ", elementId: "barber-معاذ" }
+        ];
+
+        barbers.forEach(barber => {
+            const card = document.getElementById(barber.elementId);
+            if (card) {
+                const descEl = card.querySelector('.barber-desc'); 
+                
+                // قراءة الحالة من الفايربيس (إذا لم تكن موجودة نعتبره متواجد تلقائياً)
+                const isAvailable = statuses[barber.dbName] !== false;
+
+                if (!isAvailable) {
+                    // 1. في حال كان الحلاق (غائب / مغلق):
+                    card.style.pointerEvents = 'none';         // منع الزبون من النقر عليه
+                    card.style.opacity = '0.4';               // تبهيت الكرت بصرياً
+                    card.style.filter = 'grayscale(80%)';       // تحويل الصورة للأبيض والأسود لتبدو ملغية
+                    card.style.border = '1px solid #ff453a';   // إطار أحمر خفيف ناعم
+                    card.style.transition = 'all 0.3s ease';
+                    
+                    if (descEl) {
+                        // حفظ الوصف الأصلي للحلاق لاستعادته لاحقاً
+                        if (!descEl.dataset.originalText) {
+                            descEl.dataset.originalText = descEl.innerText;
+                        }
+                        descEl.innerHTML = "<span style='color: #ff453a; font-weight: bold;'>غير متواجد حالياً 🔴</span>";
+                    }
+
+                    // إذا كان الزبون قد حدد هذا الحلاق قبل إغلاقه، نقوم بإلغاء التحديد فوراً لمنع حجز موعد وهمي
+                    if (selectedBarberName === barber.dbName) {
+                        card.classList.remove('selected');
+                        selectedBarberName = "";
+                        selectedTimeForUser = "";
+                        buildModernTimeGrid(); // إعادة بناء شبكة الأوقات لتختفي
+                    }
+                } else {
+                    // 2. في حال كان الحلاق (متواجد / متاح):
+                    card.style.pointerEvents = 'auto';         // السماح بالنقر مجدداً
+                    card.style.opacity = '1';                 // إعادة السطوع الكامل
+                    card.style.filter = 'none';               // إلغاء فلتر الأبيض والأسود
+                    card.style.border = '';                   // إعادة الإطار الافتراضي
+                    
+                    if (descEl && descEl.dataset.originalText) {
+                        descEl.innerText = descEl.dataset.originalText; // استرجاع النص الأصلي
+                    }
+                }
+            }
+        });
+    });
+
     database.ref('barber_bookings').on('value', snapshot => {
         allGlobalBookings = {}; 
         if (snapshot.exists()) {
@@ -648,4 +709,103 @@
 
         let finalBookingDate = getFormattedDateString(selectedDayIndex);
         let newBookingRef = database.ref('barber_bookings').push();
-        let bookingKe
+        let bookingKey = newBookingRef.key;
+
+        let bookingPayload = {
+            customer_name: name,
+            customer_phone: phone,
+            booking_time: selectedTimeForUser,
+            booking_date: finalBookingDate, 
+            barber_name: selectedBarberName,
+            service_type: selectedServices.join(" + "), 
+            status: "waiting", 
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        newBookingRef.set(bookingPayload).then(() => {
+            closeCustomAlert();
+            localStorage.setItem('activeKingSalonBookingKey', bookingKey);
+            localStorage.setItem('lastKnownKingStatus', 'waiting');
+            renderTrackingUI(bookingKey, bookingPayload);
+        }).catch(err => {
+            showCustomAlert("خطأ في الإرسال ❌", "حدث خطأ غير متوقع: " + err.message, "⚠️");
+        });
+    }
+
+    function renderTrackingUI(bookingKey, data) {
+        document.getElementById('mainContainer').style.display = "none";
+        document.getElementById('trackingContainer').style.display = "block";
+        
+        if (data.customer_name) {
+            document.getElementById('trackName').innerText = data.customer_name;
+            document.getElementById('trackBarber').innerText = data.barber_name;
+            document.getElementById('trackTime').innerText = data.booking_time;
+            document.getElementById('trackDate').innerText = data.booking_date;
+        }
+
+        const badge = document.getElementById('trackingStatusBadge');
+        const msgBox = document.getElementById('trackingDynamicMessage');
+        const backBtn = document.getElementById('backToHomeBtn');
+        badge.onclick = null;
+
+        if (data.status === "waiting") {
+            badge.innerText = "قيد الانتظار وتجهيز المقعد ⏳";
+            badge.className = "status-badge status-waiting";
+            msgBox.innerHTML = `✨ <strong>يا مية أهلاً وسهلاً بك يا ملك!</strong> حجزك مسجل لدينا الآن بنجاح. يرجى التمهل قليلاً وعدم إغلاق الصفحة، الإدارة تقوم بمراجعة وتأكيد دورك الملوكي حالياً لتوفير أفضل سبل الراحة الفاخرة لك.`;
+            backBtn.style.display = "none"; 
+            localStorage.setItem('lastKnownKingStatus', 'waiting');
+        } else if (data.status === "confirmed") {
+            badge.innerText = "تم تأكيد موعدك بنجاح ونعيماً سلفاً 🎉👑";
+            badge.className = "status-badge status-confirmed";
+            msgBox.innerHTML = `🌟 <strong>أهلاً بملكنا الغالي! أبشر.. تم تأكيد حجزك رسمياً!</strong><br>الرجاء عدم التأخر عن موعدك المحدد لضمان تقديم فخامة الأداء الفوري. نعيماً سلفاً ومقعدك بانتظار تشريفك الفخم! ✂️👑`;
+            backBtn.style.display = "none"; 
+            localStorage.setItem('lastKnownKingStatus', 'confirmed');
+        } else if (data.status === "finished") {
+            badge.innerText = "👑 نعيماً يا ملك (اضغط هنا للعودة)";
+            badge.className = "status-badge status-finished";
+            msgBox.innerHTML = `✨ <strong>نعيماً يا غالي وأهلاً بك دائماً في صالون الملك!</strong><br>تم إنهاء خدمتك بنجاح ومقعدك الملوكي جاهز لأي زيارة قادمة تشرفنا بها. اضغط على الزر الذهبي أو الزر بالأسفل للعودة وحجز دور جديد في أي وقت!`;
+            backBtn.style.display = "block";
+            badge.onclick = clearTrackingAndReturn;
+            localStorage.setItem('lastKnownKingStatus', 'finished');
+        } else if (data.status === "cancelled") {
+            renderCancelledOrDeletedUI();
+        }
+    }
+
+    function renderCancelledOrDeletedUI() {
+        document.getElementById('mainContainer').style.display = "none";
+        document.getElementById('trackingContainer').style.display = "block";
+        
+        const badge = document.getElementById('trackingStatusBadge');
+        const msgBox = document.getElementById('trackingDynamicMessage');
+        const backBtn = document.getElementById('backToHomeBtn');
+
+        badge.innerText = "أُلغي موعدك للأسف 🔴";
+        badge.className = "status-badge status-cancelled";
+        msgBox.innerHTML = `😔 <strong>نعتذر منك بشدة يا غالي..</strong> لقد تم إلغاء الموعد أو إزالته من قبل الإدارة نظراً لضغط العمل المتزايد بالصالون أو لتداخل غير مقصود. يمكنك الآن الضغط على الزر أدناه والعودة مجدداً لاختيار حلاق أو وقت آخر يناسبك تماماً.`;
+        backBtn.style.display = "block"; 
+        localStorage.setItem('lastKnownKingStatus', 'cancelled');
+    }
+
+    function clearTrackingAndReturn() {
+        localStorage.removeItem('activeKingSalonBookingKey');
+        localStorage.removeItem('lastKnownKingStatus');
+        document.getElementById('trackingContainer').style.display = "none";
+        document.getElementById('mainContainer').style.display = "block";
+        document.getElementById('bookingForm').reset();
+        
+        document.querySelectorAll('.barber-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('.service-item').forEach(el => el.classList.remove('selected'));
+        
+        selectedBarberName = "";
+        selectedTimeForUser = "";
+        selectedDayIndex = -1;
+        document.getElementById('freshaTimeContainer').style.display = "none";
+        generateFreshaDays();
+        calculateTotal();
+    }
+    
+    generateFreshaDays();
+</script>
+</body>
+</html>
