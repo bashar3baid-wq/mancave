@@ -171,19 +171,19 @@
             </div>
             <div class="barber-card" id="barber-محمد ابو غياث" onclick="selectBarber(this, 'محمد ابو غياث')">
                 <span class="barber-name">✂️ أبو غياث</span>
-                <div class="barber-desc">فنان السشوار والتصفيف المودرن.</div>
+                <div class="barber-desc"> فنان السشوار القصات الشعر اللحية.</div>
             </div>
             <div class="barber-card" id="barber-محمد ابو علي" onclick="selectBarber(this, 'محمد ابو علي')">
                 <span class="barber-name">✂️ أبو علي</span>
-                <div class="barber-desc">القصات الكلاسيكية وتجهيز العرسان.</div>
+                <div class="barber-desc">القصات الكلاسيكية اللحية.</div>
             </div>
             <div class="barber-card" id="barber-يزن" onclick="selectBarber(this, 'يزن')">
                 <span class="barber-name">✂️ يزن</span>
-                <div class="barber-desc">مبدع قصات الفيد والماسكات الفخمة.</div>
+                <div class="barber-desc">مبدع قصات الفيد والكيرلي.</div>
             </div>
             <div class="barber-card" id="barber-معاذ" onclick="selectBarber(this, 'معاذ')">
                 <span class="barber-name">✂️ معاذ</span>
-                <div class="barber-desc">تنظيف البشرة الاحترافي وتلوين الشعر.</div>
+                <div class="barber-desc">تنظيف البشرة وحلاقة الشعر.</div>
             </div>
             <div class="barber-card" id="barber-اي_حلاق_متوفر" onclick="selectBarber(this, 'أي حلاق متوفر حالياً')">
                 <span class="barber-name">⚡ أي حلاق متوفر حالياً</span>
@@ -191,56 +191,84 @@
             </div>
         </div>
 
+        <label>⭐ العروض (اختر للحصول على أفضل سعر):</label>
+        <div class="services-grid" style="grid-template-columns: 1fr; margin-bottom: 15px;">
+            <div class="service-item" style="padding: 15px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-weight: bold;">شعر + ذقن + سشوار + ماسك + شمع</span></div>
+                <span class="service-price">750 ل.س</span>
+                <input type="checkbox" value="عرض: شعر + ذقن + سشوار + ماسك + شمع" data-price="750">
+            </div>
+        </div>
+
         <label>الخدمات المطلوبة (يمكنك اختيار خدمات متعددة):</label>
-        <div class="services-grid">
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>حلاقة شعر</span></div>
-                <span class="service-price">300 ل.س</span>
-                <input type="checkbox" value="حلاقة شعر" data-price="300">
+        <div class="services-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">قص شعر</span></div>
+                <span class="service-price" style="font-size: 13px;">300 ل.س</span>
+                <input type="checkbox" value="قص شعر" data-price="300">
             </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>حلاقة ذقن</span></div>
-                <span class="service-price">300 ل.س</span>
-                <input type="checkbox" value="حلاقة ذقن" data-price="300">
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">تهذيب ذقن</span></div>
+                <span class="service-price" style="font-size: 13px;">250 ل.س</span>
+                <input type="checkbox" value="تهذيب ذقن" data-price="250">
             </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>حلاقة شعر وذقن</span></div>
-                <span class="service-price">500 ل.س</span>
-                <input type="checkbox" value="حلاقة شعر وذقن" data-price="500">
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">شعر + ذقن</span></div>
+                <span class="service-price" style="font-size: 13px;">500 ل.س</span>
+                <input type="checkbox" value="شعر + ذقن" data-price="500">
             </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>سشوار وتصفيف شعر</span></div>
-                <span class="service-price">300 ل.س</span>
-                <input type="checkbox" value="سشوار وتصفيف شعر" data-price="300">
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">سشوار</span></div>
+                <span class="service-price" style="font-size: 13px;">250 ل.س</span>
+                <input type="checkbox" value="سشوار" data-price="250">
             </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info"><span>ماسكات العناية بالوجه</span></div>
-                <span class="service-price">150 ل.س</span>
-                <input type="checkbox" value="ماسكات الوجه" data-price="150">
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">تنظيف بشرة متكامل</span></div>
+                <span class="service-price" style="font-size: 13px;">300 ل.س</span>
+                <input type="checkbox" value="تنظيف بشرة متكامل" data-price="300">
             </div>
-            <div class="service-item" onclick="toggleService(this)">
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">ماسك للوجه</span></div>
+                <span class="service-price" style="font-size: 13px;">150 ل.س</span>
+                <input type="checkbox" value="ماسك للوجه" data-price="150">
+            </div>
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">مقشر للوجه سكراب</span></div>
+                <span class="service-price" style="font-size: 13px;">150 ل.س</span>
+                <input type="checkbox" value="مقشر للوجه سكراب" data-price="150">
+            </div>
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">شمع (أنف أو أذن أو وجه)</span></div>
+                <span class="service-price" style="font-size: 13px;">100 ل.س</span>
+                <input type="checkbox" value="شمع (أنف أو أذن أو وجه)" data-price="100">
+            </div>
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">صبغة ذقن</span></div>
+                <span class="service-price" style="font-size: 13px;">200 ل.س</span>
+                <input type="checkbox" value="صبغة ذقن" data-price="200">
+            </div>
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">صبغة شعر</span></div>
+                <span class="service-price" style="font-size: 13px;">200 ل.س</span>
+                <input type="checkbox" value="صبغة شعر" data-price="200">
+            </div>
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">صبغة شعر + ذقن</span></div>
+                <span class="service-price" style="font-size: 13px;">400 ل.س</span>
+                <input type="checkbox" value="صبغة شعر وذقن" data-price="400">
+            </div>
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">الخدمة الكاملة</span></div>
+                <span class="service-price" style="font-size: 13px;">1000 ل.س</span>
+                <input type="checkbox" value="الخدمة الكاملة" data-price="1000">
+            </div>
+            <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
                 <div class="service-info">
-                    <span>جلسة بروتين متكاملة للشعر</span>
-                    <span class="service-desc-line">السعر حسب طول الشعر يحدد داخل الصالون</span>
+                    <span style="font-size: 13px; font-weight: bold;">بروتين للشعر</span>
+                    <span class="service-desc-line" style="font-size: 10px;">حسب الطول</span>
                 </div>
-                <span class="service-price">حسب الطول</span>
-                <input type="checkbox" value="جلسة بروتين (يحدد السعر بالصالون)" data-price="0">
-            </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>صبغة شعر إيطالية متكاملة</span>
-                    <span class="service-desc-line">تغطية كاملة للشيب بأجود المواد</span>
-                </div>
-                <span class="service-price">400 ل.س</span>
-                <input type="checkbox" value="صبغة شعر إيطالية" data-price="400">
-            </div>
-            <div class="service-item" onclick="toggleService(this)">
-                <div class="service-info">
-                    <span>حمام زيت علاجي بالبخار</span>
-                    <span class="service-desc-line">تغذية بصيلات الشعر وإعادة الحيوية</span>
-                </div>
-                <span class="service-price">200 ل.س</span>
-                <input type="checkbox" value="حمام زيت بالبخار" data-price="200">
+                <span class="service-price" style="font-size: 11px;">يحدد بالصالون</span>
+                <input type="checkbox" value="بروتين للشعر" data-price="0">
             </div>
         </div>
 
@@ -809,3 +837,4 @@
 </script>
 </body>
 </html>
+
