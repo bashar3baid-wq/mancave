@@ -582,7 +582,9 @@
             let bookingItem = allGlobalBookings[key];
             if (bookingItem.barber_name === selectedBarberName && bookingItem.booking_date === targetDateStr) {
                 if (bookingItem.booking_time && (bookingItem.status === "waiting" || bookingItem.status === "confirmed")) {
-                    activeBookedSlots.push(bookingItem.booking_time.replace(" ظ", " م"));
+                    // التعديل هنا: استخراج الوقت الصافي فقط لمقارنته بشكل صحيح وحجب الأوقات المحجوزة
+                    let timeStringOnly = bookingItem.booking_time.split(" (")[0];
+                    activeBookedSlots.push(timeStringOnly.replace(" ظ", " م"));
                 }
             }
         });
@@ -736,13 +738,36 @@
         showSmartLoading();
 
         let finalBookingDate = getFormattedDateString(selectedDayIndex);
+        
+        // --- التعديل هنا: إضافة (اليوم)، (غداً)، (بعد غد) إلى الوقت قبل إرساله ---
+        let dayWord = "";
+        let dateToday = getFormattedDateString(0);
+        let dateTomorrow = getFormattedDateString(1);
+        let dateAfterTomorrow = getFormattedDateString(2);
+        
+        if (finalBookingDate === dateToday) {
+            dayWord = " (اليوم)";
+        } else if (finalBookingDate === dateTomorrow) {
+            dayWord = " (غداً)";
+        } else if (finalBookingDate === dateAfterTomorrow) {
+            dayWord = " (بعد غد)";
+        } else {
+            // في حال اختار الزبون يوماً أبعد (بعد الساعة 9 مساءً) سيضع اسم اليوم مثل (الثلاثاء)
+            let targetD = new Date();
+            targetD.setDate(targetD.getDate() + selectedDayIndex);
+            dayWord = " (يوم " + arabicDays[targetD.getDay()] + ")";
+        }
+        
+        let timeWithDayWord = selectedTimeForUser + dayWord;
+        // ------------------------------------------------------------------------
+
         let newBookingRef = database.ref('barber_bookings').push();
         let bookingKey = newBookingRef.key;
 
         let bookingPayload = {
             customer_name: name,
             customer_phone: phone,
-            booking_time: selectedTimeForUser,
+            booking_time: timeWithDayWord, // إرسال الوقت المدمج بالكلمة
             booking_date: finalBookingDate, 
             barber_name: selectedBarberName,
             service_type: selectedServices.join(" + "), 
