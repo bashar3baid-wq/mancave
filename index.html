@@ -108,6 +108,14 @@
 
         .payment-method { margin-top: 15px; background: linear-gradient(90deg, rgba(255, 140, 0, 0.1) 0%, rgba(17, 24, 39, 0.5) 100%); border: 1px solid var(--accent-orange); padding: 14px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; color: #fff; }
 
+        /* أزرار الاستفسار والتواصل المباشر */
+        .contact-buttons-container { display: flex; gap: 10px; margin-top: 20px; }
+        .contact-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 14px; text-decoration: none; transition: 0.3s; border: 1px solid transparent; }
+        .whatsapp-btn { background: rgba(37, 211, 102, 0.15); color: #25d366; border-color: rgba(37, 211, 102, 0.4); }
+        .whatsapp-btn:hover { background: rgba(37, 211, 102, 0.25); transform: translateY(-2px); }
+        .call-btn { background: rgba(52, 152, 219, 0.15); color: #3498db; border-color: rgba(52, 152, 219, 0.4); }
+        .call-btn:hover { background: rgba(52, 152, 219, 0.25); transform: translateY(-2px); }
+
         /* نافذة تتبع الموعد المعززة والمثبتة للتحديثات */
         .tracking-box { display: none; background: #111827; border: 2px solid var(--accent-gold); padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.7); margin-top: 20px; }
         .status-badge { display: inline-block; padding: 10px 30px; border-radius: 25px; font-weight: bold; font-size: 17px; margin: 15px 0; width: 100%; max-width: 320px; text-align: center; }
@@ -315,7 +323,17 @@
         <input type="text" id="customerName" placeholder="اكتب اسمك الكامل" required>
 
         <label>رقم الهاتف:</label>
-        <input type="tel" id="customerPhone" placeholder="09xxxxxxxx" required>
+        <input type="tel" id="customerPhone" placeholder="09xxxxxxxx" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+
+        <!-- أزرار التواصل المباشر وواتساب للرقم المطلوب -->
+        <div class="contact-buttons-container">
+            <a href="https://wa.me/963983449184" target="_blank" class="contact-btn whatsapp-btn">
+                💬 مراسلة عبر واتساب
+            </a>
+            <a href="tel:0983449184" class="contact-btn call-btn">
+                📞 اتصال هاتفي مباشر
+            </a>
+        </div>
 
         <button type="submit" id="btnSubmit">تأكيد حجز الموعد</button>
     </form>
@@ -364,6 +382,16 @@
         </a>
         <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-bottom-link-btn">
             فتح تطبيق Google Maps والتوجه للصالون مباشرة
+        </a>
+    </div>
+
+    <!-- أزرار التواصل المباشر أيضاً ضمن شاشة تتبع الموعد -->
+    <div class="contact-buttons-container" style="margin-bottom: 20px;">
+        <a href="https://wa.me/963983449184" target="_blank" class="contact-btn whatsapp-btn">
+            💬 مراسلة عبر واتساب
+        </a>
+        <a href="tel:0983449184" class="contact-btn call-btn">
+            📞 اتصال هاتفي مباشر
         </a>
     </div>
     
@@ -596,7 +624,6 @@
             let bookingItem = allGlobalBookings[key];
             if (bookingItem.barber_name === selectedBarberName && bookingItem.booking_date === targetDateStr) {
                 if (bookingItem.booking_time && (bookingItem.status === "waiting" || bookingItem.status === "confirmed")) {
-                    // التعديل هنا: استخراج الوقت الصافي فقط لمقارنته بشكل صحيح وحجب الأوقات المحجوزة
                     let timeStringOnly = bookingItem.booking_time.split(" (")[0];
                     activeBookedSlots.push(timeStringOnly.replace(" ظ", " م"));
                 }
@@ -637,13 +664,9 @@
         selectedTimeForUser = timeVal;
     }
 
-    // ========================================================
-    // نظام مراقبة حالة الحلاقين المباشر (تحديث تلقائي للموقع)
-    // ========================================================
     database.ref('barber_status').on('value', (snapshot) => {
         const statuses = snapshot.val() || {};
         
-        // خريطة لربط الأسماء بقاعدة البيانات بمعرف الكارت الحقيقي في الـ HTML
         const barbers = [
             { dbName: "بشار", elementId: "barber-بشار" },
             { dbName: "محمد ابو غياث", elementId: "barber-محمد ابو غياث" }, 
@@ -656,42 +679,36 @@
             const card = document.getElementById(barber.elementId);
             if (card) {
                 const descEl = card.querySelector('.barber-desc'); 
-                
-                // قراءة الحالة من الفايربيس (إذا لم تكن موجودة نعتبره متواجد تلقائياً)
                 const isAvailable = statuses[barber.dbName] !== false;
 
                 if (!isAvailable) {
-                    // 1. في حال كان الحلاق (غائب / مغلق):
-                    card.style.pointerEvents = 'none';         // منع الزبون من النقر عليه
-                    card.style.opacity = '0.4';               // تبهيت الكرت بصرياً
-                    card.style.filter = 'grayscale(80%)';       // تحويل الصورة للأبيض والأسود لتبدو ملغية
-                    card.style.border = '1px solid #ff453a';   // إطار أحمر خفيف ناعم
+                    card.style.pointerEvents = 'none';         
+                    card.style.opacity = '0.4';               
+                    card.style.filter = 'grayscale(80%)';       
+                    card.style.border = '1px solid #ff453a';   
                     card.style.transition = 'all 0.3s ease';
                     
                     if (descEl) {
-                        // حفظ الوصف الأصلي للحلاق لاستعادته لاحقاً
                         if (!descEl.dataset.originalText) {
                             descEl.dataset.originalText = descEl.innerText;
                         }
                         descEl.innerHTML = "<span style='color: #ff453a; font-weight: bold;'>غير متواجد حالياً 🔴</span>";
                     }
 
-                    // إذا كان الزبون قد حدد هذا الحلاق قبل إغلاقه، نقوم بإلغاء التحديد فوراً لمنع حجز موعد وهمي
                     if (selectedBarberName === barber.dbName) {
                         card.classList.remove('selected');
                         selectedBarberName = "";
                         selectedTimeForUser = "";
-                        buildModernTimeGrid(); // إعادة بناء شبكة الأوقات لتختفي
+                        buildModernTimeGrid(); 
                     }
                 } else {
-                    // 2. في حال كان الحلاق (متواجد / متاح):
-                    card.style.pointerEvents = 'auto';         // السماح بالنقر مجدداً
-                    card.style.opacity = '1';                 // إعادة السطوع الكامل
-                    card.style.filter = 'none';               // إلغاء فلتر الأبيض والأسود
-                    card.style.border = '';                   // إعادة الإطار الافتراضي
+                    card.style.pointerEvents = 'auto';         
+                    card.style.opacity = '1';                 
+                    card.style.filter = 'none';               
+                    card.style.border = '';                   
                     
                     if (descEl && descEl.dataset.originalText) {
-                        descEl.innerText = descEl.dataset.originalText; // استرجاع النص الأصلي
+                        descEl.innerText = descEl.dataset.originalText; 
                     }
                 }
             }
@@ -728,6 +745,13 @@
         
         let name = document.getElementById('customerName').value.trim();
         let phone = document.getElementById('customerPhone').value.trim();
+
+        // التحقق الإضافي الصارم من رقم الهاتف السوري (10 أرقام وتبدأ بـ 09)
+        const syrianPhoneRegex = /^09\d{8}$/;
+        if (!syrianPhoneRegex.test(phone)) {
+            showCustomAlert("خطأ برقم الهاتف 📱", "يرجى إدخال رقم هاتف سوري صحيح يتكون من 10 أرقام ويبدأ بـ 09 (مثال: 0983449184).", "⚠️");
+            return;
+        }
         
         let selectedServices = [];
         document.querySelectorAll('.services-grid input:checked').forEach(cb => {
@@ -753,7 +777,6 @@
 
         let finalBookingDate = getFormattedDateString(selectedDayIndex);
         
-        // --- التعديل هنا: إضافة (اليوم)، (غداً)، (بعد غد) إلى الوقت قبل إرساله ---
         let dayWord = "";
         let dateToday = getFormattedDateString(0);
         let dateTomorrow = getFormattedDateString(1);
@@ -766,14 +789,12 @@
         } else if (finalBookingDate === dateAfterTomorrow) {
             dayWord = " (بعد غد)";
         } else {
-            // في حال اختار الزبون يوماً أبعد (بعد الساعة 9 مساءً) سيضع اسم اليوم مثل (الثلاثاء)
             let targetD = new Date();
             targetD.setDate(targetD.getDate() + selectedDayIndex);
             dayWord = " (يوم " + arabicDays[targetD.getDay()] + ")";
         }
         
         let timeWithDayWord = selectedTimeForUser + dayWord;
-        // ------------------------------------------------------------------------
 
         let newBookingRef = database.ref('barber_bookings').push();
         let bookingKey = newBookingRef.key;
@@ -781,7 +802,7 @@
         let bookingPayload = {
             customer_name: name,
             customer_phone: phone,
-            booking_time: timeWithDayWord, // إرسال الوقت المدمج بالكلمة
+            booking_time: timeWithDayWord, 
             booking_date: finalBookingDate, 
             barber_name: selectedBarberName,
             service_type: selectedServices.join(" + "), 
@@ -876,3 +897,4 @@
 </script>
 </body>
 </html>
+
