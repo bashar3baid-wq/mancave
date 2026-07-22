@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
-     <!-- كود البيانات المنظمة لتغيير اسم الموقع في جوجل إلى صالون الملك -->
      <script type="application/ld+json">
      {
        "@context": "https://schema.org",
@@ -11,14 +10,13 @@
      }
      </script>
 
-     <!-- كود ربط الأيقونة المفضل المتناسق مع اسم الصورة على جيتهوب -->
      <link rel="icon" href="/favicon.ico" type="image/x-icon">
      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
      <meta name="google-site-verification" content="9ciBVJEZWIz4GeikUYBAWO7ukZmj1_zVtaNroUx54iE" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صالون الملك - حجز مواعد إلكتروني</title>
+    <title id="pageTitle">صالون الملك - حجز مواعد إلكتروني</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -35,27 +33,162 @@
             --accent-purple: #6366f1;
             --accent-green: #2ecc71;
             --accent-red: #e74c3c;
+            --whatsapp-color: #25d366;
+            --call-color: #3498db;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid rgba(212,175,55,0.15); }
-        h1 { text-align: center; color: var(--accent-gold); font-size: 30px; font-weight: 900; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 15px; }
         
-        /* تصميم أنيق وعصري لحالة الصالون وفصل أوقات العمل */
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; padding-top: 85px; }
+
+        .top-toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(11, 15, 25, 0.55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 8px 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 9999;
+        }
+
+        .toolbar-btn {
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            color: var(--accent-gold);
+            padding: 5px 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .toolbar-btn.lang-btn {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.4);
+            color: #818cf8;
+        }
+
+        .toolbar-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .container { max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid rgba(212,175,55,0.15); }
+        h1 { text-align: center; color: var(--accent-gold); font-size: 30px; font-weight: 900; margin-bottom: 5px; min-height: 45px; transition: opacity 0.5s ease; }
+        .subtitle { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 15px; min-height: 25px; transition: opacity 0.5s ease; }
+        
         .shop-status-container { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 25px; }
         .modern-status-badge { font-size: 15px; font-weight: 700; padding: 8px 24px; border-radius: 30px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; }
         .status-open { background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(46, 204, 113, 0.05)); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4); }
         .status-closed { background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.05)); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4); }
         .working-hours-text { font-size: 12.5px; color: var(--text-muted); font-weight: 600; background: rgba(31, 41, 55, 0.5); padding: 4px 14px; border-radius: 12px; border: 1px solid var(--border-color); }
 
-        /* تجميل وترتيب عبارات الترحيب لتصبح أصغر وأرتب */
-        .welcome-box { background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(255,140,0,0.03)); border-right: 4px solid var(--accent-gold); padding: 12px 16px; border-radius: 8px 16px 16px 8px; text-align: justify; margin-bottom: 25px; color: #e5e7eb; font-size: 12.5px; line-height: 20px; }
+        .welcome-box { background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(255,140,0,0.03)); border-right: 4px solid var(--accent-gold); padding: 12px 16px; border-radius: 8px 16px 16px 8px; text-align: justify; margin-bottom: 25px; color: #e5e7eb; font-size: 12.5px; line-height: 20px; transition: opacity 0.5s ease; }
         
+        .direct-contact-section {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .contact-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 12.5px;
+            text-decoration: none;
+            transition: 0.3s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .contact-whatsapp {
+            background: rgba(37, 211, 102, 0.12);
+            border: 1px solid rgba(37, 211, 102, 0.35);
+            color: #25d366;
+        }
+        .contact-whatsapp:hover { background: #25d366; color: #fff; }
+        .contact-call {
+            background: rgba(52, 152, 219, 0.12);
+            border: 1px solid rgba(52, 152, 219, 0.35);
+            color: #3498db;
+        }
+        .contact-call:hover { background: #3498db; color: #fff; }
+
         label { display: block; margin: 25px 0 12px; font-weight: 700; color: var(--accent-gold); font-size: 16px; border-right: 4px solid var(--accent-orange); padding-right: 10px; }
         input, select { width: 100%; padding: 14px; background: #070a12; border: 1px solid var(--border-color); border-radius: 12px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
         input:focus { border-color: var(--accent-gold); }
         
+        /* تنسيق إدخال رقم الهاتف الموحد مع الملاحظة وشعار الدولة */
+        .phone-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .phone-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .phone-input-container input {
+            padding-left: 110px; /* مساحة لبطاقة الدولة */
+            direction: ltr;
+            text-align: right;
+        }
+        .phone-country-badge {
+            position: absolute;
+            left: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-muted);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+        .phone-country-badge.valid {
+            color: #2ecc71;
+            border-color: rgba(46, 204, 113, 0.4);
+            background: rgba(46, 204, 113, 0.1);
+        }
+        .phone-country-badge.invalid {
+            color: #e74c3c;
+            border-color: rgba(231, 76, 60, 0.4);
+            background: rgba(231, 76, 60, 0.1);
+        }
+        .phone-note {
+            font-size: 11.5px;
+            color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.08);
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px dashed rgba(212, 175, 55, 0.3);
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
         .barbers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
         .barber-card { background: #070a12; padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 110px; }
         .barber-card:hover { border-color: var(--accent-orange); transform: translateY(-2px); }
@@ -66,7 +199,6 @@
         .barber-card.friday-locked { border-color: rgba(231, 76, 60, 0.3) !important; background: rgba(231, 76, 60, 0.05) !important; cursor: not-allowed !important; transform: none !important; }
         .barber-card.friday-locked .barber-desc { color: var(--accent-red) !important; font-weight: bold; font-size: 10.5px; }
 
-        /* قسم تحديد التاريخ والوقت */
         .fresha-section { background: #070a12; border: 1px solid var(--border-color); padding: 20px; border-radius: 20px; margin-top: 15px; }
         .fresha-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 15px; }
         
@@ -86,7 +218,6 @@
         .fresha-time-container { display: none; margin-top: 20px; }
         .fresha-time-label { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 10px; }
         
-        /* تعديل شبكة الساعات لتظهر على شكل مصفوفة مربعات 3 أعمدة */
         .modern-time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         
         .time-slot-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px 8px; border-radius: 14px; text-align: center; font-size: 13px; color: #fff; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -108,15 +239,6 @@
 
         .payment-method { margin-top: 15px; background: linear-gradient(90deg, rgba(255, 140, 0, 0.1) 0%, rgba(17, 24, 39, 0.5) 100%); border: 1px solid var(--accent-orange); padding: 14px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; color: #fff; }
 
-        /* أزرار الاستفسار والتواصل المباشر */
-        .contact-buttons-container { display: flex; gap: 10px; margin-top: 20px; }
-        .contact-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 14px; text-decoration: none; transition: 0.3s; border: 1px solid transparent; }
-        .whatsapp-btn { background: rgba(37, 211, 102, 0.15); color: #25d366; border-color: rgba(37, 211, 102, 0.4); }
-        .whatsapp-btn:hover { background: rgba(37, 211, 102, 0.25); transform: translateY(-2px); }
-        .call-btn { background: rgba(52, 152, 219, 0.15); color: #3498db; border-color: rgba(52, 152, 219, 0.4); }
-        .call-btn:hover { background: rgba(52, 152, 219, 0.25); transform: translateY(-2px); }
-
-        /* نافذة تتبع الموعد المعززة والمثبتة للتحديثات */
         .tracking-box { display: none; background: #111827; border: 2px solid var(--accent-gold); padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.7); margin-top: 20px; }
         .status-badge { display: inline-block; padding: 10px 30px; border-radius: 25px; font-weight: bold; font-size: 17px; margin: 15px 0; width: 100%; max-width: 320px; text-align: center; }
         .status-waiting { background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
@@ -132,7 +254,6 @@
 
         .tracking-welcome-msg { background: #070a12; padding: 15px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 20px; font-size: 13.5px; line-height: 22px; color: #f3f4f6; }
 
-        /* نافذة الانتظار والتنبيهات */
         .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 7, 18, 0.9); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.4s ease; padding: 20px; }
         .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
         .custom-modal-card { background: #111827; border: 2px solid var(--accent-gold); padding: 30px 25px; border-radius: 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
@@ -140,14 +261,14 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .modal-icon { font-size: 55px; margin-bottom: 15px; display: block; }
         .modal-title { font-size: 22px; font-weight: 800; color: var(--accent-gold); margin-bottom: 12px; }
-        .modal-message { font-size: 14.5px; color: #f3f4f6; line-height: 24px; margin-bottom: 25px; }
+        .modal-message { font-size: 14.5px; color: #f3f4f6; line-height: 24px; margin-bottom: 25px; text-align: justify; }
         .modal-close-btn { background: linear-gradient(45deg, var(--accent-gold), var(--accent-orange)); color: #0b0f19; font-weight: bold; padding: 12px 35px; border-radius: 10px; border: none; cursor: pointer; font-size: 15px; }
         
         .salon-location-box { margin-top: 15px; background: #070a12; border: 1px solid var(--border-color); border-right: 4px solid #3498db; padding: 15px; border-radius: 12px; font-size: 13px; line-height: 22px; text-align: right; }
         .location-header { font-weight: bold; color: #3498db; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; font-size: 15px; }
         .map-preview-container { width: 100%; height: 140px; margin-top: 12px; border-radius: 10px; overflow: hidden; display: block; border: 1px solid var(--border-color); }
         .map-preview-img { width: 100%; height: 100%; object-fit: cover; }
-        .map-bottom-link-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #fff; padding: 10px; font-weight: bold; text-decoration: none; margin-top: 10px; font-size: 13px; }
+        .map-bottom-link-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #fff; font-weight: bold; text-decoration: none; margin-top: 10px; font-size: 13px; }
 
         button[type="submit"] { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--accent-gold), var(--accent-orange)); border: none; border-radius: 14px; color: #0b0f19; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 30px; transition: 0.3s; }
         button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,140,0,0.3); }
@@ -159,6 +280,15 @@
 </head>
 <body>
 
+<div class="top-toolbar">
+    <button class="toolbar-btn" onclick="scrollToSection('mainContainer')" id="tbHome">🏠 الرئيسية</button>
+    <button class="toolbar-btn" onclick="scrollToSection('bookingForm')" id="tbBook">✂️ احجز</button>
+    <button class="toolbar-btn" onclick="scrollToSection('servicesSectionTitle')" id="tbOffers">⭐ العروض</button>
+    <button class="toolbar-btn" onclick="openInteractiveGuideModal()" id="tbGuide">📖 طريقة الاستخدام</button>
+    <button class="toolbar-btn" onclick="scrollToSection('contactSectionAnchor')" id="tbContact">💬 تواصل</button>
+    <button class="toolbar-btn lang-btn" onclick="toggleLanguage()" id="tbLangSwitch">🌐 EN / عربي</button>
+</div>
+
 <div class="custom-modal-overlay" id="customAlertModal">
     <div class="custom-modal-card">
         <div class="modal-spinner" id="modalSpinner"></div>
@@ -169,197 +299,195 @@
     </div>
 </div>
 
-<!-- الواجهة الرئيسية للحجز -->
 <div class="container" id="mainContainer">
-    <h1>👑 صالون الملك 👑</h1>
-    <div class="subtitle">فخامة الأداء ودقة المواعيد تناسب ملوك مجتمعنا</div>
+    <h1 id="dynamicTitle">👑 صالون الملك 👑</h1>
+    <div class="subtitle" id="dynamicSubtitle">فخامة الأداء ودقة المواعيد تناسب ملوك مجتمعنا</div>
 
     <div class="shop-status-container">
         <span id="shopStatusIndicator" class="modern-status-badge">جاري الفحص المباشر...</span>
-        <span class="working-hours-text">أوقات استقبال الزبائن الكرام: 9:00 صباحاً - 9:00 مساءً</span>
+        <span class="working-hours-text" id="workingHoursTextLabel">أوقات استقبال الزبائن الكرام: 9:00 صباحاً - 9:00 مساءً</span>
     </div>
 
-    <div class="welcome-box">
+    <div class="welcome-box" id="dynamicWelcomeBox">
         مرحباً بك في نظام الحجز المطور لصالون الملك. فضلاً، املأ الخيارات التالية وسيتم تحديث وحجب الأوقات تلقائياً لضمان راحتك وتفادي الانتظار.
+    </div>
+
+    <div class="direct-contact-section" id="contactSectionAnchor">
+        <a href="https://wa.me/963983449184" target="_blank" class="contact-action-btn contact-whatsapp" id="contactWaBtn">
+            💬 واتساب
+        </a>
+        <a href="tel:0983449184" class="contact-action-btn contact-call" id="contactCallBtn">
+            📞 اتصال
+        </a>
     </div>
 
     <form id="bookingForm" onsubmit="confirmAndSend(event)">
         
-        <label>اختر الحلاق المفضل لديك ✂️:</label>
+        <label id="labelBarber">اختر الحلاق المفضل لديك ✂️:</label>
         <div class="barbers-grid" id="barbersGroup">
             <div class="barber-card" id="barber-بشار" onclick="selectBarber(this, 'بشار')">
-                <span class="barber-name">✂️ بشار</span>
-                <div class="barber-desc">أحدث القصات وتحديد اللحية بدقة.</div>
+                <span class="barber-name" data-ar="✂️ بشار" data-en="✂️ Bashar">✂️ بشار</span>
+                <div class="barber-desc" data-ar="أحدث القصات وتحديد اللحية بدقة." data-en="Latest haircuts and beard trim precision.">أحدث القصات وتحديد اللحية بدقة.</div>
             </div>
             <div class="barber-card" id="barber-محمد ابو غياث" onclick="selectBarber(this, 'محمد ابو غياث')">
-                <span class="barber-name">✂️ أبو غياث</span>
-                <div class="barber-desc"> فنان السشوار القصات الشعر اللحية.</div>
+                <span class="barber-name" data-ar="✂️ أبو غياث" data-en="✂️ Abu Ghiath">✂️ أبو غياث</span>
+                <div class="barber-desc" data-ar="فنان السشوار القصات الشعر اللحية." data-en="Master of blowouts, haircuts & beard styling.">فنان السشوار القصات الشعر اللحية.</div>
             </div>
             <div class="barber-card" id="barber-محمد ابو علي" onclick="selectBarber(this, 'محمد ابو علي')">
-                <span class="barber-name">✂️ أبو علي</span>
-                <div class="barber-desc">القصات الكلاسيكية اللحية.</div>
+                <span class="barber-name" data-ar="✂️ أبو علي" data-en="✂️ Abu Ali">✂️ أبو علي</span>
+                <div class="barber-desc" data-ar="القصات الكلاسيكية اللحية." data-en="Classic haircuts and professional beard care.">القصات الكلاسيكية اللحية.</div>
             </div>
             <div class="barber-card" id="barber-يزن" onclick="selectBarber(this, 'يزن')">
-                <span class="barber-name">✂️ يزن</span>
-                <div class="barber-desc">مبدع قصات الفيد والكيرلي.</div>
+                <span class="barber-name" data-ar="✂️ يزن" data-en="✂️ Yazan">✂️ يزن</span>
+                <div class="barber-desc" data-ar="مبدع قصات الفيد والكيرلي." data-en="Expert in fade and curly hairstyles.">مبدع قصات الفيد والكيرلي.</div>
             </div>
             <div class="barber-card" id="barber-معاذ" onclick="selectBarber(this, 'معاذ')">
-                <span class="barber-name">✂️ معاذ</span>
-                <div class="barber-desc">تنظيف البشرة وحلاقة الشعر.</div>
+                <span class="barber-name" data-ar="✂️ معاذ" data-en="✂️ Moaz">✂️ معاذ</span>
+                <div class="barber-desc" data-ar="تنظيف البشرة وحلاقة الشعر." data-en="Facial cleansing and professional hair grooming.">تنظيف البشرة وحلاقة الشعر.</div>
             </div>
             <div class="barber-card" id="barber-اي_حلاق_متوفر" onclick="selectBarber(this, 'أي حلاق متوفر حالياً')">
-                <span class="barber-name">⚡ أي حلاق متوفر حالياً</span>
-                <div class="barber-desc">للحصول على الخدمة الفورية المباشرة بدون انتظار.</div>
+                <span class="barber-name" data-ar="⚡ أي حلاق متوفر حالياً" data-en="⚡ Any Available Barber">⚡ أي حلاق متوفر حالياً</span>
+                <div class="barber-desc" data-ar="للحصول على الخدمة الفورية المباشرة بدون انتظار." data-en="For immediate direct service without waiting.">للحصول على الخدمة الفورية المباشرة بدون انتظار.</div>
             </div>
         </div>
 
-        <label>⭐ عرض (خصم %25):</label>
+        <label id="servicesSectionTitle">⭐ عرض (خصم %25):</label>
         <div class="services-grid" style="grid-template-columns: 1fr; margin-bottom: 15px;">
             <div class="service-item" style="padding: 15px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-weight: bold;">شعر + ذقن + سشوار + ماسك + شمع</span></div>
+                <div class="service-info"><span style="font-weight: bold;" id="offerTextName" data-ar="شعر + ذقن + سشوار + ماسك + شمع" data-en="Hair + Beard + Blowout + Mask + Wax">شعر + ذقن + سشوار + ماسك + شمع</span></div>
                 <span class="service-price">750 ل.س</span>
                 <input type="checkbox" value="عرض: شعر + ذقن + سشوار + ماسك + شمع" data-price="750">
             </div>
         </div>
 
-        <label>الخدمات المطلوبة (يمكنك اختيار خدمات متعددة):</label>
+        <label id="labelServices">الخدمات المطلوبة (يمكنك اختيار خدمات متعددة):</label>
         <div class="services-grid" style="grid-template-columns: repeat(3, 1fr);">
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">قص شعر</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="قص شعر" data-en="Haircut">قص شعر</span></div>
                 <span class="service-price" style="font-size: 13px;">300 ل.س</span>
                 <input type="checkbox" value="قص شعر" data-price="300">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">ترتيب ذقن</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="ترتيب ذقن" data-en="Beard Trim">ترتيب ذقن</span></div>
                 <span class="service-price" style="font-size: 13px;">250 ل.س</span>
                 <input type="checkbox" value="تهذيب ذقن" data-price="250">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">شعر + ذقن</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="شعر + ذقن" data-en="Hair + Beard">شعر + ذقن</span></div>
                 <span class="service-price" style="font-size: 13px;">500 ل.س</span>
                 <input type="checkbox" value="شعر + ذقن" data-price="500">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">سشوار</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="سشوار" data-en="Blowout">سشوار</span></div>
                 <span class="service-price" style="font-size: 13px;">250 ل.س</span>
                 <input type="checkbox" value="سشوار" data-price="250">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">تنظيف بشرة متكامل</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="تنظيف بشرة متكامل" data-en="Full Facial">تنظيف بشرة متكامل</span></div>
                 <span class="service-price" style="font-size: 13px;">300 ل.س</span>
                 <input type="checkbox" value="تنظيف بشرة متكامل" data-price="300">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">ماسك للوجه</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="ماسك للوجه" data-en="Face Mask">ماسك للوجه</span></div>
                 <span class="service-price" style="font-size: 13px;">150 ل.س</span>
                 <input type="checkbox" value="ماسك للوجه" data-price="150">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">مقشر للوجه سكراب</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="مقشر للوجه سكراب" data-en="Face Scrub">مقشر للوجه سكراب</span></div>
                 <span class="service-price" style="font-size: 13px;">150 ل.س</span>
                 <input type="checkbox" value="مقشر للوجه سكراب" data-price="150">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">شمع (أنف أو أذن أو وجه)</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="شمع (أنف أو أذن أو وجه)" data-en="Waxing">شمع (أنف أو أذن أو وجه)</span></div>
                 <span class="service-price" style="font-size: 13px;">100 ل.س</span>
                 <input type="checkbox" value="شمع (أنف أو أذن أو وجه)" data-price="100">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">صبغة ذقن</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="صبغة ذقن" data-en="Beard Dye">صبغة ذقن</span></div>
                 <span class="service-price" style="font-size: 13px;">200 ل.س</span>
                 <input type="checkbox" value="صبغة ذقن" data-price="200">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">صبغة شعر</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="صبغة شعر" data-en="Hair Dye">صبغة شعر</span></div>
                 <span class="service-price" style="font-size: 13px;">200 ل.س</span>
                 <input type="checkbox" value="صبغة شعر" data-price="200">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;">صبغة شعر + ذقن</span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="صبغة شعر + ذقن" data-en="Hair & Beard Dye">صبغة شعر + ذقن</span></div>
                 <span class="service-price" style="font-size: 13px;">400 ل.س</span>
                 <input type="checkbox" value="صبغة شعر وذقن" data-price="400">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
-                <div class="service-info"><span style="font-size: 13px; font-weight: bold;"> complete كامل </span></div>
+                <div class="service-info"><span style="font-size: 13px; font-weight: bold;" data-ar="complete كامل" data-en="Complete Package"> complete كامل </span></div>
                 <span class="service-price" style="font-size: 13px;">1000 ل.س</span>
                 <input type="checkbox" value="الخدمة الكاملة" data-price="1000">
             </div>
             <div class="service-item" style="flex-direction: column; text-align: center; justify-content: center; gap: 8px; padding: 10px;" onclick="toggleService(this)">
                 <div class="service-info">
-                    <span style="font-size: 13px; font-weight: bold;">بروتين للشعر</span>
-                    <span class="service-desc-line" style="font-size: 10px;">حسب الطول</span>
+                    <span style="font-size: 13px; font-weight: bold;" data-ar="بروتين للشعر" data-en="Hair Protein">بروتين للشعر</span>
+                    <span class="service-desc-line" style="font-size: 10px;" data-ar="حسب الطول" data-en="Depending on length">حسب الطول</span>
                 </div>
-                <span class="service-price" style="font-size: 11px;">يحدد بالصالون</span>
+                <span class="service-price" style="font-size: 11px;" data-ar="يحدد بالصالون" data-en="In Salon">يحدد بالصالون</span>
                 <input type="checkbox" value="بروتين للشعر" data-price="0">
             </div>
         </div>
 
         <div class="total-box">
-            <span class="total-title">الحساب الإجمالي التقريبي:</span>
+            <span class="total-title" id="totalTitleLabel">الحساب الإجمالي التقريبي:</span>
             <span id="totalDisplay" class="total-amount">0 ل.س</span>
         </div>
 
-        <div class="payment-method">
+        <div class="payment-method" id="paymentMethodText">
             📱 متوفر الدفع عبر شام كاش - Sham Cash
         </div>
 
-        <!-- قائمة حجز التاريخ والوقت المدمجة -->
         <div class="fresha-section">
-            <div class="fresha-title">تحديد التاريخ والوقت</div>
+            <div class="fresha-title" id="dateSectionTitle">تحديد التاريخ والوقت</div>
             
-            <div class="days-carousel" id="freshaDaysCarousel">
-                <!-- توليد الأيام برمجياً -->
-            </div>
+            <div class="days-carousel" id="freshaDaysCarousel"></div>
             
             <div class="fresha-time-container" id="freshaTimeContainer">
                 <div class="fresha-time-label" id="timeGridMainLabel">يرجى اختيار وقت الحضور للموعد:</div>
-                <div class="modern-time-grid" id="modernTimeGridContainer">
-                    <!-- تظهر الساعات هنا فقط عند ضغط الزبون على اليوم -->
-                </div>
+                <div class="modern-time-grid" id="modernTimeGridContainer"></div>
             </div>
         </div>
 
-        <label>اسم الزبون:</label>
+        <label id="labelName">اسم الزبون:</label>
         <input type="text" id="customerName" placeholder="اكتب اسمك الكامل" required>
 
-        <label>رقم الهاتف:</label>
-        <input type="tel" id="customerPhone" placeholder="09xxxxxxxx" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
-
-        <!-- أزرار التواصل المباشر وواتساب للرقم المطلوب -->
-        <div class="contact-buttons-container">
-            <a href="https://wa.me/963983449184" target="_blank" class="contact-btn whatsapp-btn">
-                💬 مراسلة عبر واتساب
-            </a>
-            <a href="tel:0983449184" class="contact-btn call-btn">
-                📞 اتصال هاتفي مباشر
-            </a>
+        <label id="labelPhone">رقم الهاتف:</label>
+        <div class="phone-wrapper">
+            <div class="phone-input-container">
+                <input type="tel" id="customerPhone" placeholder="0983449184 أو +961..." oninput="validatePhoneNumberLive()" required>
+                <div class="phone-country-badge" id="phoneCountryBadge">🇸🇾 سوريا</div>
+            </div>
+            <div class="phone-note" id="phoneNoteText">
+                📌 **ملاحظة:** إذا كان الرقم غير سوري، يرجى كتابته مسبوقاً برمز الدولة الخاص بك (مثلاً: +961...)
+            </div>
         </div>
 
         <button type="submit" id="btnSubmit">تأكيد حجز الموعد</button>
     </form>
 
-    <!-- تم إضافة الخريطة هنا في الصفحة الرئيسية أيضاً لتسهيل الوصول المباشر للزبون -->
-    <div class="salon-location-box" style="margin-top: 30px;">
-        <div class="location-header">📍 عنوان صالون الملك بالتفصيل:</div>
-        <div style="margin-bottom: 5px; color:#e5e7eb;">دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
+    <div class="salon-location-box" id="locationBox" style="margin-top: 30px;">
+        <div class="location-header" id="locationHeaderTitle">📍 عنوان صالون الملك بالتفصيل:</div>
+        <div style="margin-bottom: 5px; color:#e5e7eb;" id="locationAddressText">دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
         <a href="https://Maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-preview-container">
             <img src="Maps.png" onerror="this.onerror=null; this.src='Maps.jpg';" alt="خريطة صالون الملك" class="map-preview-img">
         </a>
-        <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-bottom-link-btn">
+        <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-bottom-link-btn" id="mapLinkBtnText">
             فتح تطبيق Google Maps والتوجه للصالون مباشرة
         </a>
     </div>
 
     <footer>
-        جميع الحقوق محفوظة © 2026 <a href="https://bashar3baid-wq.github.io/Best.of/" target="_blank">Best of</a>
+        <span id="footerText">جميع الحقوق محفوظة © 2026</span> <a href="https://bashar3baid-wq.github.io/Best.of/" target="_blank">Best of</a>
     </footer>
 </div>
 
-<!-- واجهة تتبع حالة الموعد الاحترافية الثابتة والمقاومة للتحديث وحفظ البيانات متكاملة -->
 <div class="container tracking-box" id="trackingContainer">
-    <h2>👑 تتبع حالة موعدك الملوكي 👑</h2>
+    <h2 id="trackingHeaderTitle">👑 تتبع حالة موعدك الملوكي 👑</h2>
     
-    <!-- عبارات الترحيب والتهنئة والنصائح التفاعلية اللطيفة -->
     <div class="tracking-welcome-msg" id="trackingDynamicMessage">
         أهلاً بك يا غالي في مملكتك! تم حجز مقعدك بنجاح ونحن الآن بانتظار إشعار الإدارة لتأكيد الحجز. تمهّل قليلاً وتابع التحديث المباشر من هذه الصفحة.
     </div>
@@ -367,35 +495,23 @@
     <div id="trackingStatusBadge" class="status-badge status-waiting">قيد الانتظار وتجهيز المقعد ⏳</div>
     
     <div style="background: #070a12; padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); text-align: right; margin-bottom: 25px; line-height: 28px;">
-        <div>👤 <strong>الاسم الكريم:</strong> <span id="trackName">-</span></div>
-        <div>✂️ <strong>الحلاق المختار:</strong> <span id="trackBarber">-</span></div>
-        <div>⏰ <strong>وقت الحضور:</strong> <span id="trackTime">-</span></div>
-        <div>📅 <strong>التاريخ المجدول:</strong> <span id="trackDate">-</span></div>
+        <div>👤 <strong id="trackLabelName">الاسم الكريم:</strong> <span id="trackName">-</span></div>
+        <div>✂️ <strong id="trackLabelBarber">الحلاق المختار:</strong> <span id="trackBarber">-</span></div>
+        <div>⏰ <strong id="trackLabelTime">وقت الحضور:</strong> <span id="trackTime">-</span></div>
+        <div>📅 <strong id="trackLabelDate">التاريخ المجدول:</strong> <span id="trackDate">-</span></div>
     </div>
     
-    <!-- عرض موقع الصالون مدمجاً داخل صفحة التتبع لتسهيل الوصول المباشر للزبون -->
     <div class="salon-location-box" style="margin-bottom: 25px;">
-        <div class="location-header">📍 عنوان صالون الملك بالتفصيل:</div>
-        <div style="margin-bottom: 5px; color:#e5e7eb;">دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
+        <div class="location-header" id="locationHeaderTitle2">📍 عنوان صالون الملك بالتفصيل:</div>
+        <div style="margin-bottom: 5px; color:#e5e7eb;" id="locationAddressText2">دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
         <a href="https://Maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-preview-container">
             <img src="Maps.png" onerror="this.onerror=null; this.src='Maps.jpg';" alt="خريطة صالون الملك" class="map-preview-img">
         </a>
-        <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-bottom-link-btn">
+        <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-bottom-link-btn" id="mapLinkBtnText2">
             فتح تطبيق Google Maps والتوجه للصالون مباشرة
         </a>
     </div>
-
-    <!-- أزرار التواصل المباشر أيضاً ضمن شاشة تتبع الموعد -->
-    <div class="contact-buttons-container" style="margin-bottom: 20px;">
-        <a href="https://wa.me/963983449184" target="_blank" class="contact-btn whatsapp-btn">
-            💬 مراسلة عبر واتساب
-        </a>
-        <a href="tel:0983449184" class="contact-btn call-btn">
-            📞 اتصال هاتفي مباشر
-        </a>
-    </div>
     
-    <!-- زر العودة يظهر فقط بعد الإلغاء ولا يمكن الخروج من الصفحة بالأنظمة الطبيعية في حال الانتظار/التأكيد -->
     <button type="button" id="backToHomeBtn" class="modal-close-btn" onclick="clearTrackingAndReturn()" style="background: #1f2937; color: #fff; width: 100%; display:none;">العودة للصفحة الرئيسية</button>
 </div>
 
@@ -418,8 +534,280 @@
     let allGlobalBookings = {}; 
     let selectedDayIndex = -1; 
     let isShopOpenGlobal = true;
+    let currentLanguage = 'ar';
 
-    // الساعات بنظام النصف ساعة المطور والمتوافق بالكامل مع التطبيق
+    // قاعدة بيانات رموز الدول مع كشف التلقائي
+    const countryCodesMap = [
+        { code: "963", name: "سوريا", flag: "🇸🇾", minLen: 8, maxLen: 10 },
+        { code: "966", name: "السعودية", flag: "🇸🇦", minLen: 8, maxLen: 9 },
+        { code: "971", name: "الإمارات", flag: "🇦🇪", minLen: 8, maxLen: 9 },
+        { code: "961", name: "لبنان", flag: "🇱🇧", minLen: 7, maxLen: 8 },
+        { code: "962", name: "الأردن", flag: "🇯🇴", minLen: 8, maxLen: 9 },
+        { code: "20", name: "مصر", flag: "🇪🇬", minLen: 9, maxLen: 10 },
+        { code: "964", name: "العراق", flag: "🇮🇶", minLen: 9, maxLen: 10 },
+        { code: "965", name: "الكويت", flag: "🇰🇼", minLen: 8, maxLen: 8 },
+        { code: "974", name: "قطر", flag: "🇶🇦", minLen: 8, maxLen: 8 },
+        { code: "973", name: "البحرين", flag: "🇧🇭", minLen: 8, maxLen: 8 },
+        { code: "968", name: "عمان", flag: "🇴🇲", minLen: 8, maxLen: 8 },
+        { code: "967", name: "اليمن", flag: "🇾🇪", minLen: 8, maxLen: 9 },
+        { code: "249", name: "السودان", flag: "🇸🇩", minLen: 9, maxLen: 9 },
+        { code: "218", name: "ليبيا", flag: "🇱🇾", minLen: 8, maxLen: 9 },
+        { code: "216", name: "تونس", flag: "🇹🇳", minLen: 8, maxLen: 8 },
+        { code: "213", name: "الجزائر", flag: "🇩🇿", minLen: 8, maxLen: 9 },
+        { code: "212", name: "المغرب", flag: "🇲🇦", minLen: 9, maxLen: 9 },
+        { code: "90", name: "تركيا", flag: "🇹🇷", minLen: 10, maxLen: 10 },
+        { code: "49", name: "ألمانيا", flag: "🇩🇪", minLen: 9, maxLen: 11 },
+        { code: "33", name: "فرنسا", flag: "🇫🇷", minLen: 9, maxLen: 9 },
+        { code: "44", name: "المملكة المتحدة", flag: "🇬🇧", minLen: 9, maxLen: 10 },
+        { code: "1", name: "أمريكا/كندا", flag: "🇺🇸", minLen: 10, maxLen: 10 }
+    ];
+
+    const translations = {
+        ar: {
+            title: "صالون الملك - حجز مواعد إلكتروني",
+            h1List: ["👑 صالون الملك 👑", "👑 King's Barbershop 👑"],
+            subList: [
+                "فخامة الأداء ودقة المواعيد تناسب ملوك مجتمعنا",
+                "Luxury performance and precise timing for our community kings"
+            ],
+            welcomeList: [
+                "مرحباً بك في نظام الحجز المطور لصالون الملك. فضلاً، املأ الخيارات التالية وسيتم تحديث وحجب الأوقات تلقائياً لضمان راحتك وتفادي الانتظار.",
+                "Welcome to King's Barbershop booking system. Please fill out the options below to secure your appointment instantly."
+            ],
+            tbHome: "🏠 الرئيسية",
+            tbBook: "✂️ احجز",
+            tbOffers: "⭐ العروض",
+            tbGuide: "📖 طريقة الاستخدام",
+            tbContact: "💬 تواصل",
+            tbLangSwitch: "🌐 EN / عربي",
+            guideModalTitle: "📖 الدالة الذكية لخطوات وطريقة الحجز (100%):",
+            guideModalMessage: "أهلاً بك يا ملك! لضمان حجز مريح وناجح بنسبة 100%، يرجى اتباع الآتي:<br><br>1️⃣ <strong>اختيار الحلاق:</strong> انقر على الحلاق المفضل لديك (أو اختر الحلاق المتوفر حالياً للخدمة الفورية).<br>2️⃣ <strong>الخدمات والعروض:</strong> حدد الخدمات المطلوبة أو العرض الفاخر المناسب لك.<br>3️⃣ <strong>التاريخ والوقت:</strong> تصفح الأيام المتاحة، ثم انقر على الوقت الفارغ والمناسب لحضورك.<br>4️⃣ <strong>بيانات الاتصال:</strong> اكتب اسمك ورقم هاتفك مع رمز بلدك إذا كنت خارج سوريا ثم اضغط تأكيد.",
+            labelBarber: "اختر الحلاق المفضل لديك ✂️:",
+            servicesSectionTitle: "⭐ عرض (خصم %25):",
+            labelServices: "الخدمات المطلوبة (يمكنك اختيار خدمات متعددة):",
+            totalTitleLabel: "الحساب الإجمالي التقريبي:",
+            paymentMethodText: "📱 متوفر الدفع عبر شام كاش - Sham Cash",
+            dateSectionTitle: "تحديد التاريخ والوقت",
+            timeGridMainLabel: "يرجى اختيار وقت الحضور للموعد:",
+            labelName: "اسم الزبون:",
+            labelPhone: "رقم الهاتف:",
+            phoneNoteText: "📌 **ملاحظة:** إذا كان الرقم غير سوري، يرجى كتابته مسبوقاً برمز الدولة الخاص بك (مثلاً: +961...)",
+            btnSubmit: "تأكيد حجز الموعد",
+            locationHeaderTitle: "📍 عنوان صالون الملك بالتفصيل:",
+            locationAddressText: "دمشق - ساحة المرجة - بناء رمسيس - طابق أول",
+            mapLinkBtnText: "فتح تطبيق Google Maps والتوجه للصالون مباشرة",
+            footerText: "جميع الحقوق محفوظة © 2026",
+            trackHeader: "👑 تتبع حالة موعدك الملوكي 👑",
+            trackNameLabel: "الاسم الكريم:",
+            trackBarberLabel: "الحلاق المختار:",
+            trackTimeLabel: "وقت الحضور:",
+            trackDateLabel: "التاريخ المجدول:"
+        },
+        en: {
+            title: "King's Barbershop - Online Booking",
+            h1List: ["👑 King's Barbershop 👑", "👑 صالون الملك 👑"],
+            subList: [
+                "Luxury performance and precise timing for our community kings",
+                "فخامة الأداء ودقة المواعيد تناسب ملوك مجتمعنا"
+            ],
+            welcomeList: [
+                "Welcome to King's Barbershop booking system. Please fill out the options below to secure your appointment instantly.",
+                "مرحباً بك في نظام الحجز المطور لصالون الملك. فضلاً، املأ الخيارات التالية وسيتم تحديث وحجب الأوقات تلقائياً لضمان راحتك وتفادي الانتظار."
+            ],
+            tbHome: "🏠 Home",
+            tbBook: "✂️ Book",
+            tbOffers: "⭐ Offers",
+            tbGuide: "📖 Guide",
+            tbContact: "💬 Contact",
+            tbLangSwitch: "🌐 عربي / EN",
+            guideModalTitle: "📖 Smart Guide & Booking Steps (100%):",
+            guideModalMessage: "Welcome King! To ensure a seamless and 100% successful booking, follow these steps:<br><br>1️⃣ <strong>Choose Barber:</strong> Click your favorite barber (or select available barber for immediate service).<br>2️⃣ <strong>Services & Offers:</strong> Select your desired services or special offers.<br>3️⃣ <strong>Date & Time:</strong> Browse days and pick an available time slot.<br>4️⃣ <strong>Contact Info:</strong> Enter your name and phone number with country code if outside Syria, then confirm.",
+            labelBarber: "Choose your favorite barber ✂️:",
+            servicesSectionTitle: "⭐ Special Offer (25% OFF):",
+            labelServices: "Required Services (You can select multiple):",
+            totalTitleLabel: "Approximate Total:",
+            paymentMethodText: "📱 Payment available via Sham Cash",
+            dateSectionTitle: "Select Date & Time",
+            timeGridMainLabel: "Please select your appointment time:",
+            labelName: "Customer Name:",
+            labelPhone: "Phone Number:",
+            phoneNoteText: "📌 **Note:** If phone is non-Syrian, please include country code (e.g., +961...)",
+            btnSubmit: "Confirm Booking",
+            locationHeaderTitle: "📍 King's Barbershop Detailed Location:",
+            locationAddressText: "Damascus - Marjeh Square - Ramses Building - 1st Floor",
+            mapLinkBtnText: "Open Google Maps & Navigate Directly",
+            footerText: "All Rights Reserved © 2026",
+            trackHeader: "👑 Track Your Royal Appointment 👑",
+            trackNameLabel: "Customer Name:",
+            trackBarberLabel: "Selected Barber:",
+            trackTimeLabel: "Appointment Time:",
+            trackDateLabel: "Scheduled Date:"
+        }
+    };
+
+    let titleIndex = 0;
+    setInterval(() => {
+        titleIndex = 1 - titleIndex;
+        const t = translations[currentLanguage];
+        
+        const h1El = document.getElementById('dynamicTitle');
+        const subEl = document.getElementById('dynamicSubtitle');
+        const welcomeEl = document.getElementById('dynamicWelcomeBox');
+
+        if(h1El) {
+            h1El.style.opacity = 0;
+            setTimeout(() => {
+                h1El.innerText = t.h1List[titleIndex];
+                h1El.style.opacity = 1;
+            }, 300);
+        }
+
+        if(subEl) {
+            subEl.style.opacity = 0;
+            setTimeout(() => {
+                subEl.innerText = t.subList[titleIndex];
+                subEl.style.opacity = 1;
+            }, 300);
+        }
+
+        if(welcomeEl) {
+            welcomeEl.style.opacity = 0;
+            setTimeout(() => {
+                welcomeEl.innerText = t.welcomeList[titleIndex];
+                welcomeEl.style.opacity = 1;
+            }, 300);
+        }
+    }, 3000);
+
+    function toggleLanguage() {
+        currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+        const root = document.getElementById('htmlRoot');
+        root.setAttribute('dir', currentLanguage === 'ar' ? 'rtl' : 'ltr');
+        root.setAttribute('lang', currentLanguage);
+
+        const t = translations[currentLanguage];
+        document.getElementById('pageTitle').innerText = t.title;
+        document.getElementById('tbHome').innerText = t.tbHome;
+        document.getElementById('tbBook').innerText = t.tbBook;
+        document.getElementById('tbOffers').innerText = t.tbOffers;
+        document.getElementById('tbGuide').innerText = t.tbGuide;
+        document.getElementById('tbContact').innerText = t.tbContact;
+        document.getElementById('tbLangSwitch').innerText = t.tbLangSwitch;
+
+        document.getElementById('labelBarber').innerText = t.labelBarber;
+        document.getElementById('servicesSectionTitle').innerText = t.servicesSectionTitle;
+        document.getElementById('labelServices').innerText = t.labelServices;
+        document.getElementById('totalTitleLabel').innerText = t.totalTitleLabel;
+        document.getElementById('paymentMethodText').innerText = t.paymentMethodText;
+        document.getElementById('dateSectionTitle').innerText = t.dateSectionTitle;
+        document.getElementById('timeGridMainLabel').innerText = t.timeGridMainLabel;
+        document.getElementById('labelName').innerText = t.labelName;
+        document.getElementById('labelPhone').innerText = t.labelPhone;
+        document.getElementById('phoneNoteText').innerText = t.phoneNoteText;
+        document.getElementById('btnSubmit').innerText = t.btnSubmit;
+        
+        document.getElementById('locationHeaderTitle').innerText = t.locationHeaderTitle;
+        document.getElementById('locationAddressText').innerText = t.locationAddressText;
+        document.getElementById('mapLinkBtnText').innerText = t.mapLinkBtnText;
+
+        document.getElementById('locationHeaderTitle2').innerText = t.locationHeaderTitle;
+        document.getElementById('locationAddressText2').innerText = t.locationAddressText;
+        document.getElementById('mapLinkBtnText2').innerText = t.mapLinkBtnText;
+
+        document.getElementById('footerText').innerText = t.footerText;
+        document.getElementById('trackingHeaderTitle').innerText = t.trackHeader;
+        
+        document.getElementById('trackLabelName').innerText = t.trackNameLabel;
+        document.getElementById('trackLabelBarber').innerText = t.trackBarberLabel;
+        document.getElementById('trackLabelTime').innerText = t.trackTimeLabel;
+        document.getElementById('trackLabelDate').innerText = t.trackDateLabel;
+
+        document.querySelectorAll('.barber-card').forEach(card => {
+            const nameEl = card.querySelector('.barber-name');
+            const descEl = card.querySelector('.barber-desc');
+            if(nameEl && nameEl.dataset[currentLanguage]) {
+                nameEl.innerText = nameEl.dataset[currentLanguage];
+            }
+            if(descEl && descEl.dataset[currentLanguage]) {
+                descEl.innerText = descEl.dataset[currentLanguage];
+                descEl.dataset.original = descEl.innerText;
+            }
+        });
+
+        document.querySelectorAll('.services-grid .service-item span').forEach(span => {
+            if(span.dataset[currentLanguage]) {
+                span.innerText = span.dataset[currentLanguage];
+            }
+        });
+
+        validatePhoneNumberLive();
+    }
+
+    /* دالة فحص وتدقيق رقم الهاتف المباشر التلقائي */
+    function validatePhoneNumberLive() {
+        let phoneInput = document.getElementById('customerPhone');
+        let badge = document.getElementById('phoneCountryBadge');
+        let rawValue = phoneInput.value.trim().replace(/[\s\-\(\)]/g, '');
+
+        if (rawValue === '') {
+            badge.className = 'phone-country-badge valid';
+            badge.innerHTML = '🇸🇾 سوريا';
+            return { isValid: true, countryName: 'سوريا', cleanPhone: '' };
+        }
+
+        // الرقم السوري المحلي البدائي (09xxxxxxx)
+        if (rawValue.startsWith('09') || rawValue.startsWith('9')) {
+            if (rawValue.startsWith('09') && rawValue.length === 10) {
+                badge.className = 'phone-country-badge valid';
+                badge.innerHTML = '🇸🇾 سوريا';
+                return { isValid: true, countryName: 'سوريا', cleanPhone: '+963' + rawValue.substring(1) };
+            } else if (rawValue.startsWith('9') && rawValue.length === 9) {
+                badge.className = 'phone-country-badge valid';
+                badge.innerHTML = '🇸🇾 سوريا';
+                return { isValid: true, countryName: 'سوريا', cleanPhone: '+963' + rawValue };
+            }
+        }
+
+        // إزالة أصفار البداية أو علامة الزائد
+        let cleanIntl = rawValue.replace(/^00/, '').replace(/^\+/, '');
+
+        // التعرف على سوريا بالترميز الدولي 963
+        if (cleanIntl.startsWith('963')) {
+            let digitsNum = cleanIntl.substring(3);
+            if (digitsNum.length >= 8 && digitsNum.length <= 9) {
+                badge.className = 'phone-country-badge valid';
+                badge.innerHTML = '🇸🇾 سوريا';
+                return { isValid: true, countryName: 'سوريا', cleanPhone: '+' + cleanIntl };
+            }
+        }
+
+        // كشف قائمة الدول الدولية
+        for (let country of countryCodesMap) {
+            if (cleanIntl.startsWith(country.code)) {
+                let restDigits = cleanIntl.substring(country.code.length);
+                if (restDigits.length >= country.minLen && restDigits.length <= country.maxLen) {
+                    badge.className = 'phone-country-badge valid';
+                    badge.innerHTML = `${country.flag} ${country.name}`;
+                    return { isValid: true, countryName: country.name, cleanPhone: '+' + cleanIntl };
+                } else {
+                    badge.className = 'phone-country-badge invalid';
+                    badge.innerHTML = '⚠️ الرقم غير صالح';
+                    return { isValid: false, countryName: country.name, cleanPhone: '+' + cleanIntl };
+                }
+            }
+        }
+
+        // إذا لم ينطبق على أي دولة معروفة أو صيغة خاطئة (رقم وهمي)
+        badge.className = 'phone-country-badge invalid';
+        badge.innerHTML = '⚠️ الرقم غير صالح';
+        return { isValid: false, countryName: 'غير معروف', cleanPhone: rawValue };
+    }
+
+    function openInteractiveGuideModal() {
+        const t = translations[currentLanguage];
+        showCustomAlert(t.guideModalTitle, t.guideModalMessage, "📖");
+    }
+
     const workingHoursSlots = [
         "09:00 ص", "09:30 ص", "10:00 ص", "10:30 ص", "11:00 ص", "11:30 ص", "12:00 م", "12:30 م", 
         "01:00 م", "01:30 م", "02:00 م", "02:30 م", "03:00 م", "03:30 م", "04:00 م", "04:30 م", 
@@ -429,9 +817,16 @@
     const arabicDays = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
     const arabicMonths = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
+    function scrollToSection(elementId) {
+        const el = document.getElementById(elementId);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
     function showSmartLoading() {
-        document.getElementById('modalTitle').innerText = "قيد الانتظار...";
-        document.getElementById('modalMessage').innerText = "جاري الحفظ والتحقق من التزامن السحابي الفوري, يرجى الانتظار لحفظ الموعد الملوكي الخاص بك...";
+        document.getElementById('modalTitle').innerText = currentLanguage === 'ar' ? "قيد الانتظار..." : "Processing...";
+        document.getElementById('modalMessage').innerText = currentLanguage === 'ar' ? "جاري الحفظ والتحقق من التزامن السحابي الفوري, يرجى الانتظار لحفظ الموعد الملوكي الخاص بك..." : "Saving and syncing your royal appointment, please wait...";
         document.getElementById('modalIcon').style.display = "none";
         document.getElementById('modalSpinner').style.display = "block";
         document.getElementById('modalCloseBtn').style.display = "none";
@@ -443,7 +838,7 @@
         document.getElementById('modalIcon').style.display = "block";
         document.getElementById('modalIcon').innerText = icon;
         document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalMessage').innerText = message;
+        document.getElementById('modalMessage').innerHTML = message;
         document.getElementById('modalCloseBtn').style.display = "inline-block";
         document.getElementById('customAlertModal').classList.add('active');
     }
@@ -464,11 +859,11 @@
         const statusIndicator = document.getElementById('shopStatusIndicator');
         
         if (currentHour < 9 || currentHour >= 21) {
-            statusIndicator.innerText = "مغلق الآن 🌙";
+            statusIndicator.innerText = currentLanguage === 'ar' ? "مغلق الآن 🌙" : "Closed Now 🌙";
             statusIndicator.className = "modern-status-badge status-closed";
             isShopOpenGlobal = false;
         } else {
-            statusIndicator.innerText = "مفتوح الآن 🟢";
+            statusIndicator.innerText = currentLanguage === 'ar' ? "مفتوح الآن 🟢" : "Open Now 🟢";
             statusIndicator.className = "modern-status-badge status-open";
             isShopOpenGlobal = true;
         }
@@ -496,9 +891,9 @@
             let todayStr = getFormattedDateString(0);
             let checkStr = `${targetDate.getFullYear()}-${("0" + (targetDate.getMonth() + 1)).slice(-2)}-${("0" + targetDate.getDate()).slice(-2)}`;
             
-            if (checkStr === todayStr) displayLabel = "اليوم (" + dayName + ")";
-            else if (i === 1) displayLabel = "غداً (" + dayName + ")";
-            else if (i === 2) displayLabel = "بعد غد (" + dayName + ")";
+            if (checkStr === todayStr) displayLabel = currentLanguage === 'ar' ? "اليوم" : "Today";
+            else if (i === 1) displayLabel = currentLanguage === 'ar' ? "غداً" : "Tomorrow";
+            else if (i === 2) displayLabel = currentLanguage === 'ar' ? "بعد غد" : "After 2 days";
 
             let dayNum = targetDate.getDate();
             let monthName = arabicMonths[targetDate.getMonth()];
@@ -527,7 +922,7 @@
                 if (!descEl.dataset.original) {
                     descEl.dataset.original = descEl.innerText;
                 }
-                descEl.innerText = "لا يمكن الحجز اليوم الجمعة اختر خاصية ايا حلاقه متوفر لستقبالك من الحلاقه الموجود حالين في الصالون";
+                descEl.innerText = currentLanguage === 'ar' ? "لا يمكن الحجز اليوم الجمعة اختر خاصية اي حلاق متوفر لاستقبالك" : "Closed today Friday, please choose any available barber.";
             } else {
                 card.classList.remove('friday-locked');
                 if (descEl.dataset.original) {
@@ -563,7 +958,7 @@
         let isFriday = (selectedDayIndex !== -1 && targetDate.getDay() === 5);
 
         if (isFriday && element.id !== 'barber-اي_حلاق_متوفر') {
-            showCustomAlert("عذراً ⚠️", "لا يمكن الحجز اليوم الجمعة اختر خاصية ايا حلاقه متوفر لستقبالك من الحلاقه الموجود حالين في الصالون", "✂️");
+            showCustomAlert(currentLanguage === 'ar' ? "عذراً ⚠️" : "Sorry ⚠️", currentLanguage === 'ar' ? "لا يمكن الحجز اليوم الجمعة اختر خاصية اي حلاق متوفر لاستقبالك" : "Cannot book this Friday, please choose any available barber.", "✂️");
             return;
         }
 
@@ -605,18 +1000,18 @@
         if (selectedDayIndex === -1) return;
 
         if (selectedBarberName === "أي حلاق متوفر حالياً") {
-            mainLabel.innerText = "الحجز الفوري السريع الذكي:";
+            mainLabel.innerText = currentLanguage === 'ar' ? "الحجز الفوري السريع الذكي:" : "Instant Quick Booking:";
             
             const slotBtn = document.createElement('div');
             slotBtn.className = "time-slot-item" + (selectedTimeForUser === "حضور فوري مباشر" ? " selected" : "");
             slotBtn.style.gridColumn = "span 3";
-            slotBtn.innerText = "حضور فوري مباشر (الآن)";
+            slotBtn.innerText = currentLanguage === 'ar' ? "حضور فوري مباشر (الآن)" : "Immediate Arrival (Now)";
             slotBtn.onclick = function() { changeSelectedSlot(slotBtn, "حضور فوري مباشر"); };
             container.appendChild(slotBtn);
             return;
         }
 
-        mainLabel.innerText = "يرجى اختيار وقت الحضور للموعد:";
+        mainLabel.innerText = currentLanguage === 'ar' ? "يرجى اختيار وقت الحضور للموعد:" : "Please select appointment time:";
         let targetDateStr = getFormattedDateString(selectedDayIndex);
         let activeBookedSlots = [];
 
@@ -656,7 +1051,7 @@
 
     function changeSelectedSlot(element, timeVal) {
         if (!selectedBarberName) {
-            showCustomAlert("تنبيه الحلاق ⚠️", "يرجى اختيار الحلاق المفضل أولاً قبل تحديد وقت الحضور!", "✂️");
+            showCustomAlert(currentLanguage === 'ar' ? "تنبيه الحلاق ⚠️" : "Barber Notice ⚠️", currentLanguage === 'ar' ? "يرجى اختيار الحلاق المفضل أولاً قبل تحديد وقت الحضور!" : "Please select a barber first!", "✂️");
             return;
         }
         document.querySelectorAll('.time-slot-item').forEach(btn => btn.classList.remove('selected'));
@@ -686,7 +1081,6 @@
                     card.style.opacity = '0.4';               
                     card.style.filter = 'grayscale(80%)';       
                     card.style.border = '1px solid #ff453a';   
-                    card.style.transition = 'all 0.3s ease';
                     
                     if (descEl) {
                         if (!descEl.dataset.originalText) {
@@ -744,54 +1138,50 @@
         event.preventDefault();
         
         let name = document.getElementById('customerName').value.trim();
-        let phone = document.getElementById('customerPhone').value.trim();
+        let phoneValidation = validatePhoneNumberLive();
 
-        // التحقق الإضافي الصارم من رقم الهاتف السوري (10 أرقام وتبدأ بـ 09)
-        const syrianPhoneRegex = /^09\d{8}$/;
-        if (!syrianPhoneRegex.test(phone)) {
-            showCustomAlert("خطأ برقم الهاتف 📱", "يرجى إدخال رقم هاتف سوري صحيح يتكون من 10 أرقام ويبدأ بـ 09 (مثال: 0983449184).", "⚠️");
+        if (!phoneValidation.isValid || phoneValidation.cleanPhone === '') {
+            showCustomAlert(
+                currentLanguage === 'ar' ? "رقم غير صالح ⚠️" : "Invalid Phone ⚠️", 
+                currentLanguage === 'ar' ? "يرجى كتابة رقم هاتف صحيح مع الرمز الدولي إذا كنت خارج سوريا." : "Please enter a valid phone number with country code.", 
+                "📱"
+            );
             return;
         }
-        
+
         let selectedServices = [];
         document.querySelectorAll('.services-grid input:checked').forEach(cb => {
             selectedServices.push(cb.value);
         });
 
         if(!selectedBarberName) {
-            showCustomAlert("اختيار الحلاق ⚠️", "يرجى مراجعة القسم العلوي واختيار الحلاق المطلوب أولاً.", "👤");
+            showCustomAlert(currentLanguage === 'ar' ? "اختيار الحلاق ⚠️" : "Barber Selection ⚠️", currentLanguage === 'ar' ? "يرجى اختيار الحلاق المطلوب أولاً." : "Please select a barber first.", "👤");
             return;
         }
 
         if(selectedServices.length === 0) {
-            showCustomAlert("تنبيه الخدمات ⚠️", "فضلاً اختر خدمة واحدة على الأقل لإتمام حجزك.", "✂️");
+            showCustomAlert(currentLanguage === 'ar' ? "تنبيه الخدمات ⚠️" : "Services Notice ⚠️", currentLanguage === 'ar' ? "فضلاً اختر خدمة واحدة على الأقل." : "Please select at least one service.", "✂️");
             return;
         }
 
         if(selectedDayIndex === -1 || selectedTimeForUser === "") {
-            showCustomAlert("تحدد الوقت ⚠️", "يرجى الضغط على كرت اليوم المفضل واختيار ساعة الحضور المتناسقة.", "⏳");
+            showCustomAlert(currentLanguage === 'ar' ? "تحديد الوقت ⚠️" : "Time Notice ⚠️", currentLanguage === 'ar' ? "يرجى اختيار اليوم ووقت الحضور." : "Please select day and time.", "⏳");
             return;
         }
 
         showSmartLoading();
 
         let finalBookingDate = getFormattedDateString(selectedDayIndex);
-        
         let dayWord = "";
-        let dateToday = getFormattedDateString(0);
-        let dateTomorrow = getFormattedDateString(1);
-        let dateAfterTomorrow = getFormattedDateString(2);
         
-        if (finalBookingDate === dateToday) {
-            dayWord = " (اليوم)";
-        } else if (finalBookingDate === dateTomorrow) {
-            dayWord = " (غداً)";
-        } else if (finalBookingDate === dateAfterTomorrow) {
-            dayWord = " (بعد غد)";
+        if (finalBookingDate === getFormattedDateString(0)) {
+            dayWord = currentLanguage === 'ar' ? " (اليوم)" : " (Today)";
+        } else if (finalBookingDate === getFormattedDateString(1)) {
+            dayWord = currentLanguage === 'ar' ? " (غداً)" : " (Tomorrow)";
         } else {
             let targetD = new Date();
             targetD.setDate(targetD.getDate() + selectedDayIndex);
-            dayWord = " (يوم " + arabicDays[targetD.getDay()] + ")";
+            dayWord = " (" + arabicDays[targetD.getDay()] + ")";
         }
         
         let timeWithDayWord = selectedTimeForUser + dayWord;
@@ -801,7 +1191,8 @@
 
         let bookingPayload = {
             customer_name: name,
-            customer_phone: phone,
+            customer_phone: phoneValidation.cleanPhone,
+            country_detected: phoneValidation.countryName,
             booking_time: timeWithDayWord, 
             booking_date: finalBookingDate, 
             barber_name: selectedBarberName,
@@ -816,7 +1207,7 @@
             localStorage.setItem('lastKnownKingStatus', 'waiting');
             renderTrackingUI(bookingKey, bookingPayload);
         }).catch(err => {
-            showCustomAlert("خطأ في الإرسال ❌", "حدث خطأ غير متوقع: " + err.message, "⚠️");
+            showCustomAlert(currentLanguage === 'ar' ? "خطأ في الإرسال ❌" : "Error ❌", err.message, "⚠️");
         });
     }
 
@@ -837,21 +1228,21 @@
         badge.onclick = null;
 
         if (data.status === "waiting") {
-            badge.innerText = "قيد الانتظار وتجهيز المقعد ⏳";
+            badge.innerText = currentLanguage === 'ar' ? "قيد الانتظار وتجهيز المقعد ⏳" : "Pending ⏳";
             badge.className = "status-badge status-waiting";
-            msgBox.innerHTML = `✨ <strong>يا مية أهلاً وسهلاً بك يا ملك!</strong> حجزك مسجل لدينا الآن بنجاح. يرجى التمهل قليلاً وعدم إغلاق الصفحة، الإدارة تقوم بمراجعة وتأكيد دورك الملوكي حالياً لتوفير أفضل سبل الراحة الفاخرة لك.`;
+            msgBox.innerHTML = currentLanguage === 'ar' ? `✨ <strong>يا مية أهلاً وسهلاً بك يا ملك!</strong> حجزك مسجل لدينا الآن بنجاح. يرجى التمهل قليلاً وعدم إغلاق الصفحة، الإدارة تقوم بمراجعة وتأكيد دورك الملوكي حالياً.` : `✨ <strong>Welcome King!</strong> Your booking is registered successfully.`;
             backBtn.style.display = "none"; 
             localStorage.setItem('lastKnownKingStatus', 'waiting');
         } else if (data.status === "confirmed") {
-            badge.innerText = "تم تأكيد موعدك بنجاح ونعيماً سلفاً 🎉👑";
+            badge.innerText = currentLanguage === 'ar' ? "تم تأكيد موعدك بنجاح ونعيماً سلفاً 🎉👑" : "Confirmed 🎉👑";
             badge.className = "status-badge status-confirmed";
-            msgBox.innerHTML = `🌟 <strong>أهلاً بملكنا الغالي! أبشر.. تم تأكيد حجزك رسمياً!</strong><br>الرجاء عدم التأخر عن موعدك المحدد لضمان تقديم فخامة الأداء الفوري. نعيماً سلفاً ومقعدك بانتظار تشريفك الفخم! ✂️👑`;
+            msgBox.innerHTML = currentLanguage === 'ar' ? `🌟 <strong>أهلاً بملكنا الغالي! أبشر.. تم تأكيد حجزك رسمياً!</strong><br>الرجاء عدم التأخر عن موعدك المحدد.` : `🌟 <strong>Your booking has been confirmed!</strong>`;
             backBtn.style.display = "none"; 
             localStorage.setItem('lastKnownKingStatus', 'confirmed');
         } else if (data.status === "finished") {
-            badge.innerText = "👑 نعيماً يا ملك (اضغط هنا للعودة)";
+            badge.innerText = currentLanguage === 'ar' ? "👑 نعيماً يا ملك (اضغط هنا للعودة)" : "👑 Finished (Click here)";
             badge.className = "status-badge status-finished";
-            msgBox.innerHTML = `✨ <strong>نعيماً يا غالي وأهلاً بك دائماً في صالون الملك!</strong><br>تم إنهاء خدمتك بنجاح ومقعدك الملوكي جاهز لأي زيارة قادمة تشرفنا بها. اضغط على الزر الذهبي أو الزر بالأسفل للعودة وحجز دور جديد في أي وقت!`;
+            msgBox.innerHTML = currentLanguage === 'ar' ? `✨ <strong>نعيماً يا غالي وأهلاً بك دائماً في صالون الملك!</strong>` : `✨ <strong>Service finished successfully!</strong>`;
             backBtn.style.display = "block";
             badge.onclick = clearTrackingAndReturn;
             localStorage.setItem('lastKnownKingStatus', 'finished');
@@ -868,9 +1259,9 @@
         const msgBox = document.getElementById('trackingDynamicMessage');
         const backBtn = document.getElementById('backToHomeBtn');
 
-        badge.innerText = "أُلغي موعدك للأسف 🔴";
+        badge.innerText = currentLanguage === 'ar' ? "أُلغي موعدك للأسف 🔴" : "Cancelled 🔴";
         badge.className = "status-badge status-cancelled";
-        msgBox.innerHTML = `😔 <strong>نعتذر منك بشدة يا غالي..</strong> لقد تم إلغاء الموعد أو إزالته من قبل الإدارة نظراً لضغط العمل المتزايد بالصالون أو لتداخل غير مقصود. يمكنك الآن الضغط على الزر أدناه والعودة مجدداً لاختيار حلاق أو وقت آخر يناسبك تماماً.`;
+        msgBox.innerHTML = currentLanguage === 'ar' ? `😔 <strong>نعتذر منك بشدة يا غالي..</strong> لقد تم إلغاء الموعد أو إزالته.` : `😔 <strong>Sorry, your appointment was cancelled.</strong>`;
         backBtn.style.display = "block"; 
         localStorage.setItem('lastKnownKingStatus', 'cancelled');
     }
@@ -891,6 +1282,7 @@
         document.getElementById('freshaTimeContainer').style.display = "none";
         generateFreshaDays();
         calculateTotal();
+        validatePhoneNumberLive();
     }
     
     generateFreshaDays();
