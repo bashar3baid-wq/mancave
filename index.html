@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
+     <!-- البيانات المنظمة (Schema) محدثة لدعم جوجل -->
      <script type="application/ld+json">
      {
        "@context": "https://schema.org",
        "@type": "WebSite",
        "name": "صالون الملك",
+       "alternateName": ["Kings Barbershop", "King Barbershop", "صالون حلاقة الملك"],
        "url": "https://kings-barbershop.pages.dev/"
      }
      </script>
 
-     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+     <!-- إثبات اسم الموقع لجوجل لتجاوز اسم الاستضافة -->
+     <meta property="og:site_name" content="صالون الملك">
+     <meta name="application-name" content="صالون الملك">
+
+     <!-- أيقونة الموقع (Favicon) - استبدل logo.png باسم صورتك المرفوعة على جيت هب -->
+     <link rel="icon" type="image/png" sizes="192x192" href="/logo.png">
+     <link rel="apple-touch-icon" href="/logo.png">
      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
      <meta name="google-site-verification" content="9ciBVJEZWIz4GeikUYBAWO7ukZmj1_zVtaNroUx54iE" />
@@ -136,7 +144,6 @@
         input, select { width: 100%; padding: 14px; background: #070a12; border: 1px solid var(--border-color); border-radius: 12px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
         input:focus { border-color: var(--accent-gold); }
         
-        /* تنسيق إدخال رقم الهاتف الموحد مع الملاحظة وشعار الدولة */
         .phone-wrapper {
             display: flex;
             flex-direction: column;
@@ -148,7 +155,7 @@
             align-items: center;
         }
         .phone-input-container input {
-            padding-left: 110px; /* مساحة لبطاقة الدولة */
+            padding-left: 110px;
             direction: ltr;
             text-align: right;
         }
@@ -536,7 +543,6 @@
     let isShopOpenGlobal = true;
     let currentLanguage = 'ar';
 
-    // قاعدة بيانات رموز الدول مع كشف التلقائي
     const countryCodesMap = [
         { code: "963", name: "سوريا", flag: "🇸🇾", minLen: 8, maxLen: 10 },
         { code: "966", name: "السعودية", flag: "🇸🇦", minLen: 8, maxLen: 9 },
@@ -743,7 +749,6 @@
         validatePhoneNumberLive();
     }
 
-    /* دالة فحص وتدقيق رقم الهاتف المباشر التلقائي */
     function validatePhoneNumberLive() {
         let phoneInput = document.getElementById('customerPhone');
         let badge = document.getElementById('phoneCountryBadge');
@@ -755,7 +760,6 @@
             return { isValid: true, countryName: 'سوريا', cleanPhone: '' };
         }
 
-        // الرقم السوري المحلي البدائي (09xxxxxxx)
         if (rawValue.startsWith('09') || rawValue.startsWith('9')) {
             if (rawValue.startsWith('09') && rawValue.length === 10) {
                 badge.className = 'phone-country-badge valid';
@@ -768,10 +772,8 @@
             }
         }
 
-        // إزالة أصفار البداية أو علامة الزائد
         let cleanIntl = rawValue.replace(/^00/, '').replace(/^\+/, '');
 
-        // التعرف على سوريا بالترميز الدولي 963
         if (cleanIntl.startsWith('963')) {
             let digitsNum = cleanIntl.substring(3);
             if (digitsNum.length >= 8 && digitsNum.length <= 9) {
@@ -781,7 +783,6 @@
             }
         }
 
-        // كشف قائمة الدول الدولية
         for (let country of countryCodesMap) {
             if (cleanIntl.startsWith(country.code)) {
                 let restDigits = cleanIntl.substring(country.code.length);
@@ -797,7 +798,6 @@
             }
         }
 
-        // إذا لم ينطبق على أي دولة معروفة أو صيغة خاطئة (رقم وهمي)
         badge.className = 'phone-country-badge invalid';
         badge.innerHTML = '⚠️ الرقم غير صالح';
         return { isValid: false, countryName: 'غير معروف', cleanPhone: rawValue };
@@ -1143,7 +1143,7 @@
         if (!phoneValidation.isValid || phoneValidation.cleanPhone === '') {
             showCustomAlert(
                 currentLanguage === 'ar' ? "رقم غير صالح ⚠️" : "Invalid Phone ⚠️", 
-                currentLanguage === 'ar' ? "يرجى كتابة رقم هاتف صحيح مع الرمز الدولي الخاص به إذا كان الرقم غير سوريا." : "Please enter a valid phone number with country code.", 
+                currentLanguage === 'ar' ? "يرجى كتابة رقم هاتف صحيح مع الرمز الدولي إذا كنت خارج سوريا." : "Please enter a valid phone number with country code.", 
                 "📱"
             );
             return;
