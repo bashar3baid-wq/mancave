@@ -31,14 +31,21 @@
     
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #111827;
+            /* نظام الألوان الفاخر - رمادي فحمي وذهبي ملكي */
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --card-sub-bg: #161616;
             --accent-gold: #d4af37;
-            --accent-orange: #ff8c00;
-            --text-main: #ffffff;
-            --text-muted: #9ca3af;
-            --border-color: #1f2937;
-            --accent-purple: #6366f1;
+            --accent-gold-light: #f3e5ab;
+            --accent-gold-dark: #aa7c11;
+            --accent-orange: #d4af37;
+            --gold-gradient: linear-gradient(135deg, #e5c158 0%, #b8860b 100%);
+            --gold-gradient-hover: linear-gradient(135deg, #f5d77f 0%, #d4af37 100%);
+            --text-main: #f5f5f5;
+            --text-muted: #a0a0a0;
+            --border-color: #2e2e2e;
+            --border-gold: rgba(212, 175, 55, 0.25);
+            --accent-purple: #8b5cf6;
             --accent-green: #2ecc71;
             --accent-red: #e74c3c;
             --whatsapp-color: #25d366;
@@ -53,7 +60,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(11, 15, 25, 0.55);
+            background-color: rgba(18, 18, 18, 0.75);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 8px 10px;
@@ -62,16 +69,16 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 6px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border-gold);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
             z-index: 9999;
         }
 
         .toolbar-btn {
             background: rgba(212, 175, 55, 0.08);
-            border: 1px solid rgba(212, 175, 55, 0.25);
+            border: 1px solid rgba(212, 175, 55, 0.3);
             color: var(--accent-gold);
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 16px;
             font-size: 11px;
             font-weight: 700;
@@ -85,28 +92,29 @@
         }
 
         .toolbar-btn.lang-btn {
-            background: rgba(99, 102, 241, 0.15);
-            border-color: rgba(99, 102, 241, 0.4);
-            color: #818cf8;
+            background: rgba(212, 175, 55, 0.18);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold-light);
         }
 
         .toolbar-btn:hover {
             transform: translateY(-2px);
-            background: rgba(212, 175, 55, 0.2);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            background: var(--gold-gradient);
+            color: #121212;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
         }
 
-        .container { max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid rgba(212,175,55,0.15); }
-        h1 { text-align: center; color: var(--accent-gold); font-size: 30px; font-weight: 900; margin-bottom: 5px; min-height: 45px; transition: opacity 0.5s ease; }
+        .container { max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.85), 0 0 20px rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); }
+        h1 { text-align: center; color: var(--accent-gold); font-size: 30px; font-weight: 900; margin-bottom: 5px; min-height: 45px; transition: opacity 0.5s ease; text-shadow: 0 2px 10px rgba(212, 175, 55, 0.2); }
         .subtitle { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 15px; min-height: 25px; transition: opacity 0.5s ease; }
         
         .shop-status-container { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 25px; }
-        .modern-status-badge { font-size: 15px; font-weight: 700; padding: 8px 24px; border-radius: 30px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; }
+        .modern-status-badge { font-size: 15px; font-weight: 700; padding: 8px 24px; border-radius: 30px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); display: inline-flex; align-items: center; gap: 8px; }
         .status-open { background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(46, 204, 113, 0.05)); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4); }
         .status-closed { background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.05)); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4); }
-        .working-hours-text { font-size: 12.5px; color: var(--text-muted); font-weight: 600; background: rgba(31, 41, 55, 0.5); padding: 4px 14px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .working-hours-text { font-size: 12.5px; color: var(--text-muted); font-weight: 600; background: var(--card-sub-bg); padding: 4px 14px; border-radius: 12px; border: 1px solid var(--border-color); }
 
-        .welcome-box { background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(255,140,0,0.03)); border-right: 4px solid var(--accent-gold); padding: 12px 16px; border-radius: 8px 16px 16px 8px; text-align: justify; margin-bottom: 25px; color: #e5e7eb; font-size: 12.5px; line-height: 20px; transition: opacity 0.5s ease; }
+        .welcome-box { background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(26,26,26,0.6)); border-right: 4px solid var(--accent-gold); padding: 14px 18px; border-radius: 8px 16px 16px 8px; text-align: justify; margin-bottom: 25px; color: #e0e0e0; font-size: 12.5px; line-height: 20px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); border-left: 1px solid var(--border-color); transition: opacity 0.5s ease; }
         
         .direct-contact-section {
             display: flex;
@@ -119,30 +127,30 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 8px 16px;
+            padding: 9px 18px;
             border-radius: 12px;
             font-weight: 700;
             font-size: 12.5px;
             text-decoration: none;
             transition: 0.3s;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         .contact-whatsapp {
             background: rgba(37, 211, 102, 0.12);
-            border: 1px solid rgba(37, 211, 102, 0.35);
+            border: 1px solid rgba(37, 211, 102, 0.4);
             color: #25d366;
         }
-        .contact-whatsapp:hover { background: #25d366; color: #fff; }
+        .contact-whatsapp:hover { background: #25d366; color: #fff; box-shadow: 0 6px 18px rgba(37, 211, 102, 0.3); }
         .contact-call {
             background: rgba(52, 152, 219, 0.12);
-            border: 1px solid rgba(52, 152, 219, 0.35);
+            border: 1px solid rgba(52, 152, 219, 0.4);
             color: #3498db;
         }
-        .contact-call:hover { background: #3498db; color: #fff; }
+        .contact-call:hover { background: #3498db; color: #fff; box-shadow: 0 6px 18px rgba(52, 152, 219, 0.3); }
 
-        label { display: block; margin: 25px 0 12px; font-weight: 700; color: var(--accent-gold); font-size: 16px; border-right: 4px solid var(--accent-orange); padding-right: 10px; }
-        input, select { width: 100%; padding: 14px; background: #070a12; border: 1px solid var(--border-color); border-radius: 12px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--accent-gold); }
+        label { display: block; margin: 25px 0 12px; font-weight: 700; color: var(--accent-gold); font-size: 16px; border-right: 4px solid var(--accent-gold); padding-right: 10px; }
+        input, select { width: 100%; padding: 14px; background: var(--card-sub-bg); border: 1px solid var(--border-color); border-radius: 12px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
         
         .phone-wrapper {
             display: flex;
@@ -187,26 +195,26 @@
         }
         .phone-note {
             font-size: 11.5px;
-            color: var(--accent-gold);
+            color: var(--accent-gold-light);
             background: rgba(212, 175, 55, 0.08);
             padding: 6px 12px;
             border-radius: 8px;
-            border: 1px dashed rgba(212, 175, 55, 0.3);
+            border: 1px dashed rgba(212, 175, 55, 0.35);
             margin-top: 4px;
             line-height: 1.5;
         }
 
         .barbers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
-        .barber-card { background: #070a12; padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 110px; }
-        .barber-card:hover { border-color: var(--accent-orange); transform: translateY(-2px); }
-        .barber-card.selected { border-color: var(--accent-gold); background: linear-gradient(145deg, #0d1626 0%, rgba(212,175,55,0.06) 100%); box-shadow: 0 8px 20px rgba(212,175,55,0.15); position: relative; }
+        .barber-card { background: var(--card-sub-bg); padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 110px; }
+        .barber-card:hover { border-color: var(--accent-gold); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(212,175,55,0.2); }
+        .barber-card.selected { border-color: var(--accent-gold); background: linear-gradient(145deg, #262626 0%, rgba(212,175,55,0.12) 100%); box-shadow: 0 8px 25px rgba(212,175,55,0.25); position: relative; }
         .barber-card.selected::after { content: '✓'; position: absolute; top: 8px; left: 10px; color: var(--accent-gold); font-weight: bold; font-size: 16px; }
         .barber-name { font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 6px; }
         .barber-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
         .barber-card.friday-locked { border-color: rgba(231, 76, 60, 0.3) !important; background: rgba(231, 76, 60, 0.05) !important; cursor: not-allowed !important; transform: none !important; }
         .barber-card.friday-locked .barber-desc { color: var(--accent-red) !important; font-weight: bold; font-size: 10.5px; }
 
-        .fresha-section { background: #070a12; border: 1px solid var(--border-color); padding: 20px; border-radius: 20px; margin-top: 15px; }
+        .fresha-section { background: var(--card-sub-bg); border: 1px solid rgba(212, 175, 55, 0.2); padding: 20px; border-radius: 20px; margin-top: 15px; }
         .fresha-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 15px; }
         
         .days-carousel { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
@@ -217,10 +225,10 @@
         .fresha-day-num { font-size: 20px; font-weight: 900; color: #fff; }
         .fresha-day-month { font-size: 11px; color: var(--text-muted); }
         
-        .fresha-day-card.active { background: #5c62ec; border-color: #5c62ec; }
+        .fresha-day-card.active { background: var(--gold-gradient); border-color: var(--accent-gold); box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35); }
         .fresha-day-card.active .fresha-day-name, 
         .fresha-day-card.active .fresha-day-num, 
-        .fresha-day-card.active .fresha-day-month { color: #ffffff; }
+        .fresha-day-card.active .fresha-day-month { color: #121212 !important; font-weight: bold; }
 
         .fresha-time-container { display: none; margin-top: 20px; }
         .fresha-time-label { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 10px; }
@@ -228,30 +236,30 @@
         .modern-time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         
         .time-slot-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px 8px; border-radius: 14px; text-align: center; font-size: 13px; color: #fff; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .time-slot-item:hover:not(.unavailable):not(.selected) { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); }
-        .time-slot-item.selected { border: 2px solid #5c62ec; background: rgba(92, 98, 236, 0.05); color: #fff; }
+        .time-slot-item:hover:not(.unavailable):not(.selected) { border-color: var(--accent-gold); background: rgba(212,175,55,0.12); }
+        .time-slot-item.selected { border: 2px solid var(--accent-gold); background: rgba(212, 175, 55, 0.2); color: #fff; box-shadow: 0 0 12px rgba(212, 175, 55, 0.3); }
         
         .time-slot-item.unavailable { background: rgba(231, 76, 60, 0.08); border-color: rgba(231, 76, 60, 0.3); color: #7f8c8d; cursor: not-allowed; text-decoration: line-through; }
         .time-slot-item.unavailable::before { content: "(محجوز)"; margin-bottom: 4px; color: var(--accent-red); font-size: 10px; font-weight: bold; text-decoration: none; display: block; }
 
         .services-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .service-item { display: flex; align-items: center; justify-content: space-between; background: #070a12; padding: 14px 18px; border-radius: 14px; border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
+        .service-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-sub-bg); padding: 14px 18px; border-radius: 14px; border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
         .service-item input[type="checkbox"] { display: none; }
-        .service-item.selected { border-color: var(--accent-gold); background: rgba(212,175,55,0.05); }
+        .service-item.selected { border-color: var(--accent-gold); background: rgba(212,175,55,0.12); box-shadow: 0 4px 12px rgba(212,175,55,0.15); }
         .service-price { color: var(--accent-gold); font-weight: bold; font-size: 14px; }
         .service-desc-line { font-size: 11px; color: var(--text-muted); display: block; margin-top: 3px; font-weight: normal; }
 
-        .total-box { margin-top: 25px; padding: 18px; background: #070a12; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent-orange); }
+        .total-box { margin-top: 25px; padding: 18px; background: var(--card-sub-bg); border-radius: 14px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent-gold); border: 1px solid var(--border-color); }
         .total-amount { font-size: 22px; font-weight: 900; color: var(--accent-gold); }
 
-        .payment-method { margin-top: 15px; background: linear-gradient(90deg, rgba(255, 140, 0, 0.1) 0%, rgba(17, 24, 39, 0.5) 100%); border: 1px solid var(--accent-orange); padding: 14px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; color: #fff; }
+        .payment-method { margin-top: 15px; background: linear-gradient(90deg, rgba(212, 175, 55, 0.15) 0%, rgba(30, 30, 30, 0.6) 100%); border: 1px solid var(--accent-gold); padding: 14px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; color: var(--accent-gold-light); }
 
-        .tracking-box { display: none; background: #111827; border: 2px solid var(--accent-gold); padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.7); margin-top: 20px; }
+        .tracking-box { display: none; background: var(--card-bg); border: 2px solid var(--accent-gold); padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.15); margin-top: 20px; }
         .status-badge { display: inline-block; padding: 10px 30px; border-radius: 25px; font-weight: bold; font-size: 17px; margin: 15px 0; width: 100%; max-width: 320px; text-align: center; }
         .status-waiting { background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
         .status-confirmed { background: rgba(46, 204, 113, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
         .status-cancelled { background: rgba(231, 76, 60, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
-        .status-finished { background: linear-gradient(45deg, #d4af37, #ff8c00); color: #0b0f19; box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); animation: pulse 1.5s infinite; cursor: pointer; border: none; }
+        .status-finished { background: var(--gold-gradient); color: #121212; box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); animation: pulse 1.5s infinite; cursor: pointer; border: none; font-weight: 900; }
         
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -259,26 +267,28 @@
             100% { transform: scale(1); }
         }
 
-        .tracking-welcome-msg { background: #070a12; padding: 15px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 20px; font-size: 13.5px; line-height: 22px; color: #f3f4f6; }
+        .tracking-welcome-msg { background: var(--card-sub-bg); padding: 15px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 20px; font-size: 13.5px; line-height: 22px; color: #f3f4f6; }
 
-        .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 7, 18, 0.9); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.4s ease; padding: 20px; }
+        .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, 0.92); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.4s ease; padding: 20px; }
         .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .custom-modal-card { background: #111827; border: 2px solid var(--accent-gold); padding: 30px 25px; border-radius: 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
+        .custom-modal-card { background: var(--card-bg); border: 2px solid var(--accent-gold); padding: 30px 25px; border-radius: 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.9), 0 0 30px rgba(212, 175, 55, 0.15); }
         .modal-spinner { width: 45px; height: 45px; border: 4px solid rgba(212,175,55,0.1); border-top: 4px solid var(--accent-gold); border-radius: 50%; margin: 0 auto 20px auto; animation: spin 1s linear infinite; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .modal-icon { font-size: 55px; margin-bottom: 15px; display: block; }
         .modal-title { font-size: 22px; font-weight: 800; color: var(--accent-gold); margin-bottom: 12px; }
         .modal-message { font-size: 14.5px; color: #f3f4f6; line-height: 24px; margin-bottom: 25px; text-align: justify; }
-        .modal-close-btn { background: linear-gradient(45deg, var(--accent-gold), var(--accent-orange)); color: #0b0f19; font-weight: bold; padding: 12px 35px; border-radius: 10px; border: none; cursor: pointer; font-size: 15px; }
+        .modal-close-btn { background: var(--gold-gradient); color: #121212; font-weight: bold; padding: 12px 35px; border-radius: 10px; border: none; cursor: pointer; font-size: 15px; transition: 0.3s; }
+        .modal-close-btn:hover { background: var(--gold-gradient-hover); }
         
-        .salon-location-box { margin-top: 15px; background: #070a12; border: 1px solid var(--border-color); border-right: 4px solid #3498db; padding: 15px; border-radius: 12px; font-size: 13px; line-height: 22px; text-align: right; }
-        .location-header { font-weight: bold; color: #3498db; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; font-size: 15px; }
+        .salon-location-box { margin-top: 15px; background: var(--card-sub-bg); border: 1px solid var(--border-color); border-right: 4px solid var(--accent-gold); padding: 15px; border-radius: 12px; font-size: 13px; line-height: 22px; text-align: right; }
+        .location-header { font-weight: bold; color: var(--accent-gold); margin-bottom: 5px; display: flex; align-items: center; gap: 5px; font-size: 15px; }
         .map-preview-container { width: 100%; height: 140px; margin-top: 12px; border-radius: 10px; overflow: hidden; display: block; border: 1px solid var(--border-color); }
         .map-preview-img { width: 100%; height: 100%; object-fit: cover; }
-        .map-bottom-link-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #fff; font-weight: bold; text-decoration: none; margin-top: 10px; font-size: 13px; }
+        .map-bottom-link-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #242424; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 8px; color: #f5f5f5; font-weight: bold; text-decoration: none; margin-top: 10px; font-size: 13px; transition: 0.3s; padding: 8px 0; }
+        .map-bottom-link-btn:hover { background: rgba(212, 175, 55, 0.15); border-color: var(--accent-gold); color: #fff; }
 
-        button[type="submit"] { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--accent-gold), var(--accent-orange)); border: none; border-radius: 14px; color: #0b0f19; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 30px; transition: 0.3s; }
-        button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,140,0,0.3); }
+        button[type="submit"] { width: 100%; padding: 16px; background: var(--gold-gradient); border: none; border-radius: 14px; color: #121212; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 30px; transition: 0.3s; box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25); }
+        button[type="submit"]:hover { transform: translateY(-2px); background: var(--gold-gradient-hover); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); }
         button[type="submit"]:disabled { background: #374151; color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
         
         footer { text-align: center; margin-top: 40px; font-size: 12px; color: var(--text-muted); line-height: 20px; border-top: 1px solid var(--border-color); padding-top: 20px; }
@@ -501,7 +511,7 @@
     
     <div id="trackingStatusBadge" class="status-badge status-waiting">قيد الانتظار وتجهيز المقعد ⏳</div>
     
-    <div style="background: #070a12; padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); text-align: right; margin-bottom: 25px; line-height: 28px;">
+    <div style="background: var(--card-sub-bg); padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); text-align: right; margin-bottom: 25px; line-height: 28px;">
         <div>👤 <strong id="trackLabelName">الاسم الكريم:</strong> <span id="trackName">-</span></div>
         <div>✂️ <strong id="trackLabelBarber">الحلاق المختار:</strong> <span id="trackBarber">-</span></div>
         <div>⏰ <strong id="trackLabelTime">وقت الحضور:</strong> <span id="trackTime">-</span></div>
@@ -519,7 +529,7 @@
         </a>
     </div>
     
-    <button type="button" id="backToHomeBtn" class="modal-close-btn" onclick="clearTrackingAndReturn()" style="background: #1f2937; color: #fff; width: 100%; display:none;">العودة للصفحة الرئيسية</button>
+    <button type="button" id="backToHomeBtn" class="modal-close-btn" onclick="clearTrackingAndReturn()" style="background: var(--card-sub-bg); color: #fff; width: 100%; display:none; border: 1px solid var(--border-color);">العودة للصفحة الرئيسية</button>
 </div>
 
 <script>
@@ -1289,4 +1299,3 @@
 </script>
 </body>
 </html>
-
