@@ -72,6 +72,14 @@
             border-bottom: 1px solid var(--border-gold);
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
             z-index: 9999;
+            
+            /* أداة الحركة السلسة لإخفاء وإظهار التولبار */
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* كلاس الإخفاء الذي يتم تفعيله عند السحب للأسفل */
+        .top-toolbar.nav-hidden {
+            transform: translateY(-100%);
         }
 
         .toolbar-btn {
@@ -297,7 +305,7 @@
 </head>
 <body>
 
-<div class="top-toolbar">
+<div class="top-toolbar" id="topToolbar">
     <button class="toolbar-btn" onclick="scrollToSection('mainContainer')" id="tbHome">🏠 الرئيسية</button>
     <button class="toolbar-btn" onclick="scrollToSection('bookingForm')" id="tbBook">✂️ احجز</button>
     <button class="toolbar-btn" onclick="scrollToSection('servicesSectionTitle')" id="tbOffers">⭐ العروض</button>
@@ -1296,6 +1304,28 @@
     }
     
     generateFreshaDays();
+
+    // -------------------------------------------------------------------------
+    // كود مخصص لتولبار فيسبوك (Auto-hiding Toolbar عند التمرير)
+    // -------------------------------------------------------------------------
+    const topToolbar = document.getElementById('topToolbar');
+    let lastScrollY = window.scrollY;
+
+    window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+
+        // إذا قام المستخدم بالتمرير نحو الأسفل وتجاوز 50 بكسل يختفي الشريط
+        if (currentScrollY > lastScrollY && currentScrollY > 50) {
+            topToolbar.classList.add('nav-hidden');
+        } 
+        // إذا قام المستخدم بالتمرير نحو الأعلى يظهر الشريط فوراً
+        else {
+            topToolbar.classList.remove('nav-hidden');
+        }
+
+        lastScrollY = currentScrollY;
+    });
 </script>
 </body>
 </html>
+
