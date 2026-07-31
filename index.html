@@ -16,7 +16,7 @@
      <meta property="og:site_name" content="صالون الملك">
      <meta name="application-name" content="صالون الملك">
 
-     <!-- أيقونة الموقع (Favicon) - استبدل logo.png باسم صورتك المرفوعة على جيت هب -->
+     <!-- أيقونة الموقع (Favicon) -->
      <link rel="icon" type="image/png" sizes="192x192" href="/logo.png">
      <link rel="apple-touch-icon" href="/logo.png">
      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -72,12 +72,9 @@
             border-bottom: 1px solid var(--border-gold);
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
             z-index: 9999;
-            
-            /* أداة الحركة السلسة لإخفاء وإظهار التولبار */
             transition: transform 0.3s ease-in-out;
         }
 
-        /* كلاس الإخفاء الذي يتم تفعيله عند السحب للأسفل */
         .top-toolbar.nav-hidden {
             transform: translateY(-100%);
         }
@@ -124,93 +121,83 @@
 
         .welcome-box { background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(26,26,26,0.6)); border-right: 4px solid var(--accent-gold); padding: 14px 18px; border-radius: 8px 16px 16px 8px; text-align: justify; margin-bottom: 25px; color: #e0e0e0; font-size: 12.5px; line-height: 20px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); border-left: 1px solid var(--border-color); transition: opacity 0.5s ease; }
         
-        .direct-contact-section {
+        /* تصميم زر التواصل المستقل السفلي المصغر */
+        .bottom-contact-wrapper {
+            margin-top: 25px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             gap: 10px;
-            margin-bottom: 25px;
         }
-        .contact-action-btn {
+
+        .toggle-contact-btn {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold-light);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+        }
+
+        .toggle-contact-btn:hover {
+            background: var(--gold-gradient);
+            color: #121212;
+        }
+
+        .small-contact-options {
+            display: none;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .small-contact-options.show {
+            display: flex;
+        }
+
+        .contact-action-btn-small {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            padding: 9px 18px;
-            border-radius: 12px;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 12.5px;
+            font-size: 11px;
             text-decoration: none;
             transition: 0.3s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-        .contact-whatsapp {
+
+        .contact-whatsapp-small {
             background: rgba(37, 211, 102, 0.12);
             border: 1px solid rgba(37, 211, 102, 0.4);
             color: #25d366;
         }
-        .contact-whatsapp:hover { background: #25d366; color: #fff; box-shadow: 0 6px 18px rgba(37, 211, 102, 0.3); }
-        .contact-call {
+        .contact-whatsapp-small:hover { background: #25d366; color: #fff; }
+
+        .contact-call-small {
             background: rgba(52, 152, 219, 0.12);
             border: 1px solid rgba(52, 152, 219, 0.4);
             color: #3498db;
         }
-        .contact-call:hover { background: #3498db; color: #fff; box-shadow: 0 6px 18px rgba(52, 152, 219, 0.3); }
+        .contact-call-small:hover { background: #3498db; color: #fff; }
 
         label { display: block; margin: 25px 0 12px; font-weight: 700; color: var(--accent-gold); font-size: 16px; border-right: 4px solid var(--accent-gold); padding-right: 10px; }
         input, select { width: 100%; padding: 14px; background: var(--card-sub-bg); border: 1px solid var(--border-color); border-radius: 12px; color: #fff; font-size: 15px; outline: none; transition: 0.3s; }
         input:focus { border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
         
-        .phone-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .phone-input-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .phone-input-container input {
-            padding-left: 110px;
-            direction: ltr;
-            text-align: right;
-        }
-        .phone-country-badge {
-            position: absolute;
-            left: 10px;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 4px 10px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--text-muted);
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.3s ease;
-        }
-        .phone-country-badge.valid {
-            color: #2ecc71;
-            border-color: rgba(46, 204, 113, 0.4);
-            background: rgba(46, 204, 113, 0.1);
-        }
-        .phone-country-badge.invalid {
-            color: #e74c3c;
-            border-color: rgba(231, 76, 60, 0.4);
-            background: rgba(231, 76, 60, 0.1);
-        }
-        .phone-note {
-            font-size: 11.5px;
-            color: var(--accent-gold-light);
-            background: rgba(212, 175, 55, 0.08);
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px dashed rgba(212, 175, 55, 0.35);
-            margin-top: 4px;
-            line-height: 1.5;
-        }
+        .phone-wrapper { display: flex; flex-direction: column; gap: 6px; }
+        .phone-input-container { position: relative; display: flex; align-items: center; }
+        .phone-input-container input { padding-left: 110px; direction: ltr; text-align: right; }
+        .phone-country-badge { position: absolute; left: 10px; font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: var(--text-muted); pointer-events: none; display: flex; align-items: center; gap: 4px; transition: all 0.3s ease; }
+        .phone-country-badge.valid { color: #2ecc71; border-color: rgba(46, 204, 113, 0.4); background: rgba(46, 204, 113, 0.1); }
+        .phone-country-badge.invalid { color: #e74c3c; border-color: rgba(231, 76, 60, 0.4); background: rgba(231, 76, 60, 0.1); }
+        .phone-note { font-size: 11.5px; color: var(--accent-gold-light); background: rgba(212, 175, 55, 0.08); padding: 6px 12px; border-radius: 8px; border: 1px dashed rgba(212, 175, 55, 0.35); margin-top: 4px; line-height: 1.5; }
 
         .barbers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
         .barber-card { background: var(--card-sub-bg); padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 110px; }
@@ -310,7 +297,7 @@
     <button class="toolbar-btn" onclick="scrollToSection('bookingForm')" id="tbBook">✂️ احجز</button>
     <button class="toolbar-btn" onclick="scrollToSection('servicesSectionTitle')" id="tbOffers">⭐ العروض</button>
     <button class="toolbar-btn" onclick="openInteractiveGuideModal()" id="tbGuide">📖 طريقة الاستخدام</button>
-    <button class="toolbar-btn" onclick="scrollToSection('contactSectionAnchor')" id="tbContact">💬 تواصل</button>
+    <button class="toolbar-btn" onclick="scrollToSection('bottomContactArea')" id="tbContact">💬 تواصل</button>
     <button class="toolbar-btn lang-btn" onclick="toggleLanguage()" id="tbLangSwitch">🌐 EN / عربي</button>
 </div>
 
@@ -335,15 +322,6 @@
 
     <div class="welcome-box" id="dynamicWelcomeBox">
         مرحباً بك في نظام الحجز المطور لصالون الملك. فضلاً، املأ الخيارات التالية وسيتم تحديث وحجب الأوقات تلقائياً لضمان راحتك وتفادي الانتظار.
-    </div>
-
-    <div class="direct-contact-section" id="contactSectionAnchor">
-        <a href="https://wa.me/963983449184" target="_blank" class="contact-action-btn contact-whatsapp" id="contactWaBtn">
-            💬 واتساب
-        </a>
-        <a href="tel:0983449184" class="contact-action-btn contact-call" id="contactCallBtn">
-            📞 اتصال
-        </a>
     </div>
 
     <form id="bookingForm" onsubmit="confirmAndSend(event)">
@@ -494,6 +472,7 @@
         <button type="submit" id="btnSubmit">تأكيد حجز الموعد</button>
     </form>
 
+    <!-- عنوان صالون الملك والخريطة -->
     <div class="salon-location-box" id="locationBox" style="margin-top: 30px;">
         <div class="location-header" id="locationHeaderTitle">📍 عنوان صالون الملك بالتفصيل:</div>
         <div style="margin-bottom: 5px; color:#e5e7eb;" id="locationAddressText">دمشق - ساحة المرجة - بناء رمسيس - طابق أول</div>
@@ -503,6 +482,21 @@
         <a href="https://maps.app.goo.gl/NwsSz6pZ76VsHMfF6?g_st=ac" target="_blank" class="map-bottom-link-btn" id="mapLinkBtnText">
             فتح تطبيق Google Maps والتوجه للصالون مباشرة
         </a>
+    </div>
+
+    <!-- قسم التواصل والاستفسار الجديد أسفل الخريطة مباشرة بحجم صغير -->
+    <div class="bottom-contact-wrapper" id="bottomContactArea">
+        <button type="button" class="toggle-contact-btn" id="btnToggleContact" onclick="toggleBottomContact()">
+            💬 للتواصل و الأستفسار
+        </button>
+        <div class="small-contact-options" id="smallContactGroup">
+            <a href="https://wa.me/963983449184" target="_blank" class="contact-action-btn-small contact-whatsapp-small" id="contactWaBtn">
+                💬 واتساب
+            </a>
+            <a href="tel:0983449184" class="contact-action-btn-small contact-call-small" id="contactCallBtn">
+                📞 اتصال
+            </a>
+        </div>
     </div>
 
     <footer>
@@ -589,15 +583,9 @@
     const translations = {
         ar: {
             title: "صالون الملك - حجز مواعد إلكتروني",
-            h1List: ["صالون الملك", "King's Barbershop"],
-            subList: [
-                "فخامة الأداء ودقة المواعيد تناسب ملوك مجتمعنا",
-                "Welcome"
-            ],
-            welcomeList: [
-                "مرحباً بك في نظام الحجز المطور لصالون الملك. فضلاً، املأ الخيارات التالية وسيتم تحديث وحجب الأوقات تلقائياً لضمان راحتك وتفادي الانتظار.",
-                "Welcome to King's Barbershop booking system. Please fill out the options below to secure your appointment instantly."
-            ],
+            h1Text: "صالون الملك",
+            subText: "فخامة الأداء ودقة المواعيد تناسب ملوك مجتمعنا",
+            welcomeText: "مرحباً بك في نظام الحجز المطور لصالون الملك. فضلاً، املأ الخيارات التالية وسيتم تحديث وحجب الأوقات تلقائياً لضمان راحتك وتفادي الانتظار.",
             tbHome: "🏠 الرئيسية",
             tbBook: "✂️ احجز",
             tbOffers: "⭐ العروض",
@@ -617,6 +605,7 @@
             labelPhone: "رقم الهاتف:",
             phoneNoteText: "📌 **ملاحظة:** إذا كان الرقم غير سوري، يرجى كتابته مسبوقاً برمز الدولة الخاص بك (مثلاً: +961...)",
             btnSubmit: "تأكيد حجز الموعد",
+            btnContactToggle: "💬 للتواصل و الأستفسار",
             locationHeaderTitle: "📍 عنوان صالون الملك بالتفصيل:",
             locationAddressText: "دمشق - ساحة المرجة - بناء رمسيس - طابق أول",
             mapLinkBtnText: "فتح تطبيق Google Maps والتوجه للصالون مباشرة",
@@ -629,15 +618,9 @@
         },
         en: {
             title: "King's Barbershop - Online Booking",
-            h1List: ["King's Barbershop", "صالون الملك"],
-            subList: [
-                "Welcome",
-                "مرحبآ بك"
-            ],
-            welcomeList: [
-                "Welcome to King's Barbershop booking system. Please fill out the options below to secure your appointment instantly.",
-                "مرحباً بك في نظام الحجز المطور لصالون الملك. فضلاً، املأ الخيارات التالية وسيتم تحديث وحجب الأوقات تلقائياً لضمان راحتك وتفادي الانتظار."
-            ],
+            h1Text: "King's Barbershop",
+            subText: "Welcome to King's Barbershop",
+            welcomeText: "Welcome to King's Barbershop booking system. Please fill out the options below to secure your appointment instantly.",
             tbHome: "🏠 Home",
             tbBook: "✂️ Book",
             tbOffers: "⭐ Offers",
@@ -657,6 +640,7 @@
             labelPhone: "Phone Number:",
             phoneNoteText: "📌 **Note:** If phone is non-Syrian, please include country code (e.g., +961...)",
             btnSubmit: "Confirm Booking",
+            btnContactToggle: "💬 Contact & Inquiry",
             locationHeaderTitle: "📍 King's Barbershop Detailed Location:",
             locationAddressText: "Damascus - Marjeh Square - Ramses Building - 1st Floor",
             mapLinkBtnText: "Open Google Maps & Navigate Directly",
@@ -669,39 +653,11 @@
         }
     };
 
-    let titleIndex = 0;
-    setInterval(() => {
-        titleIndex = 1 - titleIndex;
-        const t = translations[currentLanguage];
-        
-        const h1El = document.getElementById('dynamicTitle');
-        const subEl = document.getElementById('dynamicSubtitle');
-        const welcomeEl = document.getElementById('dynamicWelcomeBox');
-
-        if(h1El) {
-            h1El.style.opacity = 0;
-            setTimeout(() => {
-                h1El.innerText = t.h1List[titleIndex];
-                h1El.style.opacity = 1;
-            }, 300);
-        }
-
-        if(subEl) {
-            subEl.style.opacity = 0;
-            setTimeout(() => {
-                subEl.innerText = t.subList[titleIndex];
-                subEl.style.opacity = 1;
-            }, 300);
-        }
-
-        if(welcomeEl) {
-            welcomeEl.style.opacity = 0;
-            setTimeout(() => {
-                welcomeEl.innerText = t.welcomeList[titleIndex];
-                welcomeEl.style.opacity = 1;
-            }, 300);
-        }
-    }, 3000);
+    // دالة إظهار وإخفاء زر الواتساب والاتصال في الأسفل
+    function toggleBottomContact() {
+        const smallGroup = document.getElementById('smallContactGroup');
+        smallGroup.classList.toggle('show');
+    }
 
     function toggleLanguage() {
         currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
@@ -711,6 +667,10 @@
 
         const t = translations[currentLanguage];
         document.getElementById('pageTitle').innerText = t.title;
+        document.getElementById('dynamicTitle').innerText = t.h1Text;
+        document.getElementById('dynamicSubtitle').innerText = t.subText;
+        document.getElementById('dynamicWelcomeBox').innerText = t.welcomeText;
+        
         document.getElementById('tbHome').innerText = t.tbHome;
         document.getElementById('tbBook').innerText = t.tbBook;
         document.getElementById('tbOffers').innerText = t.tbOffers;
@@ -729,6 +689,7 @@
         document.getElementById('labelPhone').innerText = t.labelPhone;
         document.getElementById('phoneNoteText').innerText = t.phoneNoteText;
         document.getElementById('btnSubmit').innerText = t.btnSubmit;
+        document.getElementById('btnToggleContact').innerText = t.btnContactToggle;
         
         document.getElementById('locationHeaderTitle').innerText = t.locationHeaderTitle;
         document.getElementById('locationAddressText').innerText = t.locationAddressText;
@@ -1314,11 +1275,9 @@
     window.addEventListener('scroll', () => {
         const currentScrollY = window.scrollY;
 
-        // إذا قام المستخدم بالتمرير نحو الأسفل وتجاوز 50 بكسل يختفي الشريط
         if (currentScrollY > lastScrollY && currentScrollY > 50) {
             topToolbar.classList.add('nav-hidden');
         } 
-        // إذا قام المستخدم بالتمرير نحو الأعلى يظهر الشريط فوراً
         else {
             topToolbar.classList.remove('nav-hidden');
         }
